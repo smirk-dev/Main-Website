@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suryansh Mishra | Software Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ---- Base Styles ---- */
+      :root {
+        --primary-black: #000000;
+        --accent-purple: #bb86fc;
+        --accent-purple-light: rgba(187, 134, 252, 0.2);
+        --accent-purple-medium: rgba(187, 134, 252, 0.5);
+        --text-white: #ffffff;
+        --text-gray: rgba(255, 255, 255, 0.7);
+        --transition-speed: 0.3s;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Space Grotesk", "Arial", sans-serif;
+      }
+
+      body {
+        background-color: var(--primary-black);
+        color: var(--text-white);
+        line-height: 1.6;
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      section {
+        position: relative;
+        overflow: hidden;
+      }
+
+      h2 {
+        text-align: center;
+        color: var(--accent-purple);
+        margin-bottom: 80px; /* Increased from 60px to 80px */
+        font-size: 3rem;
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        z-index: 2;
+      }
+
+      h2::after {
+        content: "";
+        position: absolute;
+        width: 50px;
+        height: 3px;
+        background-color: var(--accent-purple);
+        bottom: -18px; /* Increased from -10px to -18px */
+        left: 50%;
+        transform: translateX(-50%);
+        transition: width var(--transition-speed) ease;
+        z-index: 2;
+      }
+
+      /* ---- Header Styles ---- */
+      header {
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        transition: all var(--transition-speed) ease;
+      }
+
+      header.scrolled {
+        box-shadow: 0 5px 20px rgba(187, 134, 252, 0.1);
+        padding: 5px 0;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 0;
+        transition: all var(--transition-speed) ease;
+      }
+
+      .logo {
+        color: var(--accent-purple);
+        text-decoration: none;
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -1px;
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+      }
+
+      .logo::before {
+        content: "◈";
+        margin-right: 8px;
+        display: inline-block;
+        transform: rotate(0deg);
+        transition: transform 0.5s ease;
+      }
+
+      .logo:hover::before {
+        transform: rotate(180deg);
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+      }
+
+      .nav-links li {
+        margin-left: 30px;
+      }
+
+      .nav-links a {
+        color: var(--text-white);
+        text-decoration: none;
+        position: relative;
+        transition: color var(--transition-speed) ease;
+        font-weight: 500;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: var(--accent-purple);
+        transition: width var(--transition-speed) ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--accent-purple);
+      }
+
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      .menu-toggle {
+        display: none;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: var(--text-white);
+      }
+
+      /* ---- Hero Section ---- */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        padding-top: 60px; /* Reduced from 120px to 60px */
+        padding-bottom: 60px;
+        box-sizing: border-box;
+      }
+
+      .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at center,
+          rgba(187, 134, 252, 0.1) 0%,
+          rgba(0, 0, 0, 0.8) 80%
+        );
+        z-index: 1;
+      }
+
+      .hero-grid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(
+            rgba(187, 134, 252, 0.05) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(187, 134, 252, 0.05) 1px, transparent 1px);
+        background-size: 30px 30px;
+        z-index: 1;
+        opacity: 0.3;
+      }
+
+      /* Hero Centerpiece Layout */
+      .hero-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        width: 100%;
+        max-width: 1200px;
+        padding: 0 20px;
+      }
+
+      /* Central GIF Container */
+      .hero-centerpiece {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 0 50px rgba(187, 134, 252, 0.5);
+        margin-bottom: 30px;
+        animation: pulse 3s infinite ease-in-out;
+        position: relative;
+        z-index: 3;
+        transition: transform 0.5s ease;
+      }
+
+      .hero-centerpiece:hover {
+        transform: scale(1.05);
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 30px rgba(187, 134, 252, 0.5);
+        }
+        50% {
+          box-shadow: 0 0 60px rgba(187, 134, 252, 0.7);
+        }
+        100% {
+          box-shadow: 0 0 30px rgba(187, 134, 252, 0.5);
+        }
+      }
+
+      .hero-gif {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* Content surrounding the centerpiece */
+      .hero-content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 800px;
+      }
+
+      .hero-title {
+        font-size: 4rem;
+        font-weight: 700;
+        color: var(--text-white);
+        margin-bottom: 15px;
+        letter-spacing: -2px;
+        line-height: 1.1;
+        text-shadow: 0 0 10px rgba(187, 134, 252, 0.3);
+      }
+
+      .hero-title span {
+        color: var(--accent-purple);
+        position: relative;
+      }
+
+      .hero-title span::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 3px;
+        bottom: 0;
+        left: 0;
+        background-color: var(--accent-purple);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.5s ease;
+      }
+
+      .hero-title:hover span::after {
+        transform: scaleX(1);
+        transform-origin: left;
+      }
+
+      .hero-description {
+        font-size: 1.4rem;
+        color: var(--text-gray);
+        margin-bottom: 30px;
+        max-width: 600px;
+      }
+
+      .hero-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 15px 30px;
+        text-decoration: none;
+        color: var(--text-white);
+        border: 2px solid var(--accent-purple);
+        border-radius: 5px;
+        transition: all var(--transition-speed) ease;
+        font-weight: 600;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      .btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background-color: var(--accent-purple);
+        transition: all var(--transition-speed) ease;
+        z-index: -1;
+      }
+
+      .btn:hover {
+        color: var(--primary-black);
+      }
+
+      .btn:hover::before {
+        left: 0;
+      }
+
+      /* ---- Projects Section ---- */
+      #projects {
+        background-color: rgba(187, 134, 252, 0.05);
+        padding: 100px 0;
+      }
+
+      .section-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        width: 100%;
+      }
+
+      .project-card {
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 30px;
+        transition: transform var(--transition-speed) ease,
+          box-shadow var(--transition-speed) ease;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid transparent;
+      }
+
+      .project-card::before {
+        content: "";
+        position: absolute;
+        top: -100%;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          180deg,
+          var(--accent-purple-light) 0%,
+          transparent 100%
+        );
+        opacity: 0;
+        transition: all var(--transition-speed) ease;
+      }
+
+      .project-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--accent-purple-light);
+      }
+
+      .project-card:hover::before {
+        top: 0;
+        opacity: 0.1;
+      }
+
+      .project-card h3 {
+        color: var(--accent-purple);
+        margin-bottom: 15px;
+        position: relative;
+      }
+
+      .project-card h3::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--accent-purple);
+        transition: width var(--transition-speed) ease;
+      }
+
+      .project-card:hover h3::after {
+        width: 40px;
+      }
+
+      .project-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 15px;
+        transition: all var(--transition-speed) ease;
+      }
+
+      .project-tag {
+        background-color: var(--accent-purple-light);
+        color: var(--accent-purple);
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        transition: all var(--transition-speed) ease;
+      }
+
+      .project-card:hover .project-tag {
+        background-color: var(--accent-purple-medium);
+      }
+
+      /* Project card hover effect */
+      .project-card::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, var(--accent-purple), transparent);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s ease;
+      }
+
+      .project-card:hover::after {
+        transform: scaleX(1);
+      }
+
+      /* ---- Footer ---- */
+      footer {
+        background-color: rgba(0, 0, 0, 0.8);
+        padding: 30px 0;
+        text-align: center;
+        position: relative;
+      }
+
+      .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-bottom: 20px;
+      }
+
+      .social-links a {
+        color: var(--text-white);
+        font-size: 1.5rem;
+        transition: all var(--transition-speed) ease;
+        position: relative;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: rgba(187, 134, 252, 0.1);
+        overflow: hidden;
+      }
+
+      .social-links a::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--accent-purple);
+        border-radius: 50%;
+        transform: scale(0);
+        transition: all var(--transition-speed) ease;
+        z-index: -1;
+      }
+
+      .social-links a:hover {
+        color: var(--primary-black);
+        transform: translateY(-5px);
+      }
+
+      .social-links a:hover::before {
+        transform: scale(1);
+      }
+
+      /* ---- Parallax Effect ---- */
+      .parallax-bg {
+        position: absolute;
+        width: 100%;
+        height: 200%;
+        top: -50%;
+        left: 0;
+        background: radial-gradient(
+          circle at 50% 50%,
+          rgba(187, 134, 252, 0.1) 0%,
+          transparent 70%
+        );
+        z-index: -1;
+      }
+
+      /* Floating particles */
+      .particles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .particle {
+        position: absolute;
+        background-color: var(--accent-purple);
+        border-radius: 50%;
+        opacity: 0.3;
+        animation: float linear infinite;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0) rotate(0deg);
+        }
+        100% {
+          transform: translateY(-100vh) rotate(360deg);
+        }
+      }
+
+      /* ---- Scroll to Top Button ---- */
+      .scroll-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--accent-purple);
+        color: var(--primary-black);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        cursor: pointer;
+        z-index: 100;
+        opacity: 0;
+        transform: translateY(100px);
+        transition: all var(--transition-speed) ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .scroll-top.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .scroll-top:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+      }
+
+      /* Toast notification */
+      .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background-color: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 5px;
+        border-left: 4px solid var(--accent-purple);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        opacity: 0;
+        transition: all 0.5s ease;
+        display: flex;
+        align-items: center;
+      }
+
+      .toast.active {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+
+      .toast i {
+        margin-right: 10px;
+        color: var(--accent-purple);
+      }
+
+      /* Loading Animation */
+      .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--primary-black);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+      }
+
+      .loader.fade-out {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .loader-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .loader-spinner {
+        width: 60px;
+        height: 60px;
+        border: 3px solid transparent;
+        border-top-color: var(--accent-purple);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+
+      /* Navigation Overlay */
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all var(--transition-speed) ease;
+      }
+
+      .overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+      
+
+      /* ---- Responsive Styles ---- */
+      @media (max-width: 992px) {
+        .hero-title {
+          font-size: 3.5rem;
+        }
+
+        .about-content {
+          grid-template-columns: 1fr;
+        }
+
+        .skills-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero-title {
+          font-size: 2.8rem;
+        }
+
+        .hero-description {
+          font-size: 1.2rem;
+        }
+
+        .hero-centerpiece {
+          width: 220px;
+          height: 220px;
+        }
+
+        .menu-toggle {
+          display: block;
+        }
+
+        .nav-links {
+          position: fixed;
+          top: 0;
+          right: -100%;
+          width: 70%;
+          height: 100vh;
+          background-color: rgba(0, 0, 0, 0.95);
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          transition: right var(--transition-speed) ease;
+          z-index: 1001;
+        }
+
+        .nav-links.active {
+          right: 0;
+        }
+
+        .nav-links li {
+          margin: 20px 0;
+        }
+
+        .hero-buttons {
+          flex-direction: column;
+          width: 100%;
+        }
+
+        .btn {
+          width: 100%;
+          text-align: center;
+        }
+
+        .skills-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          padding-top: 100px;
+          padding-bottom: 40px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero-title {
+          font-size: 2.5rem;
+        }
+
+        .hero-centerpiece {
+          width: 180px;
+          height: 180px;
+        }
+
+        h2 {
+          font-size: 2.5rem;
+        }
+
+        .hero {
+          padding-top: 80px;
+          padding-bottom: 30px;
+        }
+      }
+
+      /* Animation classes */
+      .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+      }
+
+      .fade-in.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Add delay to staggered animations */
+      .delay-1 {
+        transition-delay: 0.2s;
+      }
+
+      .delay-2 {
+        transition-delay: 0.4s;
+      }
+
+      .delay-3 {
+        transition-delay: 0.6s;
+      }
+
+      /* Hero Intro Overlay */
+      #hero-intro-overlay {
+        position: fixed;
+        z-index: 3000;
+        top: 0; left: 0; right: 0; bottom: 0;
+        width: 100vw; height: 100vh;
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.7s cubic-bezier(.4,0,.2,1), visibility 0.7s;
+        opacity: 1;
+        visibility: visible;
+      }
+
+      #hero-intro-overlay.hide {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .hero-intro-centerpiece {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 0 50px rgba(187, 134, 252, 0.5);
+        animation: pulse 3s infinite ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.7s cubic-bezier(.4,0,.2,1), opacity 0.7s;
+        will-change: transform, opacity;
+      }
+
+      #hero-intro-overlay.hide .hero-intro-centerpiece {
+        transform: scale(0.7) translateY(-60px);
+        opacity: 0;
+      }
+
+      @media (max-width: 768px) {
+        .hero-intro-centerpiece { width: 180px; height: 180px; }
+      }
+
+      /* ---- End of Styles ---- */
+    </style>
+  </head>
+
+  <body>
+    <!-- Hero Intro Overlay -->
+    <div id="hero-intro-overlay">
+      <div class="hero-intro-centerpiece">
+        <video class="hero-gif" autoplay muted loop playsinline>
+          <source src="hero_gif.mp4" type="video/mp4">
+          <div>Your browser does not support the video tag.</div>
+        </video>
+      </div>
+    </div>
+    <!-- Preloader -->
+    <div class="loader">
+      <div class="loader-content">
+        <div class="loader-spinner"></div>
+      </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+      <i class="fas fa-check-circle"></i>
+      <span id="toast-message"></span>
+    </div>
+
+    <!-- Navigation Overlay -->
+    <div class="overlay"></div>
+
+    <!-- Scroll to Top Button -->
+    <div class="scroll-top">
+      <i class="fas fa-chevron-up"></i>
+    </div>
+
+    <!-- Floating particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Header removed -->
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-grid"></div>
+      <div class="hero-overlay"></div>
+      <div class="parallax-bg"></div>
+      <div class="hero-container">
+        <div class="hero-centerpiece">
+          <video class="hero-gif" autoplay muted loop playsinline>
+            <source src="hero_gif.mp4" type="video/mp4">
+            <div>Your browser does not support the video tag.</div>
+          </video>
+        </div>
+        
+        <!-- Hero Content -->
+        <div class="hero-content">
+          <h1 class="hero-title fade-in delay-1">Hi, I'm <span>Suryansh Mishra</span></h1>
+          <p class="hero-description fade-in delay-2">An enthusiastic human creating his own colorbook of a skillset, utilizing them to document it, find my favorite ventures below:</p>
+          <div class="hero-buttons fade-in delay-3">
+            <a href="#projects" class="btn">View My Work</a>
+            <a href="https://linktr.ee/mishrasuryansh" class="btn">Get In Touch</a>
+            <a href="resume.pdf" download="Suryansh-Mishra-Resume.pdf" class="btn btn-resume">
+              <i class="fas fa-file-pdf"></i> Resume
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects">
+      <div class="container section-container">
+        <h2 class="fade-in">Voyages</h2>
+        <div class="projects-grid">
+          <!-- Coding Portfolio Card -->
+          <div class="project-card fade-in">
+            <img src="codingscreenshot.png" alt="Coding Portfolio Preview" style="width:100%;border-radius:8px;margin-bottom:18px;">
+            <h3>Coding Portfolio</h3>
+            <p>Explore my technical journey, featuring selected projects, open-source contributions, and a showcase of my programming skills across various domains.</p>
+            <div class="project-tags">
+              <span class="project-tag">React</span>
+              <span class="project-tag">JavaScript</span>
+              <span class="project-tag">Web Dev</span>
+            </div>
+            <a href="https://suryanshcodes.vercel.app/" target="_blank" class="btn" style="margin-top:18px;">Visit Portfolio</a>
+          </div>
+
+          <!-- Art Gallery Card -->
+          <div class="project-card fade-in delay-1">
+            <img src="artscreenshot (1).png" alt="Art Gallery Preview" style="width:100%;border-radius:8px;margin-bottom:18px;">
+            <h3>Art Gallery</h3>
+            <p>A digital gallery of my creative works—paintings, sketches, and digital art—curated to inspire and share my artistic side with the world.</p>
+            <div class="project-tags">
+              <span class="project-tag">Gallery</span>
+              <span class="project-tag">Creativity</span>
+              <span class="project-tag">Inspiration</span>
+            </div>
+            <a href="https://smirkarts.vercel.app/" target="_blank" class="btn" style="margin-top:18px;">View Gallery</a>
+          </div>
+
+          <!-- Blog Card -->
+          <div class="project-card fade-in delay-2">
+            <img src="blogscreenshot.png" alt="Blog Preview" style="width:100%;border-radius:8px;margin-bottom:18px;">
+            <h3>Blog</h3>
+            <p>Read my thoughts on technology, creativity, and personal growth. I share insights, tutorials, and stories from my ongoing learning adventures.</p>
+            <div class="project-tags">
+              <span class="project-tag">Writing</span>
+              <span class="project-tag">Tech</span>
+              <span class="project-tag">Personal</span>
+            </div>
+            <a href="https://bonfireblog.vercel.app/" target="_blank" class="btn" style="margin-top:18px;">Read Blog</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="social-links">
+          <a href="https://github.com/smirk-dev" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="https://linkedin.com/in/connectwithsuryanshmishra" target="_blank">
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <a href="https://x.com/answerthisansh" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="https://linktr.ee/mishrasuryansh" target="_blank">
+            <i class="fas fa-envelope"></i>
+          </a>
+        </div>
+        <p>&copy; 2025 Suryansh Mishra. All rights reserved.</p>
+      </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        // Elements
+        const loader = document.querySelector(".loader");
+        const scrollTopBtn = document.querySelector(".scroll-top");
+        const header = document.getElementById("header");
+        const menuToggle = document.querySelector(".menu-toggle");
+        const navLinks = document.querySelector(".nav-links");
+        const overlay = document.querySelector(".overlay");
+        const fadeElements = document.querySelectorAll(".fade-in");
+        const contactForm = document.getElementById("contactForm");
+        const toast = document.getElementById("toast");
+        const toastMessage = document.getElementById("toast-message");
+        const particlesContainer = document.getElementById("particles");
+    
+        // Create floating particles
+        function createParticles() {
+          const particleCount = 20;
+          
+          for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement("div");
+            particle.classList.add("particle");
+            
+            // Random size between 2px and 5px
+            const size = Math.random() * 3 + 2;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            
+            // Random position
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            
+            // Random animation duration between 10s and 20s
+            const duration = Math.random() * 10 + 10;
+            particle.style.animationDuration = `${duration}s`;
+            
+            // Random delay
+            particle.style.animationDelay = `${Math.random() * 10}s`;
+            
+            particlesContainer.appendChild(particle);
+          }
+        }
+        
+        // Initialize particles
+        createParticles();
+    
+        // Hide loader after page load
+        setTimeout(() => {
+          loader.classList.add("fade-out");
+        }, 1000);
+    
+        // Fade in elements when they come into view
+        const fadeInObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("active");
+                fadeInObserver.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+    
+        fadeElements.forEach((element) => {
+          fadeInObserver.observe(element);
+        });
+    
+        // Parallax effect
+        const parallaxBg = document.querySelector(".parallax-bg");
+        window.addEventListener("scroll", () => {
+          const scrollY = window.scrollY;
+          parallaxBg.style.transform = `translateY(${scrollY * 0.5}px)`;
+    
+          // Header transparency on scroll
+          if (scrollY > 50) {
+            header.classList.add("scrolled");
+          } else {
+            header.classList.remove("scrolled");
+          }
+    
+          // Show/hide scroll to top button
+          if (scrollY > 500) {
+            scrollTopBtn.classList.add("active");
+          } else {
+            scrollTopBtn.classList.remove("active");
+          }
+        });
+    
+        // Scroll to top button click
+        scrollTopBtn.addEventListener("click", () => {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+          });
+        });
+    
+        // Mobile menu toggle
+        menuToggle.addEventListener("click", () => {
+          navLinks.classList.toggle("active");
+          overlay.classList.toggle("active");
+          document.body.style.overflow = navLinks.classList.contains("active")
+            ? "hidden"
+            : "auto";
+        });
+    
+        // Close mobile menu when clicking on links or overlay
+        navLinks.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", () => {
+            navLinks.classList.remove("active");
+            overlay.classList.remove("active");
+            document.body.style.overflow = "auto";
+          });
+        });
+    
+        overlay.addEventListener("click", () => {
+          navLinks.classList.remove("active");
+          overlay.classList.remove("active");
+          document.body.style.overflow = "auto";
+        });
+    
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute("href");
+            if (targetId === "#") return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+              const headerHeight = header.offsetHeight;
+              const targetPosition = targetElement.offsetTop - headerHeight;
+              
+              window.scrollTo({
+                top: targetPosition,
+                behavior: "smooth"
+              });
+            }
+          });
+        });
+    
+        // Form validation and submission
+        if (contactForm) {
+          contactForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+            
+            // Get form elements
+            const nameInput = document.getElementById("name");
+            const emailInput = document.getElementById("email");
+            const subjectInput = document.getElementById("subject");
+            const messageInput = document.getElementById("message");
+            const submitBtn = document.querySelector(".submit-btn");
+            const spinner = document.querySelector(".spinner");
+            
+            // Basic validation
+            let isValid = true;
+            
+            if (nameInput.value.trim() === "") {
+              document.getElementById("name-error").style.display = "block";
+              isValid = false;
+            } else {
+              document.getElementById("name-error").style.display = "none";
+            }
+            
+            if (emailInput.value.trim() === "" || !isValidEmail(emailInput.value)) {
+              document.getElementById("email-error").style.display = "block";
+              isValid = false;
+            } else {
+              document.getElementById("email-error").style.display = "none";
+            }
+            
+            if (subjectInput.value.trim() === "") {
+              document.getElementById("subject-error").style.display = "block";
+              isValid = false;
+            } else {
+              document.getElementById("subject-error").style.display = "none";
+            }
+            
+            if (messageInput.value.trim() === "") {
+              document.getElementById("message-error").style.display = "block";
+              isValid = false;
+            } else {
+              document.getElementById("message-error").style.display = "none";
+            }
+            
+            if (isValid) {
+              // Show loading spinner
+              submitBtn.disabled = true;
+              spinner.style.display = "inline-block";
+              
+              // Prepare the template parameters
+              const templateParams = {
+                from_name: nameInput.value,
+                from_email: emailInput.value,
+                subject: subjectInput.value,
+                message: messageInput.value
+              };
+              
+              // Send email using EmailJS
+              emailjs.send('service_0bg3xma', 'template_gefxqoi', templateParams)
+                .then(function(response) {
+                  console.log('SUCCESS!', response.status, response.text);
+                  
+                  // Hide spinner
+                  spinner.style.display = "none";
+                  submitBtn.disabled = false;
+                  
+                  // Show success message
+                  contactForm.reset();
+                  showToast("Message sent successfully!", "success");
+                }, function(error) {
+                  console.log('FAILED...', error);
+                  
+                  // Hide spinner
+                  spinner.style.display = "none";
+                  submitBtn.disabled = false;
+                  
+                  // Show error message
+                  showToast("Failed to send message. Please try again.", "error");
+                });
+            }
+          });
+        }
+        
+        // Helper function to validate email
+        function isValidEmail(email) {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          return emailRegex.test(email);
+        }
+    
+        // Show toast notification
+        function showToast(message, type = "success") {
+          toastMessage.textContent = message;
+          toast.className = "toast active";
+          if (type === "error") {
+            toast.querySelector("i").className = "fas fa-exclamation-circle";
+          } else {
+            toast.querySelector("i").className = "fas fa-check-circle";
+          }
+          
+          setTimeout(() => {
+            toast.className = "toast"
+          }, 5000);
+        }
+    
+        // Fix video loading on Safari
+        const videoElement = document.querySelector(".hero-gif");
+        if (videoElement) {
+          videoElement.play().catch(error => {
+            console.log("Auto-play was prevented:", error);
+            // Provide fallback or show play button
+          });
+        }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+      (function() {
+        emailjs.init("V0LGNNJh6ImXC-Lvs"); // Replace with your actual User ID from EmailJS
+      })();
+    </script>
+    <script>
+      // Hero Intro Overlay Logic
+      (function() {
+        if (!sessionStorage.getItem("heroIntroShown")) {
+          document.body.style.overflow = "hidden";
+          const overlay = document.getElementById("hero-intro-overlay");
+          let closed = false;
+          function closeOverlay() {
+            if (closed) return;
+            closed = true;
+            overlay.classList.add("hide");
+            document.body.style.overflow = "";
+            sessionStorage.setItem("heroIntroShown", "1");
+            window.removeEventListener("scroll", closeOverlay);
+            window.removeEventListener("wheel", closeOverlay);
+            window.removeEventListener("touchmove", closeOverlay);
+            overlay.removeEventListener("click", closeOverlay);
+          }
+          window.addEventListener("scroll", closeOverlay, { passive: true });
+          window.addEventListener("wheel", closeOverlay, { passive: true });
+          window.addEventListener("touchmove", closeOverlay, { passive: true });
+          overlay.addEventListener("click", closeOverlay);
+        } else {
+          const overlay = document.getElementById("hero-intro-overlay");
+          if (overlay) overlay.style.display = "none";
+        }
+      })();
+    </script>
+  </body>
+</html>
