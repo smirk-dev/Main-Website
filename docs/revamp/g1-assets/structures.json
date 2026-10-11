@@ -1,0 +1,449 @@
+{
+ "gate": "G1",
+ "set": "structures",
+ "generated": "2026-10-11",
+ "licence_rule": "CC0 or CC-BY only; no NC/ND/editorial",
+ "categories": [
+  {
+   "key": "work",
+   "title": "1 · Work (jobs and companies)",
+   "concept": "A stone waystation / milestone pillar with inscriptions",
+   "candidates": [
+    {
+     "source": "sketchfab",
+     "uid": "fdb45e7ebafe4638b7a6b12644ab779c",
+     "name": "Boundary way road marker stone",
+     "author": "matousekfoto",
+     "license": "CC Attribution",
+     "faces": 179999,
+     "kind": "Real scan (in a forest)",
+     "viewer_url": "https://sketchfab.com/3d-models/none-fdb45e7ebafe4638b7a6b12644ab779c",
+     "thumbnail_url": "https://media.sketchfab.com/models/fdb45e7ebafe4638b7a6b12644ab779c/thumbnails/d28c8560736b482bbb6d76cf12c76eca/062de0a5c04643ea8a37e477ca6d5e4c.jpeg",
+     "recommended": true,
+     "recommend_reason": "The only milestone scanned in a forest: the moss, leaf litter and scale already match Act III.",
+     "note": "A tall mossy road marker and a smaller companion stone, scanned on a forest floor with leaf litter. Already looks like it belongs on our path. The face is mostly blank, so the inscriptions would be our own decal."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "c162865d1be44f8aae38ece536d9437a",
+     "name": "Richmond Milestone",
+     "author": "artfletch",
+     "license": "CC Attribution",
+     "faces": 97596,
+     "kind": "Real scan",
+     "viewer_url": "https://sketchfab.com/3d-models/none-c162865d1be44f8aae38ece536d9437a",
+     "thumbnail_url": "https://media.sketchfab.com/models/c162865d1be44f8aae38ece536d9437a/thumbnails/bf01738b74374b50afb8b32ba1754c73/88729b9c94764f0d8cdcb8eba92007aa.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Georgian milestone with crisp carved lettering ('VIII MILES FROM HYDE PARK CORNER'). The best real inscription here, but the text is London-specific and the stone is clean and urban."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "362e0e1959ae441cad747cdfe0dab74b",
+     "name": "Mijlpaal uit de Renaissance",
+     "author": "The National Museum of Antiquities",
+     "license": "CC0 Public Domain",
+     "faces": 1000000,
+     "kind": "Real scan · museum",
+     "viewer_url": "https://sketchfab.com/3d-models/none-362e0e1959ae441cad747cdfe0dab74b",
+     "thumbnail_url": "https://media.sketchfab.com/models/362e0e1959ae441cad747cdfe0dab74b/thumbnails/a4cdef6611e74fd4ad1f59c6228d4db2/cb9c84e86675458e9f8a8dd2acb6cd11.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Renaissance milestone column with a carved Latin inscription. CC0 (no credit needed). It's a museum piece, so there's no moss. 1M faces, so it needs simplifying."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "d02ff8bc89c34103afed70309a2cb869",
+     "name": "Sandstone Pillar",
+     "author": "megalitharchive",
+     "license": "CC Attribution",
+     "faces": 151957,
+     "kind": "Real scan (in the field)",
+     "viewer_url": "https://sketchfab.com/3d-models/none-d02ff8bc89c34103afed70309a2cb869",
+     "thumbnail_url": "https://media.sketchfab.com/models/d02ff8bc89c34103afed70309a2cb869/thumbnails/600981a1ee0c4c26b5e779156f5b4931/79fdd6d63ab84444a3986a9ed872e73d.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Weathered sandstone waymarker pillar with ivy, scanned where it stands. Very natural, but there's no readable inscription."
+    }
+   ]
+  },
+  {
+   "key": "games",
+   "title": "2 · Games",
+   "concept": "A ring of standing stones / a game board carved in a stump / a stone chess table",
+   "candidates": [
+    {
+     "source": "sketchfab",
+     "uid": "967bbaf8fde44ce780283987762270fd",
+     "name": "Callanish",
+     "author": "megalitharchive",
+     "license": "CC Attribution",
+     "faces": 438229,
+     "kind": "Real scan · site",
+     "viewer_url": "https://sketchfab.com/3d-models/none-967bbaf8fde44ce780283987762270fd",
+     "thumbnail_url": "https://media.sketchfab.com/models/967bbaf8fde44ce780283987762270fd/thumbnails/010eb994705d4644835c94ebc3886a86/f7f3053912994774a27b3ada9d2ff918.jpeg",
+     "recommended": true,
+     "recommend_reason": "The most dramatic, photographic standing-stone ring under 1.5M faces. The stones can be lifted off the base and set in a clearing.",
+     "note": "The Callanish standing stones (Isle of Lewis): tall and lichen-covered, on a grass base. 438k faces for the whole ring. It's a well-known real site. The licence is fine, but some visitors may read it as 'that place in Scotland'."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "de83d4e16c584ff582a4b5ff43ba3551",
+     "name": "Chessboard made of concrete",
+     "author": "Goromor",
+     "license": "CC Attribution",
+     "faces": 36232,
+     "kind": "Real scan",
+     "viewer_url": "https://sketchfab.com/3d-models/none-de83d4e16c584ff582a4b5ff43ba3551",
+     "thumbnail_url": "https://media.sketchfab.com/models/de83d4e16c584ff582a4b5ff43ba3551/thumbnails/6d3f5d09b9f44a798a41ec4d84df171e/136160b14ce0401ea637083784a43b55.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "A weathered concrete park chess table with the chequerboard set into its top. Small (36k faces). Reads as 'game' instantly; less ancient, more found."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "371c4a19b3d847dfba74d21b3f19a99d",
+     "name": "Stone Table & Benches",
+     "author": "Eydeet",
+     "license": "CC Attribution",
+     "faces": 93295,
+     "kind": "Real scan",
+     "viewer_url": "https://sketchfab.com/3d-models/none-371c4a19b3d847dfba74d21b3f19a99d",
+     "thumbnail_url": "https://media.sketchfab.com/models/371c4a19b3d847dfba74d21b3f19a99d/thumbnails/d3ee414652db4ebd9bf6be9ee4e1e843/648dbbad78c44f98a03b6deb223af56c.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Mossy slab table with two benches on a turf base. Quiet and natural. We would add the game board ourselves."
+    },
+    {
+     "source": "polyhaven",
+     "id": "chess_set",
+     "name": "Chess Set",
+     "author": "Riley Queen",
+     "license": "CC0",
+     "faces": 76920,
+     "kind": "PBR model (composite idea)",
+     "viewer_url": "https://polyhaven.com/a/chess_set",
+     "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/chess_set.png?width=512",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Alternative idea: Poly Haven's CC0 chess set, left mid-game on Poly Haven's 'Tree Stump 01' (from the same pine forest collection as our trees). Two CC0 assets combined, and the stump matches the forest exactly."
+    }
+   ]
+  },
+  {
+   "key": "landing",
+   "title": "3 · Landing pages built for people",
+   "concept": "A cluster of old hanging lanterns",
+   "candidates": [
+    {
+     "source": "polyhaven",
+     "id": "Lantern_01",
+     "name": "Lantern 01",
+     "author": "Rajil Jose Macatangay",
+     "license": "CC0",
+     "faces": 33902,
+     "kind": "PBR model",
+     "viewer_url": "https://polyhaven.com/a/Lantern_01",
+     "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/Lantern_01.png?width=512",
+     "recommended": true,
+     "recommend_reason": "CC0, photoreal, light enough to repeat into a cluster, and the glass gives us real warm light sources in the forest.",
+     "note": "Classic brass hurricane lantern with a hanging handle. CC0, 34k faces. Repeated 5 to 9 times at different heights from a branch, it becomes the cluster."
+    },
+    {
+     "source": "polyhaven",
+     "id": "wooden_lantern_01",
+     "name": "Wooden Lantern 01",
+     "author": "James Ray Cock",
+     "license": "CC0",
+     "faces": 8321,
+     "kind": "PBR model",
+     "viewer_url": "https://polyhaven.com/a/wooden_lantern_01",
+     "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/wooden_lantern_01.png?width=512",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Wooden candle lantern with a carry handle. CC0, 8k faces. Rustic. Mixed in with Lantern 01, it adds variety to the cluster."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "aaa99a374e0c4a98868383c42ff6ae0d",
+     "name": "Old oil lamp",
+     "author": "rudavin",
+     "license": "CC Attribution",
+     "faces": 478920,
+     "kind": "High-detail PBR model",
+     "viewer_url": "https://sketchfab.com/3d-models/none-aaa99a374e0c4a98868383c42ff6ae0d",
+     "thumbnail_url": "https://media.sketchfab.com/models/aaa99a374e0c4a98868383c42ff6ae0d/thumbnails/7895fd6b5ba84136b2eeff7cb250c403/4a7ad499750845799e99d38798bfd9f5.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Worn green hurricane lantern with dents and rust. 479k faces, which is heavy for an object we repeat; it would need simplifying."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "c8eafb62343b4d258f0480af923f3e91",
+     "name": "Arabian Hanging Lamps",
+     "author": "cha",
+     "license": "CC Attribution",
+     "faces": 13374,
+     "kind": "PBR model (ready-made cluster)",
+     "viewer_url": "https://sketchfab.com/3d-models/none-c8eafb62343b4d258f0480af923f3e91",
+     "thumbnail_url": "https://media.sketchfab.com/models/c8eafb62343b4d258f0480af923f3e91/thumbnails/1fc49a1ccf6046f88852ad72ce53e0b8/98553a06f3e7468bb2fce400a16f4d85.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Five brass hanging lamps, already grouped. 13k faces. The coloured glass reads Middle-Eastern rather than old forest, but it could be re-tinted."
+    }
+   ]
+  },
+  {
+   "key": "stories",
+   "title": "4 · Stories and experiences",
+   "concept": "A ruined stone archway with light through it",
+   "candidates": [
+    {
+     "source": "sketchfab",
+     "uid": "32a77f451e0942fba85bc2a1f7d4bd80",
+     "name": "Gunnersbury Park Arch",
+     "author": "artfletch",
+     "license": "CC Attribution",
+     "faces": 660124,
+     "kind": "Real scan",
+     "viewer_url": "https://sketchfab.com/3d-models/none-32a77f451e0942fba85bc2a1f7d4bd80",
+     "thumbnail_url": "https://media.sketchfab.com/models/32a77f451e0942fba85bc2a1f7d4bd80/thumbnails/6bfde6337b5544f5b4c9d8ce95ed71d6/7ce947ce95354becb8640630a27d4291.jpeg",
+     "recommended": true,
+     "recommend_reason": "A real freestanding ruined arch, already overgrown, with a tall pointed opening for shafts of light.",
+     "note": "A freestanding ruined Gothic arch (a park folly) on its own base, with ivy and moss on crumbling stone. 660k faces. Exactly the brief: a pointed opening that light can pour through."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "ce9132cc47f94190842f3ef4c8806f6c",
+     "name": "Old Stone Gate",
+     "author": "magann",
+     "license": "CC Attribution",
+     "faces": 158246,
+     "kind": "Real scan",
+     "viewer_url": "https://sketchfab.com/3d-models/none-ce9132cc47f94190842f3ef4c8806f6c",
+     "thumbnail_url": "https://media.sketchfab.com/models/ce9132cc47f94190842f3ef4c8806f6c/thumbnails/6e1e81ea2298446a83e93f63c41bc7b3/4b8895cfa992471181e102ba23acf1d5.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Rough stone wall with a rounded gateway and moss at the base. 158k faces. Wider and lower; it reads as an old estate gate."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "db578b15c8444a7ea03970efd970211e",
+     "name": "Garden Arch Photogrammetry",
+     "author": "bent_bacherach",
+     "license": "CC Attribution",
+     "faces": 299458,
+     "kind": "Real scan",
+     "viewer_url": "https://sketchfab.com/3d-models/none-db578b15c8444a7ea03970efd970211e",
+     "thumbnail_url": "https://media.sketchfab.com/models/db578b15c8444a7ea03970efd970211e/thumbnails/147c19e56aa64130978c6c96e3264ca3/24699af175e94b93a07f25c2a6fb745b.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Overgrown brick-and-stone Gothic garden folly with carved stone windows. 299k faces. Lush, but the brick makes it more garden than forest."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "1ba15ffaefa24a71a4ff7d14b5b51efe",
+     "name": "Počitelj Fortress - Stone Arch (Scaniverse)",
+     "author": "JFN",
+     "license": "CC Attribution",
+     "faces": 156573,
+     "kind": "Real scan (phone)",
+     "viewer_url": "https://sketchfab.com/3d-models/none-1ba15ffaefa24a71a4ff7d14b5b51efe",
+     "thumbnail_url": "https://media.sketchfab.com/models/1ba15ffaefa24a71a4ff7d14b5b51efe/thumbnails/1b0b7dc2abc14478877cfe0ab459473e/bb728b57c0454c7e807d28dbee539771.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Rough rubble-stone arch fragment from Počitelj fortress. 157k faces. Very real texture, but the scan has ragged edges we'd need to hide in foliage."
+    }
+   ]
+  },
+  {
+   "key": "art",
+   "title": "5 · Art and writing",
+   "concept": "An abandoned easel, or an old writing desk",
+   "candidates": [
+    {
+     "source": "sketchfab",
+     "uid": "b68c2c8c85dd41dda8fa020e954322e1",
+     "name": "Crank easel",
+     "author": "Virtual Museums of Małopolska",
+     "license": "CC Attribution",
+     "faces": 53108,
+     "kind": "Real scan · museum",
+     "viewer_url": "https://sketchfab.com/3d-models/none-b68c2c8c85dd41dda8fa020e954322e1",
+     "thumbnail_url": "https://media.sketchfab.com/models/b68c2c8c85dd41dda8fa020e954322e1/thumbnails/ccc73f7e6f1d475ab15ef2ccdcbe5cdf/a32e0411c83b476c81c7a6635f5a151c.jpeg",
+     "recommended": true,
+     "recommend_reason": "A light museum scan of a real antique easel, and the most direct object for 'art'.",
+     "note": "An old crank-adjusted studio easel, scanned by a Polish museum. 53k faces. Clean, real wood. Left among the pines with a blank or weathered canvas, it becomes 'abandoned'."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "7cf01ab661ea4e649d2145f103b898bc",
+     "name": "Wooden Easel | dirty and painted",
+     "author": "lil_bentley",
+     "license": "CC Attribution",
+     "faces": 22627,
+     "kind": "PBR model",
+     "viewer_url": "https://sketchfab.com/3d-models/none-7cf01ab661ea4e649d2145f103b898bc",
+     "thumbnail_url": "https://media.sketchfab.com/models/7cf01ab661ea4e649d2145f103b898bc/thumbnails/1371443ce5804e9e9009d315161954a8/3c2e83577601455582709d7f4a75e158.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Wooden easel with paint drips and wear. 23k faces. Modelled, not scanned, but convincing and already looks used."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "4c5e323a09e44c2f909a04c64c0c2cca",
+     "name": "Underwood Typewriter Vintage Free Raw Scan",
+     "author": "Jordan F",
+     "license": "CC Attribution",
+     "faces": 88806,
+     "kind": "Real scan (extra alternative: writing)",
+     "viewer_url": "https://sketchfab.com/3d-models/none-4c5e323a09e44c2f909a04c64c0c2cca",
+     "thumbnail_url": "https://media.sketchfab.com/models/4c5e323a09e44c2f909a04c64c0c2cca/thumbnails/7a409a275dea4fbfa122b34b8986677e/971c47de5b0942a1950b938ce009d25f.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "An extra idea for the writing half: an antique Underwood typewriter (raw scan), left on a stump or a rock. 89k faces. Dark, worn metal; very photographic."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "a7ab3ce6627d4663b88c0717a4020ca2",
+     "name": "Writing Desk",
+     "author": "Osian CG",
+     "license": "CC Attribution",
+     "faces": 56514,
+     "kind": "PBR model",
+     "viewer_url": "https://sketchfab.com/3d-models/none-a7ab3ce6627d4663b88c0717a4020ca2",
+     "thumbnail_url": "https://media.sketchfab.com/models/a7ab3ce6627d4663b88c0717a4020ca2/thumbnails/d11d42948bdc4ea39af63b22f741ed39/c634b150eb3f4813a373282cc5492dbd.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Small antique writing desk with a chair, books and an inkwell. 57k faces. Fits 'writing', but furniture standing in a forest needs more around it to look like it was left there."
+    }
+   ]
+  },
+  {
+   "key": "tools",
+   "title": "6 · Tools and engineering",
+   "concept": "An old forge/anvil, or an orrery/astrolabe",
+   "candidates": [
+    {
+     "source": "sketchfab",
+     "uid": "7fda222f6a6544cf983cd614d6742636",
+     "name": "Anvil 1",
+     "author": "Beer Knight",
+     "license": "CC Attribution",
+     "faces": 292337,
+     "kind": "Real scan (outdoors)",
+     "viewer_url": "https://sketchfab.com/3d-models/none-7fda222f6a6544cf983cd614d6742636",
+     "thumbnail_url": "https://media.sketchfab.com/models/7fda222f6a6544cf983cd614d6742636/thumbnails/2d833e1696f54b36aef388f2fe8ce189/0d87486882064593acedc4ec663372b9.jpeg",
+     "recommended": true,
+     "recommend_reason": "A real outdoor scan, already on a stump: the tool object that looks most like it was found in the forest.",
+     "note": "A weathered anvil on a mossy tree stump, scanned outdoors. 292k faces. It's already sitting on wood and earth, so it drops straight into the forest."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "709ee604d04545d8ab867c1e3f427bf6",
+     "name": "Old Anvil",
+     "author": "pomiary.inzynierskie",
+     "license": "CC Attribution",
+     "faces": 199962,
+     "kind": "Real scan",
+     "viewer_url": "https://sketchfab.com/3d-models/none-709ee604d04545d8ab867c1e3f427bf6",
+     "thumbnail_url": "https://media.sketchfab.com/models/709ee604d04545d8ab867c1e3f427bf6/thumbnails/2d72ecb7c1d74fc5886a762dc1c8043a/bcd7d8e37cce4620965c25656ab63601.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Rusty anvil on a wooden block. 200k faces. A cleaner studio-style scan; a solid backup."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "41e23659c75241459eec6477d9e77c93",
+     "name": "Armillary sphere (1771)",
+     "author": "Virtual Museums of Małopolska",
+     "license": "CC Attribution",
+     "faces": 308898,
+     "kind": "Real scan · museum",
+     "viewer_url": "https://sketchfab.com/3d-models/none-41e23659c75241459eec6477d9e77c93",
+     "thumbnail_url": "https://media.sketchfab.com/models/41e23659c75241459eec6477d9e77c93/thumbnails/3447329310814223af068ad53c695918/06cf1ae0e81f4f599e5a9595b2e2636a.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Armillary sphere from 1771 (Jagiellonian University collection): brass rings on a turned base, with a compass. 309k faces. Beautiful and very 'engineering', but a delicate indoor object."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "530bd21edcdf4c4695cc4c8af856d6bf",
+     "name": "Astrolabe",
+     "author": "Virtual Museums of Małopolska",
+     "license": "CC0 Public Domain",
+     "faces": 515442,
+     "kind": "Real scan · museum",
+     "viewer_url": "https://sketchfab.com/3d-models/none-530bd21edcdf4c4695cc4c8af856d6bf",
+     "thumbnail_url": "https://media.sketchfab.com/models/530bd21edcdf4c4695cc4c8af856d6bf/thumbnails/7bfcf4ff45ac46a585c7bb9c2bcddef2/6a074b7bdc634c4b999b96ecccbf0366.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "14th-century astrolabe. CC0, 515k faces. It's a small hand-held object, so it would need a plinth or stump to stand on."
+    }
+   ]
+  },
+  {
+   "key": "earlier",
+   "title": "7 · Earlier selves (hidden easter egg)",
+   "concept": "An old standing mirror, or a small stone well / reflecting basin",
+   "candidates": [
+    {
+     "source": "sketchfab",
+     "uid": "c38426987e6c452d91dcea3b036883a8",
+     "name": "Old Water well - Dinan",
+     "author": "noxfcna",
+     "license": "CC Attribution",
+     "faces": 387931,
+     "kind": "Real scan",
+     "viewer_url": "https://sketchfab.com/3d-models/none-c38426987e6c452d91dcea3b036883a8",
+     "thumbnail_url": "https://media.sketchfab.com/models/c38426987e6c452d91dcea3b036883a8/thumbnails/164c5c07d9364f43a63d769a02f98d4e/720x405.jpeg",
+     "recommended": true,
+     "recommend_reason": "A real overgrown scan that suits the forest. Still water gives the 'see yourself' idea without a man-made mirror.",
+     "note": "Round fieldstone well with ferns growing out of it, on a grass base (Dinan, Brittany). 388k faces. Add a dark water surface inside and it becomes the reflecting basin."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "cf964a1ff455478ba65771400a4ea1ab",
+     "name": "Mirror",
+     "author": "eucocker",
+     "license": "CC Attribution",
+     "faces": 119778,
+     "kind": "PBR model",
+     "viewer_url": "https://sketchfab.com/3d-models/none-cf964a1ff455478ba65771400a4ea1ab",
+     "thumbnail_url": "https://media.sketchfab.com/models/cf964a1ff455478ba65771400a4ea1ab/thumbnails/222de293a9684e56b4c1237eb52660db/ebf7f72fa1c541fab6448c31a3753bd5.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Antique cheval (tilting, free-standing) mirror with clouded, dirty glass. 120k faces. Modelled, not scanned, but strong, and uncanny standing alone between trees."
+    },
+    {
+     "source": "sketchfab",
+     "uid": "bd2b067ca4b64b829f6b56f91fc9e725",
+     "name": "Venice well 3D Scan Asset",
+     "author": "Marcin.Adamski1",
+     "license": "CC Attribution",
+     "faces": 41077,
+     "kind": "Real scan",
+     "viewer_url": "https://sketchfab.com/3d-models/none-bd2b067ca4b64b829f6b56f91fc9e725",
+     "thumbnail_url": "https://media.sketchfab.com/models/bd2b067ca4b64b829f6b56f91fc9e725/thumbnails/5286de85427042c5a718389792d907fe/acc01a56b49b40af8ac4b359da8be6c7.jpeg",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Venetian octagonal stone well-head with a lid, on a slab base. 41k faces. Lighter and cleaner than the Dinan well; more formal."
+    },
+    {
+     "source": "polyhaven",
+     "id": "ornate_mirror_01",
+     "name": "Ornate Mirror 01",
+     "author": "James Ray Cock",
+     "license": "CC0",
+     "faces": 14246,
+     "kind": "PBR model",
+     "viewer_url": "https://polyhaven.com/a/ornate_mirror_01",
+     "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/ornate_mirror_01.png?width=512",
+     "recommended": false,
+     "recommend_reason": null,
+     "note": "Gilded arched mirror. CC0, 14k faces. It's a wall mirror, so it would lean against a trunk or rock: a softer, stranger version of the standing mirror."
+    }
+   ]
+  }
+ ]
+}
