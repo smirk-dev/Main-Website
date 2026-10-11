@@ -77,6 +77,18 @@ developer or as a person.
 
 ---
 
+### Statue decision (G1, 2026-10-11)
+Suryansh approved **all 16 candidates** in `g1-assets/statues.html`.
+- **Act I heroes** (one per figure, still swappable after the renders): Angel = *Engel*,
+  Eisenstadt Calvary scan (`f48198cd`); Angel of Death = mourning angel, Cimitero Monumentale
+  Milan (`c1685650`); Mother = *Maternal Affection*, E.H. Baily 1841, Fitzwilliam (`fcbd7acf`).
+- **The other 13 go into the forest** as weathered, moss-touched statues the visitor
+  stumbles on. Some of them mark the category structures (§5).
+- He kept the caveated three knowingly: the Apel bronze and *Under Fire of War* (modern
+  sculptures, so the sculptor's copyright may still apply) and the sculpted Grim Reaper (not
+  a scan).
+- Every statue gets a CC-BY credit on the credits page.
+
 ## 3. Realism and rendering: how "hyper-realistic + ray tracing" is achieved in a browser
 
 The blunt fact: **real-time path tracing of a dense forest is not possible in a browser on an
