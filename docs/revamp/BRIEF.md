@@ -1,6 +1,6 @@
 # suryanshmishra.vercel.app — Revamp Brief (v0.1, 2026-10-11)
 
-> Status: **PLANNING (Gate 0)**. All decisions D1-D8 made (2026-10-11). Gate 0 closes when Suryansh approves this brief. Nothing gets built until Suryansh approves this brief.
+> Status: **G0 APPROVED by Suryansh 2026-10-11 → now in G1 (asset gathering)**. All decisions D1-D8 made. Nothing gets built until Suryansh approves this brief.
 > Source: Suryansh's spoken brief, 2026-10-11, structured below. Section 9 has the same brief
 > as an agent prompt.
 
