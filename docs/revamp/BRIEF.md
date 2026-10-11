@@ -89,6 +89,16 @@ Suryansh approved **all 16 candidates** in `g1-assets/statues.html`.
   a scan).
 - Every statue gets a CC-BY credit on the credits page.
 
+### Forest and door decision (G1, 2026-10-11)
+Suryansh approved `g1-assets/forest.html` ("use this"). This means the **recommended (gold)
+set**. All Poly Haven CC0: trees fir_tree_01, pine_tree_01, tree_small_02; saplings
+fir_sapling_medium, pine_sapling_medium, fir_sapling, pine_sapling_small; ground cover
+fern_02, grass_medium_01, moss_01; deadwood dead_tree_trunk, dead_tree_trunk_02,
+tree_stump_01/02, pine_roots, root_cluster_01, dry_branches_medium_01; rocks
+rock_moss_set_01/02, boulder_01; door large_castle_door; textures forest_ground_04,
+forest_leaves_04, brown_mud_leaves_01; sky kloppenheim_06_puresky. Mixed forest
+(oak/beech) is still an open question.
+
 ## 3. Realism and rendering: how "hyper-realistic + ray tracing" is achieved in a browser
 
 The blunt fact: **real-time path tracing of a dense forest is not possible in a browser on an
