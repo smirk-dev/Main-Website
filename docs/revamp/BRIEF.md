@@ -94,6 +94,8 @@ Suryansh approved `g1-assets/heroes.html` ("approved"): Engel, the Milan mournin
 Maternal Affection, lit with a warm key, a cool rim and no fill, on pure black. That lighting is
 the Act I look. The Milan scan's granite backing wall is cut away (my recommendation; he didn't
 object) so all three float in the black; the slab is kept in the source file in case he wants it back.
+**Constraint:** the Milan scan is front-only (hollow behind the wall), so the Act I camera stays
+within about ±60° of her front. Engel and Maternal Affection are full scans and can be orbited.
 
 ### Forest and door decision (G1, 2026-10-11)
 Suryansh approved `g1-assets/forest.html` ("use this"). This means the **recommended (gold)
