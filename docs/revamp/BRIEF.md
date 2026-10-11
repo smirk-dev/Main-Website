@@ -92,8 +92,8 @@ Suryansh approved **all 16 candidates** in `g1-assets/statues.html`.
 ### Hero renders approved (G1, 2026-10-11)
 Suryansh approved `g1-assets/heroes.html` ("approved"): Engel, the Milan mourning angel and
 Maternal Affection, lit with a warm key, a cool rim and no fill, on pure black. That lighting is
-the Act I look. The Milan scan's granite backing wall is cut away (my recommendation; he didn't
-object) so all three float in the black; the slab is kept in the source file in case he wants it back.
+the Act I look. **The Milan angel keeps her original granite backing wall.** Suryansh
+decided this explicitly after I had cut it; I restored it. Do not remove it.
 **Constraint:** the Milan scan is front-only (hollow behind the wall), so the Act I camera stays
 within about ±60° of her front. Engel and Maternal Affection are full scans and can be orbited.
 
