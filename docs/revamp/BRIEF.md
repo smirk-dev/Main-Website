@@ -1,6 +1,6 @@
 # suryanshmishra.vercel.app — Revamp Brief (v0.1, 2026-10-11)
 
-> Status: **PLANNING (Gate 0)**. Decided so far: D1, D2, D7, D8. Open: D3-D6. Nothing gets built until Suryansh approves this brief.
+> Status: **PLANNING (Gate 0)**. All decisions D1-D8 made (2026-10-11). Gate 0 closes when Suryansh approves this brief. Nothing gets built until Suryansh approves this brief.
 > Source: Suryansh's spoken brief, 2026-10-11, structured below. Section 9 has the same brief
 > as an agent prompt.
 
@@ -132,8 +132,7 @@ post-processing.
 |---|---|---|
 | Alethman: India-first news intelligence | alethman.com | Live (current) |
 | Advuman: Software Engineer + landing page | advuman-landing-page.vercel.app | Live |
-| InboxKit: email infrastructure SaaS | InboxKit marketing site (URL to confirm) | Reference |
-| UseMyBio: Co-Founder & CTO | none live | Reference (include? D5) |
+| InboxKit: email infrastructure SaaS | inboxkit.com | Reference |
 
 **Games**
 | Entry | Link |
@@ -177,6 +176,7 @@ post-processing.
 | img2css: image to pure CSS terminal | img2css-nu.vercel.app |
 | DSA Solvebook: automated LeetCode proof of work | dsa-solvebook.vercel.app |
 | Nebula: stock dashboard | nebulastock.vercel.app |
+| Family Hierarchy: multi-tree family visualiser (view-only to the public) | ancestricheritage.vercel.app |
 | Kaggle README Badges: SVG service | kaggle-readme-badges.vercel.app (root 404, so link to a badge path) |
 
 **Earlier selves** (optional: past portfolios as an easter egg)
@@ -188,7 +188,8 @@ post-processing.
 **Proposed exclusions (confirm, D5)**
 - `github-readme-stats`, `github-readme-activity-graph`, `github-profile-trophy`: these look
   like self-hosted deployments of open-source projects, not his own work.
-- `heritage` (Family Hierarchy): contains family data, so it's a privacy call.
+- ~~`heritage`~~ moved to Tools: **Family Hierarchy** (ancestricheritage.vercel.app). Viewing is public, but editing has been password-gated since 2026-10-11 (heritage commit `1d06604`).
+- UseMyBio: excluded by Suryansh.
 
 ---
 
@@ -263,10 +264,10 @@ anything reaches Suryansh.
 |---|---|---|
 | D1 | Where to build | ✅ **DECIDED 2026-10-11: Main-Website, `revamp` branch** |
 | D2 | Mobile | ✅ **DECIDED: desktop-only screen**: a styled "best experienced on desktop" page + a link to the plain archive index |
-| D3 | "Leave" behaviour, given the `window.close()` limit | **Try close → fade to black with "You may close this tab."** |
-| D4 | Performance floor: support integrated GPUs (Balanced tier) or high-end only | **Support them via tiers** |
-| D5 | Confirm categories, exclusions (README forks, heritage) and UseMyBio | See §4 |
-| D6 | Sound: ambient forest and statue score, off by default with a toggle? | **Yes, off by default** |
+| D3 | Leave behaviour | ✅ **DECIDED: try `window.close()` → fade to black with "You may close this tab."** |
+| D4 | Performance floor | ✅ **DECIDED: must work on all desktop systems**, including integrated GPUs, via automatic tiers |
+| D5 | Categories | ✅ **DECIDED:** heritage included (editing now password-gated, see below). UseMyBio excluded. InboxKit = inboxkit.com. README-stat forks excluded. |
+| D6 | Sound | ✅ **DECIDED: forest ambience** (off until the visitor opts in, as browsers require a click before audio). No statue score. |
 | D7 | Asset budget | ✅ **DECIDED: free only** (CC0 / CC-BY: Poly Haven, Sketchfab scans, Smithsonian 3D, museum scans). CC-BY credits go on a credits page. |
 | D8 | Rendering approach | ✅ **DECIDED: hybrid** (path-traced statues at rest, baked GI + real-time forest) |
 
