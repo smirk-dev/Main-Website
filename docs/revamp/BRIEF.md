@@ -89,6 +89,12 @@ Suryansh approved **all 16 candidates** in `g1-assets/statues.html`.
   a scan).
 - Every statue gets a CC-BY credit on the credits page.
 
+### Hero renders approved (G1, 2026-10-11)
+Suryansh approved `g1-assets/heroes.html` ("approved"): Engel, the Milan mourning angel and
+Maternal Affection, lit with a warm key, a cool rim and no fill, on pure black. That lighting is
+the Act I look. The Milan scan's granite backing wall is cut away (my recommendation; he didn't
+object) so all three float in the black; the slab is kept in the source file in case he wants it back.
+
 ### Forest and door decision (G1, 2026-10-11)
 Suryansh approved `g1-assets/forest.html` ("use this"). This means the **recommended (gold)
 set**. All Poly Haven CC0: trees fir_tree_01, pine_tree_01, tree_small_02; saplings
