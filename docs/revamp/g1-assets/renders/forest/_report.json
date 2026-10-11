@@ -1,0 +1,68 @@
+{
+ "apel_bronze": {
+  "faces": 163140,
+  "dropped": [],
+  "h": 1.44
+ },
+ "black_angel_oakland": {
+  "faces": 374999,
+  "dropped": [],
+  "h": 1.33
+ },
+ "broken_wing": {
+  "faces": 408504,
+  "dropped": [],
+  "h": 2.0
+ },
+ "death_and_the_mother": {
+  "faces": 17825,
+  "dropped": [],
+  "h": 1.69
+ },
+ "engel_retopo": {
+  "faces": 25450,
+  "dropped": [],
+  "h": 2.0
+ },
+ "fallen_angels_albano": {
+  "faces": 90539,
+  "dropped": [],
+  "h": 2.0
+ },
+ "grim_reaper_sculpt": {
+  "faces": 992334,
+  "dropped": [],
+  "h": 2.0
+ },
+ "madonna_and_child": {
+  "faces": 38918,
+  "dropped": [],
+  "h": 2.0
+ },
+ "mary_evora": {
+  "faces": 9561,
+  "dropped": [],
+  "h": 2.0
+ },
+ "rookwood_memorial": {
+  "faces": 299943,
+  "dropped": [],
+  "h": 2.0
+ },
+ "silence_falconet": {
+  "faces": 71588,
+  "dropped": [],
+  "h": 2.0
+ },
+ "under_fire_of_war": {
+  "faces": 1527266,
+  "dropped": [],
+  "h": 2.0
+ },
+ "vigeland_mother_child": {
+  "faces": 248136,
+  "dropped": [],
+  "h": 2.0
+ },
+ "_done": true
+}
