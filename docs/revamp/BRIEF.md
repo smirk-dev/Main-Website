@@ -107,6 +107,15 @@ rock_moss_set_01/02, boulder_01; door large_castle_door; textures forest_ground_
 forest_leaves_04, brown_mud_leaves_01; sky kloppenheim_06_puresky. Mixed forest
 (oak/beech) is still an open question.
 
+### Forest scene approved (G2c, 2026-10-12)
+Suryansh approved forest v07 (`g2-scenes/forest.html`, "looks good, continue").
+- **The main forest view** is the one from just before the first fork (`FCAM_B`). He picked it from test 04.
+- **His rule for every statue and structure:** each is lit by the scene's sun and shade like everything else.
+  From a distance it reads **only as a dim silhouette**; it comes into proper view as the visitor gets close. This is done
+  with distance (a low ground mist, which becomes distance fog on the site), **not** by darkening materials.
+- Several statues are faintly visible from the fork, along the branches. They are not all hidden and not all highlighted.
+- Scene budget for the Blender look target: 10.7M faces, 2K textures (`asset-src/main-website/forest_v07.blend`).
+
 ## 3. Realism and rendering: how "hyper-realistic + ray tracing" is achieved in a browser
 
 The blunt fact: **real-time path tracing of a dense forest is not possible in a browser on an
