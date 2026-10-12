@@ -55,12 +55,12 @@ export function densify(w: World, t: Terrain, clearings: { x: number; z: number;
   // ---- trees: a jittered grid, closer inside the walkable forest, a little looser in the belt beyond it ----
   const species = sets.filter((s) => s.kind === "tree" && /^(fir|pine)_tree/.test(s.name));
   const R = rng(7);
-  for (let z = -350; z < 175; z += 3.4) for (let x = -205; x < 210; x += 3.4) {
+  for (let z = -350; z < 175; z += 2.8) for (let x = -205; x < 210; x += 2.8) {
     const inner = walk(x, z, 12);
-    if (!inner && R() < 0.3) { R(); R(); R(); continue; }   // the belt: about two thirds as dense
-    const px = x + (R() - 0.5) * 3.2, pz = z + (R() - 0.5) * 3.2;
+    if (!inner && R() < 0.5) { R(); R(); R(); continue; }   // the belt: a little looser than the walkable forest
+    const px = x + (R() - 0.5) * 2.6, pz = z + (R() - 0.5) * 2.6;
     const yaw = R() * Math.PI * 2, pick = species[Math.floor(R() * species.length)];
-    if (trunks.near(px, pz, inner ? 2.7 : 3.0)) continue;
+    if (trunks.near(px, pz, inner ? 2.3 : 3.0)) continue;
     if (t.path(px, pz) > 0.02 || solid(px, pz, 1.2) || inClearing(px, pz, 0.85) || nearSpawn(px, pz, 4)) continue;
     trunks.add(px, pz);
     add(pick, px, pz, yaw, scaleOf(pick) * (0.85 + R() * 0.4), 0.05);

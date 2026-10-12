@@ -71,7 +71,11 @@ export function fixMaterials(root: THREE.Object3D, opts: { shadows: boolean; rec
     m.receiveShadow = opts.receive ?? true;
     const mats = Array.isArray(m.material) ? m.material : [m.material];
     for (const mat of mats as THREE.MeshStandardMaterial[]) {
-      const glass = /glass/i.test(mat.name);
+      // glTF transmission (the lantern brass, the glass orb) makes three.js draw the whole scene a second time,
+      // every frame, for the refraction: it doubled the frame time. Glass is plain transparency instead.
+      const tx = (mat as THREE.MeshPhysicalMaterial).transmission > 0;
+      if (tx) (mat as THREE.MeshPhysicalMaterial).transmission = 0;
+      const glass = /glass/i.test(mat.name) || (tx && !mat.map);
       if (mat.transparent && !glass && mat.map) {
         mat.transparent = false; mat.alphaTest = 0.3; mat.depthWrite = true; mat.side = THREE.DoubleSide;
         mat.alphaToCoverage = true;

@@ -130,8 +130,8 @@ async function boot() {
     statics.push({ obj, far, shells, c, cast: true, near: true });
   }
 
-  // lantern glow: two real lights at the landing (each one costs every lit pixel); every flame also glows on its own
-  if (params.get("lights") !== "0") d.lanterns.slice(0, 2).forEach((p) => {
+  // lantern glow: a handful of real lights at the landing; every flame also glows on its own
+  if (params.get("lights") !== "0") d.lanterns.slice(0, 4).forEach((p) => {
     const l = new THREE.PointLight(0xffa04a, 6, 9, 2); l.position.fromArray(p); scene.add(l);
   });
 
