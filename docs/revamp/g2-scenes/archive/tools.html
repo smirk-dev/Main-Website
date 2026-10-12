@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tools and engineering · Suryansh Mishra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap">
+<style>
+  :root {
+    --ink: #0b0c0d; --ink-2: #121416; --line: #23272a; --text: #d9d6cf; --dim: #8d8a83; --faint: #5d5b56;
+    --live: #9fc79a; --archived: #d6b47c; --reference: #9fb4c9; --accent: #e8d9b8;
+    --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif; --sans: Inter, system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ink); color: var(--text); font: 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+  body { margin: 0; }
+  a { color: inherit; }
+  .skip { position: absolute; left: -999px; } .skip:focus { left: 16px; top: 16px; z-index: 9; background: var(--ink-2); padding: 8px 12px; }
+
+  /* the clearing you came from, fading into the archive */
+  .hero { position: relative; height: 72vh; min-height: 520px; overflow: hidden; }
+  .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; filter: saturate(.8) brightness(.78); }
+  .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(11,12,13,.15) 0%, rgba(11,12,13,.2) 40%, var(--ink) 98%); }
+  .back { position: absolute; z-index: 2; top: 28px; left: 40px; font-size: 14px; letter-spacing: .02em; color: var(--text); text-decoration: none;
+          padding: 8px 14px 8px 12px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; background: rgba(11,12,13,.35); backdrop-filter: blur(6px); }
+  .back:hover, .back:focus-visible { border-color: rgba(255,255,255,.45); }
+  .title { position: absolute; z-index: 2; left: 0; right: 0; bottom: 6vh; max-width: 1240px; margin: 0 auto; padding: 0 40px; }
+  .kicker { font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--dim); }
+  h1 { font: 400 clamp(56px, 7vw, 104px)/0.95 var(--serif); margin: 10px 0 18px; color: #f1ece2; letter-spacing: -.01em; }
+  .lede { max-width: 620px; font: italic 400 23px/1.45 var(--serif); color: #c8c3b8; margin: 0; }
+
+  main { max-width: 1240px; margin: 0 auto; padding: 40px 40px 120px; }
+  .count { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 8px;
+           font-size: 13px; color: var(--faint); letter-spacing: .04em; }
+
+  .entry { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 56px; align-items: center; padding: 64px 0; border-bottom: 1px solid var(--line); }
+  .entry:nth-of-type(even) .preview { order: 2; }
+  .preview { position: relative; aspect-ratio: 16 / 10; border-radius: 6px; overflow: hidden; background: var(--ink-2); border: 1px solid var(--line);
+             box-shadow: 0 30px 60px -30px rgba(0,0,0,.8); }
+  .preview img, .preview iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; object-position: top; display: block;
+                                  transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .preview iframe { width: 1600px; height: 1000px; inset: auto; left: 0; top: 0; transform-origin: 0 0; object-fit: initial; transition: none; }
+  .entry:hover .preview img { transform: scale(1.015); }
+  .play { position: absolute; right: 14px; bottom: 14px; font: 500 13px var(--sans); color: #111; background: var(--accent); border: 0; border-radius: 999px;
+          padding: 9px 16px; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,.4); }
+  .play:hover, .play:focus-visible { background: #fff; }
+  .num { font: 500 12px var(--sans); color: var(--faint); letter-spacing: .2em; font-variant-numeric: tabular-nums lining-nums; }
+  h2 { font: 500 42px/1.05 var(--serif); margin: 6px 0 14px; color: #f1ece2; }
+  .desc { margin: 0 0 26px; color: #bdb9b0; font-size: 16.5px; }
+  dl { display: grid; grid-template-columns: 84px 1fr; gap: 8px 16px; margin: 0 0 28px; font-size: 14px; }
+  dt { color: var(--faint); text-transform: uppercase; letter-spacing: .14em; font-size: 11px; padding-top: 3px; }
+  dd { margin: 0; color: var(--text); }
+  .row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .badge { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; padding: 4px 10px 4px 9px; border-radius: 999px; border: 1px solid currentColor; }
+  .badge::before { content: "●"; font-size: 8px; margin-right: 7px; vertical-align: 2px; }
+  .badge.live { color: var(--live); } .badge.archived { color: var(--archived); } .badge.reference { color: var(--reference); }
+  .open { font-size: 15px; text-decoration: none; border-bottom: 1px solid rgba(232,217,184,.4); color: var(--accent); padding-bottom: 2px; }
+  .open:hover, .open:focus-visible { border-color: var(--accent); }
+  .note { font-size: 13px; color: var(--faint); }
+
+  footer { max-width: 1240px; margin: 0 auto; padding: 0 40px 80px; display: flex; justify-content: space-between; color: var(--faint); font-size: 13px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<a class="skip" href="#entries">Skip to the projects</a>
+<header class="hero">
+  <img src="../forest_v09_SCAM_tools.png" alt="Two anvils, an armillary sphere and an astrolabe in a misty pine clearing">
+  <a class="back" href="#" aria-label="Back to the forest, to the anvils">← Back to the forest</a>
+  <div class="title">
+    <div class="kicker">The anvils · Tools and engineering</div>
+    <h1>Tools &amp; engineering</h1>
+    <p class="lede">Things built to be used: editors, solvers, converters and the small services that keep the rest running.</p>
+  </div>
+</header>
+
+<main id="entries">
+  <div class="count"><span>7 projects</span><span>All live</span></div>
+
+  <article class="entry">
+    <div class="preview"><img src="shots/studio.png" alt="Universal 3D Studio's editor: an outliner, a 3D viewport with a cube, a properties panel and a timeline" loading="lazy">
+      <button class="play" data-src="https://3d-renderer-nu.vercel.app">Try it here</button></div>
+    <div>
+      <div class="num">01</div>
+      <h2>Universal 3D Studio</h2>
+      <p class="desc">A Blender-inspired 3D editor that runs entirely in the browser: an outliner, transforms, materials, modifiers and a timeline. Projects are saved on your own machine.</p>
+      <dl><dt>Role</dt><dd>Personal project</dd><dt>Year</dt><dd>2026</dd><dt>Stack</dt><dd>Three.js, React, TypeScript, Zustand, Vite</dd></dl>
+      <div class="row"><span class="badge live">Live</span><a class="open" href="https://3d-renderer-nu.vercel.app" target="_blank" rel="noopener">Open 3d-renderer-nu.vercel.app ↗</a></div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="preview"><img src="shots/cube.png" alt="Cube Solver: a 3D cube and an unfolded colour net with Scramble and Solve buttons" loading="lazy">
+      <button class="play" data-src="https://cube-solver-olive.vercel.app">Try it here</button></div>
+    <div>
+      <div class="num">02</div>
+      <h2>Cube Solver</h2>
+      <p class="desc">Scan or paint in a scrambled Rubik's cube and get a step-by-step solve, one move at a time. Handles 2×2, 3×3, Mirror and Ghost cubes, with larger cubes experimental.</p>
+      <dl><dt>Role</dt><dd>Personal project</dd><dt>Year</dt><dd>2026</dd><dt>Stack</dt><dd>React, TypeScript, Zustand, Vite</dd></dl>
+      <div class="row"><span class="badge live">Live</span><a class="open" href="https://cube-solver-olive.vercel.app" target="_blank" rel="noopener">Open cube-solver-olive.vercel.app ↗</a></div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="preview"><img src="shots/img2css.png" alt="img2css: a green-on-black terminal listing its commands" loading="lazy">
+      <button class="play" data-src="https://img2css-nu.vercel.app">Try it here</button></div>
+    <div>
+      <div class="num">03</div>
+      <h2>img2css</h2>
+      <p class="desc">A terminal in the browser that turns any image into pure CSS, a single element painted with box-shadows. It can also build CSS animations from frames. Nothing leaves your machine.</p>
+      <dl><dt>Role</dt><dd>Personal project</dd><dt>Year</dt><dd>2026</dd><dt>Stack</dt><dd>Plain JavaScript, Web Workers, no dependencies</dd></dl>
+      <div class="row"><span class="badge live">Live</span><a class="open" href="https://img2css-nu.vercel.app" target="_blank" rel="noopener">Open img2css-nu.vercel.app ↗</a></div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="preview"><img src="shots/solvebook.png" alt="DSA Solvebook dashboard: 915 problems solved, a year of daily activity, and progress goals" loading="lazy"></div>
+    <div>
+      <div class="num">04</div>
+      <h2>DSA Solvebook</h2>
+      <p class="desc">An automated proof-of-work portfolio. A scraper collects every accepted LeetCode solution, commits it, and the site rebuilds itself, with no manual entry. 915 problems solved and counting.</p>
+      <dl><dt>Role</dt><dd>Personal project</dd><dt>Year</dt><dd>2026</dd><dt>Stack</dt><dd>Python, Next.js, TypeScript, Tailwind, GitHub Actions</dd></dl>
+      <div class="row"><span class="badge live">Live</span><a class="open" href="https://dsa-solvebook.vercel.app" target="_blank" rel="noopener">Open dsa-solvebook.vercel.app ↗</a></div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="preview"><img src="shots/nebula.png" alt="NebulaStock: a price chart for Apple with a forecast line, accuracy panels and a news sentiment feed" loading="lazy">
+      <button class="play" data-src="https://nebulastock.vercel.app">Try it here</button></div>
+    <div>
+      <div class="num">05</div>
+      <h2>NebulaStock</h2>
+      <p class="desc">A stock forecasting dashboard: compare tickers, read the forecast against the price, check each model's accuracy, and follow market sentiment from the news.</p>
+      <dl><dt>Role</dt><dd>Personal project</dd><dt>Year</dt><dd>2025</dd><dt>Stack</dt><dd>React, TypeScript, Vite</dd></dl>
+      <div class="row"><span class="badge live">Live</span><a class="open" href="https://nebulastock.vercel.app" target="_blank" rel="noopener">Open nebulastock.vercel.app ↗</a></div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="preview"><img src="shots/family.png" alt="Family Hierarchy: two family trees laid out side by side on an infinite canvas" loading="lazy">
+      <button class="play" data-src="https://ancestricheritage.vercel.app">Try it here</button></div>
+    <div>
+      <div class="num">06</div>
+      <h2>Family Hierarchy</h2>
+      <p class="desc">Several family trees on one infinite canvas, with people linked across trees, auto-layout, focus on one branch, and export to PDF.</p>
+      <dl><dt>Role</dt><dd>Personal project</dd><dt>Year</dt><dd>2025–2026</dd><dt>Stack</dt><dd>Next.js, React, React Flow, Drizzle, Turso</dd></dl>
+      <div class="row"><span class="badge live">Live</span><a class="open" href="https://ancestricheritage.vercel.app" target="_blank" rel="noopener">Open ancestricheritage.vercel.app ↗</a><span class="note">View only to the public</span></div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="preview"><img src="shots/kaggle.png" alt="A grid of 34 colourful hexagonal Kaggle badges" loading="lazy"></div>
+    <div>
+      <div class="num">07</div>
+      <h2>Kaggle README Badges</h2>
+      <p class="desc">A small serverless service that draws all 34 of my Kaggle badges as one self-contained SVG, ready to embed in a GitHub README, and refreshes itself daily.</p>
+      <dl><dt>Role</dt><dd>Personal project</dd><dt>Year</dt><dd>2026</dd><dt>Stack</dt><dd>Node.js, Vercel Functions, SVG</dd></dl>
+      <div class="row"><span class="badge live">Live</span><a class="open" href="https://kaggle-readme-badges.vercel.app/api/kaggle-badges" target="_blank" rel="noopener">Open the badge SVG ↗</a></div>
+    </div>
+  </article>
+</main>
+
+<footer><span>Suryansh Mishra</span><a href="#" class="open">← Back to the forest</a></footer>
+
+<script>
+  // "Try it here": the live app loads only when asked, in place of its screenshot
+  document.querySelectorAll('.play').forEach(b => b.addEventListener('click', () => {
+    const f = document.createElement('iframe');
+    f.src = b.dataset.src; f.title = b.closest('.entry').querySelector('h2').textContent + ' (live)';
+    f.allow = 'camera; clipboard-write; fullscreen'; f.loading = 'eager';
+    const p = b.parentElement; p.querySelector('img').replaceWith(f); b.remove(); fit(p); f.focus();
+  }));
+  // the app runs at desktop size (1600×1000) and is scaled to the frame, so it looks as it does full-screen
+  function fit(p) { const f = p.querySelector('iframe'); if (f) f.style.transform = `scale(${p.clientWidth / 1600})`; }
+  addEventListener('resize', () => document.querySelectorAll('.preview').forEach(fit));
+</script>
+</html>
