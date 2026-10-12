@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suryansh Mishra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<!-- desktop only (D2): phones and tablets get this instead of the forest -->
+<section id="gate" class="screen" hidden>
+  <h1>Suryansh Mishra</h1>
+  <p class="lede">This is a walk through a forest, built for a desktop with a keyboard and mouse.</p>
+  <p><a href="/archive/tools.html">See the work without the walk →</a></p>
+</section>
+
+<section id="start" class="screen">
+  <div class="kicker">A walk in the forest</div>
+  <h1>Suryansh Mishra</h1>
+  <p class="lede">Every structure in this forest holds a part of my work. Walk up to one to open it.</p>
+  <div id="load"><div id="bar"></div></div>
+  <p id="loadtxt">Loading the forest…</p>
+  <button id="enter" disabled>Enter the forest</button>
+  <ul class="keys">
+    <li><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> walk</li>
+    <li><kbd>Shift</kbd> run</li>
+    <li><b>Mouse</b> look</li>
+    <li><kbd>E</kbd> open</li>
+    <li><kbd>Esc</kbd> pause</li>
+  </ul>
+  <a class="skip" href="/archive/tools.html">Skip the walk</a>
+</section>
+
+<section id="pause" class="screen" hidden>
+  <h2>Paused</h2>
+  <button id="resume">Back into the forest</button>
+</section>
+
+<div id="hud" hidden>
+  <div id="dot"></div>
+  <div id="prompt" hidden><kbd>E</kbd> <span></span></div>
+  <div id="place"></div>
+  <div id="fps" hidden></div>
+</div>
+
+<section id="panel" hidden>
+  <iframe id="page" title="Archive"></iframe>
+</section>
+
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>
