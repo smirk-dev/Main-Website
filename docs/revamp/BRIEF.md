@@ -138,6 +138,14 @@ Suryansh approved forest v09 with the structures (`g2-scenes/structures_v09.html
 - The arch is the west door of a ruined chapel. The chapel's block-built broken walls, fallen stones and flagstones were added at his request, so it reads as a building that is gone.
 - Remaining G2 item: **(e) one archive page**.
 
+### Archive page approved (G2e, 2026-10-12): G2 complete
+Suryansh approved `g2-scenes/archive/tools.html` ("seems fine for now"). All seven category pages use its design:
+- the cluster's forest render as the header, fading into black;
+- alternating screenshot and text rows, each with role, year, stack, status badge and link;
+- "Try it here" live embeds, loaded on click and rendered at 1600×1000 scaled to the frame.
+
+Copy may be revisited later ("for now"). **Next: G3 assembly.**
+
 ## 3. Realism and rendering: how "hyper-realistic + ray tracing" is achieved in a browser
 
 The blunt fact: **real-time path tracing of a dense forest is not possible in a browser on an
