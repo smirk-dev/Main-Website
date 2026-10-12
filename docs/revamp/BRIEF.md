@@ -124,6 +124,14 @@ Suryansh approved forest v08 and the door scene ("amazing, i really like it").
   eases it open a hand's width and forest daylight spills across the floor. Clicking Enter swings it wide and the camera walks
   into the main forest view.
 
+### Act I approved, and all structures are in (G2a + G1, 2026-10-12)
+Suryansh: "amazing looking, continue, and include all structures".
+- **Act I** follows `g2-scenes/act1.html`. Each hero gets three beats: emerge (faint key, rim) → reveal (3/4 view, full key) →
+  close (the face). They alternate sides R/L/R, at life size (about 2 m).
+- **Structures: every candidate in `g1-assets/structures.json` is used (7 categories × 4 = 28).** Each category's four become a
+  small cluster at its place in the forest: the gold pick is the centrepiece, and the other three stand around it.
+  They follow the same rule as the statues: dim silhouettes from far, clear up close, and at the forest's grand scale.
+
 ## 3. Realism and rendering: how "hyper-realistic + ray tracing" is achieved in a browser
 
 The blunt fact: **real-time path tracing of a dense forest is not possible in a browser on an
