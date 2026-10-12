@@ -3,6 +3,7 @@ import { HDRLoader } from "three/examples/jsm/loaders/HDRLoader.js";
 import { loadWorld, fixMaterials, Ground, type World } from "./world";
 import { Vegetation } from "./vegetation";
 import { Player } from "./player";
+import { Door } from "./door";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const canvas = $("c") as HTMLCanvasElement;
@@ -43,9 +44,13 @@ const FOG = new THREE.Color(0xbfc3c2);
 scene.background = FOG;
 scene.fog = new THREE.FogExp2(FOG, 0.021);
 const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 400);
+const door = new Door();
+door.resize(innerWidth / innerHeight);
+let mode: "door" | "forest" = params.has("forest") ? "forest" : "door";   // ?forest skips the door (tests)
 addEventListener("resize", () => {
   renderer.setSize(innerWidth, innerHeight, false);
   camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  door.resize(innerWidth / innerHeight);
 });
 
 // ---------- load ----------
@@ -109,7 +114,9 @@ async function boot() {
   // compile every shader now, not on the first step into a new clearing
   renderer.compile(scene, camera);
   if (params.has("debug")) Object.assign(window, { game: { player, camera, renderer, veg, scene } });   // test hook: teleport and look
-  bar.style.width = "100%"; loadtxt.textContent = "Ready."; enter.disabled = false; enter.focus();
+  bar.style.width = "100%"; loadtxt.textContent = "The forest is ready.";
+  if (mode === "forest") { enter.disabled = false; enter.focus(); }
+  if (waiting) arrive();
 }
 
 // ---------- states: start → walking ⇄ paused / reading a page ----------
@@ -117,7 +124,27 @@ const start = $("start"), pause = $("pause"), hud = $("hud"), panel = $("panel")
 const prompt = $("prompt"), place = $("place");
 let reading = false;
 const lock = () => canvas.requestPointerLock();
-enter.onclick = () => { start.hidden = true; hud.hidden = false; lock(); };
+const fade = $("fade"), fadetxt = $("fadetxt");
+let waiting = false;
+/** Through the door: swap to the forest under the mist-coloured fade, then let the fade lift. */
+function arrive() {
+  if (!world) { waiting = true; fadetxt.textContent = "The forest is still loading…"; return; }
+  waiting = false; fadetxt.textContent = "";
+  mode = "forest"; start.hidden = true; hud.hidden = false; lock();
+  fade.style.transition = "opacity 1.4s ease-out"; fade.style.opacity = "0";
+}
+door.load().then(() => { if (mode === "door") enter.disabled = false; })   // no auto-focus: focus eases the door ajar.catch((e) => { console.error(e); enter.disabled = false; });
+enter.onmouseenter = enter.onfocus = () => door.ajar(true);
+enter.onmouseleave = enter.onblur = () => door.ajar(false);
+enter.onclick = () => {
+  if (mode === "forest") { start.hidden = true; hud.hidden = false; lock(); return; }
+  enter.disabled = true; $("leave").setAttribute("disabled", "");
+  (start.querySelector(".door-top") as HTMLElement).style.opacity = "0";
+  (start.querySelector(".door-bottom") as HTMLElement).style.opacity = "0";
+  door.onThrough = arrive; door.enter();
+};
+// D3: browsers only let a script close a tab it opened; if the tab is still here, say so
+$("leave").onclick = () => { window.close(); setTimeout(() => { $("gone").hidden = false; }, 300); };
 $("resume").onclick = lock;
 canvas.onclick = () => { if (!reading && start.hidden) lock(); };
 document.addEventListener("pointerlockchange", () => {
@@ -141,15 +168,18 @@ addEventListener("keydown", (e) => {
 addEventListener("message", (e) => { if (e.data === "back-to-forest") closePage(); });
 
 // ---------- loop ----------
-const clock = new THREE.Clock();
+const clock = new THREE.Timer();
 const fpsEl = $("fps"); fpsEl.hidden = !params.has("debug");
 let frames = 0, acc = 0, slow = 0;
 const look = new THREE.Vector3(), to = new THREE.Vector3();
 let lastPlace = "";
 
 function frame() {
-  const dt = Math.min(clock.getDelta(), 0.05);
-  if (world && !reading) {
+  clock.update(); const dt = Math.min(clock.getDelta(), 0.05);
+  if (mode === "door") {
+    door.update(dt);   // may hand over to the forest (arrive) as the camera crosses the threshold
+    if (mode === "door") { fade.style.opacity = String(door.through); renderer.render(door.scene, door.camera); }
+  } else if (world && !reading) {
     player.update(dt);
     // the sun's shadow box follows the walker
     sun.position.copy(player.pos).addScaledVector(sunDir, 120); sun.target.position.copy(player.pos); sun.target.updateMatrixWorld();

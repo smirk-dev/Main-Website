@@ -35,3 +35,20 @@ kbd { display: inline-block; min-width: 22px; padding: 2px 6px; margin-right: 3p
 #panel iframe { width: 100%; height: 100%; border: 0; display: block; }
 @keyframes fadein { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* Act II: the door. The canvas draws the door; this is only the words and the two choices around it. */
+#start { position: fixed; inset: 0; z-index: 5; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; padding: 5vh 40px 4vh; }
+#start > * { pointer-events: auto; }
+.door-top .lede { font-size: 19px; margin: 8px 0 0; color: #b9b3a7; }
+.door-top, .door-bottom { transition: opacity .6s; }
+.door-bottom { display: flex; flex-direction: column; align-items: center; }
+.choices { display: flex; gap: 14px; margin-bottom: 14px; }
+button.ghost { background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); }
+button.ghost:hover, button.ghost:focus-visible { background: rgba(255,255,255,.08); }
+#start #loadtxt { margin: 0 0 6px; }
+#start #load { margin: 0; width: 180px; }
+#start .keys { margin: 18px 0 0; }
+#start .skip { position: static; margin-top: 14px; }
+#fade { position: fixed; inset: 0; z-index: 7; background: #bfc3c2; opacity: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+#fadetxt { font: italic 400 20px var(--serif); color: #3a3a36; }
+#gone { background: #000; animation: fadein 1.2s ease-out; z-index: 8; }
