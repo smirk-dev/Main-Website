@@ -1,16 +1,23 @@
-<!doctype html><meta charset=utf-8><title>G2 · Forest look: test 02</title>
+<!doctype html><meta charset=utf-8><title>G2 · Forest look: test 04</title>
 <style>body{background:#0b0b0c;color:#ccc;font:15px/1.6 system-ui;margin:40px auto;max-width:1300px;padding:0 24px}h1,h2{font-weight:500}img{width:100%;display:block;border-radius:6px}.sm{display:grid;grid-template-columns:1fr 1fr;gap:18px}.meta{color:#888;font-size:13px}li{margin:4px 0}</style>
-<h1>Gate 2 · Forest look: first test for your approval</h1>
-<img src="forest_test_02.png">
-<p class=meta>Blender Cycles, path-traced, 48 samples, 1280×720, about 7 minutes on this laptop's CPU. 1,400 trees (6 fir/pine variants plus a broadleaf), 260 saplings, 5,000 grass clumps,
-ferns, mossy rocks, deadwood. Low golden sun behind the trees, with light haze so the beams show. All assets are the approved Poly Haven CC0 pack.</p>
-<h2>What this is and isn't</h2>
+<h1>Gate 2 · Forest with paths and statues: test 04 for your approval</h1>
+<img src="forest_test_04a.png">
+<p class=meta>View A: the trail start. The same camera as test 02. The marble angel (<i>Broken Wing</i>) stands at the first bend.</p>
+<img src="forest_test_04b.png" style="margin-top:18px">
+<p class=meta>View B: the first fork. The bronze memorial angel marks it. The left branch is the faint track behind her. One more statue is just visible far down the main trail.</p>
+<h2>What changed since test 02 (which you approved with "proceed")</h2>
 <ul>
-<li>This is the <b>look target</b>: the light, density and mood the website forest must reach. It is not the website itself.</li>
-<li>On the site, the same assets run in real time. A sun that casts shadows from every branch, baked light for the soft bounce, and lighter tree models for distance. It will look close to this, but not identical.</li>
-<li>Still to come in this scene: the path needs to read more clearly, the foreground needs more light, and the bright band at the far horizon needs hiding. Then the structures and the 13 statues placed along the paths.</li>
+<li><b>The path reads.</b> A worn earth trail, and it forks. The side branches are deliberately fainter, so they can be missed, as the brief asks. One forks left at the memorial and one forks right further on.</li>
+<li><b>Horizon band gone.</b> The far ground used to stop before the trees did. It now runs on, with about 3,850 more distant trees fading into the haze.</li>
+<li><b>Foreground lighter</b> (exposure up and more skylight).</li>
+<li><b>All 13 forest statues are placed</b>, weathered with grime and moss on their upward-facing surfaces. They're spaced so you meet them <b>one at a time</b>: one at the start, one marking the fork, one at the end of each branch, and the rest about 25 m apart down the main trail.</li>
 </ul>
-<h2>Where it started</h2>
-<div class=sm><div><img src="forest_test_01.png"><p class=meta>Test 01: too sparse, too even, reads as a park.</p></div>
-<div><p>What changed from 01 to 02: triple the tree density in natural clusters instead of an even grid; the forest now continues past where the eye can see;
-saplings and grass fill the floor; the sun moved low and in front of you so the canopy is back-lit and shadows fall toward the viewer; and a light haze makes the light beams visible.</p></div></div>
+<h2>Known, next</h2>
+<ul>
+<li>The dark spiky grass stalks in the foreground read as black silhouettes; I'll swap or thin them.</li>
+<li>The structures (one per category) go at the branch ends and clearings once you've picked them on <code>g1-assets/structures.html</code>.</li>
+</ul>
+<h2>Where it came from</h2>
+<div class=sm><div><img src="forest_test_03b.png"><p class=meta>Test 03: the path was grey, the fork washed into one clearing, and six statues were visible at once, so it read like a sculpture park.</p></div>
+<div><img src="forest_test_02.png"><p class=meta>Test 02: the approved look, but with no path network and no statues yet.</p></div></div>
+<p class=meta>All renders: Blender Cycles, path-traced, 48 samples, 1280×720, about 7 minutes each on this laptop's CPU. This is the look target; the site runs the same assets in real time with a live sun and baked bounce light.</p>
