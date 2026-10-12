@@ -116,6 +116,14 @@ Suryansh approved forest v07 (`g2-scenes/forest.html`, "looks good, continue").
 - Several statues are faintly visible from the fork, along the branches. They are not all hidden and not all highlighted.
 - Scene budget for the Blender look target: 10.7M faces, 2K textures (`asset-src/main-website/forest_v07.blend`).
 
+### Statues at 2× and the door approved (G2, 2026-10-12)
+Suryansh approved forest v08 and the door scene ("amazing, i really like it").
+- **Every forest statue is at least 2× life-size** (his call: "more impending and grand"). The fork angel is about 6.6 m.
+  Statues stand at least 3.4 m off the trail.
+- **The door (Act II)** follows `g2-scenes/door.html`: the castle door alone in the black void, with hero lighting. Hovering Enter
+  eases it open a hand's width and forest daylight spills across the floor. Clicking Enter swings it wide and the camera walks
+  into the main forest view.
+
 ## 3. Realism and rendering: how "hyper-realistic + ray tracing" is achieved in a browser
 
 The blunt fact: **real-time path tracing of a dense forest is not possible in a browser on an
