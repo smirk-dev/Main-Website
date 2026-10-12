@@ -1,8 +1,12 @@
 import * as THREE from "three";
 import { GLTFLoader, type GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
+import type { Terrain } from "./terrain";
 
 const A = "/assets/";
+/** pinholed scans shipped whole, no far copy (SPARSE in export_web.py) */
+export const SPARSE = new Set(["ST_under_fire_of_war", "ST_vigeland_mother_child"]);
+export const lod1 = (f: string) => f.replace(".glb", "_lod1.glb");
 
 export interface InstanceSet { name: string; kind: "tree" | "sapling" | "plant" | "prop"; files: string[]; count: number; offset: number; collide: number; bbox: number[] | null; impostor: string | null }
 export interface SceneData {
@@ -19,6 +23,7 @@ export interface SceneData {
 export interface World {
   data: SceneData;
   height: Float32Array;   // ny × nx, Blender XY: bx = x, by = -z
+  path: Uint8Array;       // ny × nx, trail mask 0..255 (same grid as height)
   collide: Uint8Array;    // cy × cx
   instances: Float32Array;  // 12 floats per instance (column-major 4×3)
   glbs: Map<string, GLTF>;
@@ -30,15 +35,18 @@ export async function loadWorld(onProgress: (f: number, label: string) => void):
   const loader = new GLTFLoader().setDRACOLoader(draco);
   const data: SceneData = await (await fetch(A + "scene.json")).json();
   const files = new Set<string>();
-  for (const s of data.statics) files.add(s.file);
+  for (const s of data.statics) if (s.name !== "ground") {   // the ground is built from height.bin (terrain.ts)
+    files.add(s.file);
+    if (/^S[TX]_/.test(s.name) && !SPARSE.has(s.name)) files.add(lod1(s.file));
+  }
   for (const i of data.instances) for (const f of i.kind === "tree" ? i.files.slice(0, 1) : i.files) files.add(f);   // trees: full model + impostor only
   const list = [...files];
   let done = 0;
-  const total = list.length + 3;
+  const total = list.length + 4;
   const tick = (label: string) => onProgress(++done / total, label);
 
   const bin = async (f: string) => { const b = await (await fetch(A + f)).arrayBuffer(); tick(f); return b; };
-  const [h, c, ins] = await Promise.all([bin("height.bin"), bin("collide.bin"), bin("instances.bin")]);
+  const [h, c, ins, pa] = await Promise.all([bin("height.bin"), bin("collide.bin"), bin("instances.bin"), bin("path.bin")]);
 
   const glbs = new Map<string, GLTF>();
   let next = 0;
@@ -51,7 +59,7 @@ export async function loadWorld(onProgress: (f: number, label: string) => void):
     }
   };
   await Promise.all(Array.from({ length: 6 }, worker));
-  return { data, height: new Float32Array(h), collide: new Uint8Array(c), instances: new Float32Array(ins), glbs };
+  return { data, height: new Float32Array(h), path: new Uint8Array(pa), collide: new Uint8Array(c), instances: new Float32Array(ins), glbs };
 }
 
 /** Make exported materials behave in real time: alpha cards cut out (no sorting), everything lit by the environment. */
@@ -82,15 +90,8 @@ export function fixMaterials(root: THREE.Object3D, opts: { shadows: boolean; rec
 
 // ---- terrain and collision lookups (world x,z in three.js space) ----
 export class Ground {
-  constructor(private w: World) {}
-  height(x: number, z: number): number {
-    const g = this.w.data.grid, H = this.w.height;
-    const fx = (x - g.x0) / g.hs, fy = (-z - g.y0) / g.hs;
-    const i = Math.max(0, Math.min(g.nx - 2, Math.floor(fx))), j = Math.max(0, Math.min(g.ny - 2, Math.floor(fy)));
-    const tx = Math.min(1, Math.max(0, fx - i)), ty = Math.min(1, Math.max(0, fy - j));
-    const a = H[j * g.nx + i], b = H[j * g.nx + i + 1], c = H[(j + 1) * g.nx + i], d = H[(j + 1) * g.nx + i + 1];
-    return (a * (1 - tx) + b * tx) * (1 - ty) + (c * (1 - tx) + d * tx) * ty;
-  }
+  constructor(private w: World, private t: Terrain) {}
+  height(x: number, z: number): number { return this.t.height(x, z); }   // the same surface the terrain mesh is built from
   solid(x: number, z: number): boolean {
     const g = this.w.data.grid;
     const i = Math.floor((x - g.x0) / g.cs), j = Math.floor((-z - g.y0) / g.cs);

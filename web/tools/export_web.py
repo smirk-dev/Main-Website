@@ -138,6 +138,8 @@ def prune(o, budget):
 def collapse(o, ratio):
     if ratio >= 1: return
     m = o.modifiers.new("dec", 'DECIMATE'); m.ratio = ratio; m.use_collapse_triangulate = True
+def weld(o):
+    bm = bmesh.new(); bm.from_mesh(o.data); bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5); bm.to_mesh(o.data); bm.free()
 def ntris(o): return sum(len(p.vertices)-2 for p in o.data.polygons)
 
 EXP = bpy.data.scenes.new("EXP")
@@ -151,7 +153,8 @@ def export(objs, path):
                                   export_animations=False, export_extras=False)
     log("glb", os.path.basename(path), round(os.path.getsize(path)/1e6, 2), "MB")
 
-def reduced_copy(src_objs, card_tris, card_grow, solid_tris, base=Matrix()):
+SPARSE = {"ST_under_fire_of_war", "ST_vigeland_mother_child"}   # pinholed photogrammetry: any collapse opens it into confetti, ship whole
+def reduced_copy(src_objs, card_tris, card_grow, solid_tris, base=Matrix(), scan=False):
     """copies of src meshes (in base-relative space), cards thinned, solids collapsed so the whole set lands near solid_tris"""
     parts = []
     for o in src_objs:
@@ -169,10 +172,21 @@ def reduced_copy(src_objs, card_tris, card_grow, solid_tris, base=Matrix()):
     # survivors grow to cover what was dropped (area ~ 1/keep), capped so single cards don't turn into billboards
     for c in cards: thin_cards(c, keep, card_grow if card_grow else min(2.0, (1/keep) ** 0.5))
     if cards: log("cards", cards[0].name, ct, "->", round(keep, 3))
+    if scan:   # Sketchfab scans arrive as chunks, each a random scatter of triangles over the whole statue: reduce them as one
+        groups = {}
+        for p in solids: groups.setdefault(p.material_slots[0].material.name if p.material_slots and p.material_slots[0].material else "", []).append(p)
+        for g in groups.values():
+            if len(g) < 2: continue
+            bm = bmesh.new()
+            for p in g: p.data.transform(p.matrix_world); p.matrix_world = Matrix(); bm.from_mesh(p.data)
+            bm.to_mesh(g[0].data); bm.free()
+            for p in g[1:]: solids.remove(p); parts.remove(p); bpy.data.objects.remove(p)
+
     st = sum(ntris(s) for s in solids)
     for s in solids:
         share = solid_tris * ntris(s) / max(st, 1)
-        prune(s, share * 1.6)                      # whole small branches go first,
+        if scan: weld(s)                           # scans are triangle soup: every face its own island, so pruning shreds them
+        else: prune(s, share * 1.6)                # whole small branches go first,
         collapse(s, min(1.0, share/max(ntris(s), 1)))   # then a light even reduction
     return parts
 
@@ -208,7 +222,7 @@ def kind(cname):
 LODS = {"tree": [("lod0", 22000, 0, 10000, 512), ("lod1", 4000, 0, 2500, 512)],
         "sapling": [("lod0", 1200, 0, 400, 256)],
         "plant": [("lod0", 200, 0, 200, 256)],
-        "prop": [("lod0", 1e9, 1.0, 2500, 256)]}
+        "prop": [("lod0", 1e9, 1.0, 6000, 512)]}
 inst_meta = []; inst_blob = bytearray()
 if want("trees") or want("plants") or want("data"):
     for cname, insts in sorted(INST.items()):
@@ -221,7 +235,7 @@ if want("trees") or want("plants") or want("data"):
             fn = ("trees/" if k == "tree" else "plants/")+cname+"_"+lod+".glb"; files.append(fn)
             if (k == "tree" and want("trees")) or (k != "tree" and want("plants")):
                 cap_images(src, px)
-                parts = reduced_copy(src, keep, grow, st, base)
+                parts = reduced_copy(src, keep, grow, st, base, scan=(k == "prop"))   # rocks/trunks/roots: pruning islands took half of each
                 export(parts, OUT+fn)
                 for p in parts: bpy.data.objects.remove(p)
         bb = None
@@ -262,9 +276,13 @@ if want("statics") or want("data"):
             continue
         if want("statics"):
             cap_images(meshes, 1024 if (r.name.startswith("ST_") or centre) else 512)
-            parts = reduced_copy(meshes, 1.0, 1.0, budget)
+            parts = reduced_copy(meshes, 1.0, 1.0, 1e9 if r.name in SPARSE else budget, scan=True)
             export(parts, OUT+fn)
             for p in parts: bpy.data.objects.remove(p)
+            if r.name not in SPARSE:   # far version (> 40 m, half in the mist); the sparse scans just drop their backing shell there
+                parts = reduced_copy(meshes, 1.0, 1.0, max(1500, budget*0.2), scan=True)
+                export(parts, OUT+fn.replace(".glb", "_lod1.glb"))
+                for p in parts: bpy.data.objects.remove(p)
         static_meta.append({"name": r.name, "file": fn})
     others = [o for o in bpy.data.objects if o.type == 'MESH' and (o.name == "RUINS" or o.name.startswith("Cylinder"))]
     if want("statics"):
@@ -291,6 +309,12 @@ if want("data"):
             p = Vector((X0+i*HS, Y0+j*HS, 60)); hit, loc, n, idx = g.ray_cast(Mi @ p, Vector((0, 0, -1)))
             H[j, i] = (g.matrix_world @ loc).z if hit else gfz
     open(OUT+"height.bin", "wb").write(H.tobytes()); log("height", nx, ny)
+    # trail mask on the same grid (the ground shader mixes mud in by it); GROUND's vertices sit on the 0.5 m lattice
+    P = np.zeros((ny, nx), np.uint8); att = g.data.attributes['path']
+    for v, d in zip(g.data.vertices, att.data):
+        w = g.matrix_world @ v.co; i = round((w.x-X0)/HS); j = round((w.y-Y0)/HS)
+        if 0 <= i < nx and 0 <= j < ny: P[j, i] = max(0, min(255, round(d.value*255)))
+    open(OUT+"path.bin", "wb").write(P.tobytes()); log("path", int((P > 0).sum()))
     # collision grid: every surface of the static scene between ankle and head height blocks the cell under it
     CS = 0.25; cx = int((X1-X0)/CS); cy = int((Y1-Y0)/CS); G = np.zeros((cy, cx), np.uint8)
     dg = bpy.context.evaluated_depsgraph_get()

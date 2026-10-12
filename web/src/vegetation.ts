@@ -4,10 +4,10 @@ import { fixMaterials } from "./world";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 /** Trees: full detail near, then a flat cut-out (impostor) to the edge of the mist. A decimated middle version was tried: it turns the branches into spikes. */
-export const RANGE = { tree0: 18, tree: 95, sapling: 30, plant: 22, prop: 60 };
+export const RANGE = { tree0: 15, tree: 95, sapling: 30, plant: 22, prop: 60 };
 
 interface Part { mesh: THREE.InstancedMesh; mats: Float32Array }   // mats: precomputed instance×node matrices, 16 floats each
-interface Set { def: InstanceSet; pos: Float32Array; lods: Part[][]; radius: number; lift: number }
+interface Set { def: InstanceSet; pos: Float32Array; lods: Part[][]; radius: number; lift: number; near: Uint8Array }
 
 /** Every tree, plant and rock in the forest, drawn as GPU instances. Each frame only what is in view and in range is uploaded. */
 export class Vegetation {
@@ -19,7 +19,7 @@ export class Vegetation {
   private sphere = new THREE.Sphere();
   scale = 1;   // range multiplier for the quality tier
 
-  constructor(w: World, shadows: boolean) {
+  constructor(w: World, private shadows: boolean) {
     const I = w.instances;
     const inst = new THREE.Matrix4();
     for (const def of w.data.instances) {
@@ -61,7 +61,7 @@ export class Vegetation {
         lods.push(parts);
       }
       if (def.impostor && def.bbox) lods.push([this.impostor(def, insts)]);
-      this.sets.push({ def, pos, lods, radius, lift });
+      this.sets.push({ def, pos, lods, radius, lift, near: new Uint8Array(def.count) });
     }
   }
 
@@ -77,6 +77,7 @@ export class Vegetation {
     tex.colorSpace = THREE.SRGBColorSpace;
     const mat = new THREE.MeshBasicMaterial({ map: tex, alphaTest: 0.5, side: THREE.DoubleSide, color: 0xb8b8b0 });
     const im = new THREE.InstancedMesh(geo, mat, def.count);
+    im.castShadow = this.shadows;   // or tree shadows on the ground switch on and off at the detail distance
     im.frustumCulled = false; im.count = 0; im.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     this.group.add(im);
     const mats = new Float32Array(def.count * 16);
@@ -90,28 +91,49 @@ export class Vegetation {
   private lastScale = 1;
 
   /** Choose and upload the visible instances, but only once the walker has moved or turned enough to matter:
-   *  the cull uses a widened view (fov margin + bigger spheres) so a few frames of turning never show a gap. */
+   *  the cull uses a widened view (fov margin + bigger spheres) so a few frames of turning never show a gap.
+   *  Nothing pops: trees run to where the mist has fully swallowed them; small things shrink away over the last
+   *  quarter of their range; the detail/impostor swap has a 2 m dead band so standing near the line never flickers.
+   *  `scale` (quality) only shortens the near ranges, never the far edge. */
   update(camera: THREE.PerspectiveCamera) {
     const cp = camera.position;
     camera.getWorldDirection(this.dir);
-    if (cp.distanceTo(this.last) < 0.6 && this.dir.dot(this.lastDir) > 0.995 && this.scale === this.lastScale) return;
+    if (cp.distanceTo(this.last) < 0.5 && this.dir.dot(this.lastDir) > 0.995 && this.scale === this.lastScale) return;
     this.last.copy(cp); this.lastDir.copy(this.dir); this.lastScale = this.scale;
     const wide = camera.clone(); wide.fov = Math.min(150, camera.fov + 25); wide.updateProjectionMatrix(); wide.updateMatrixWorld();
     this.frustum.setFromProjectionMatrix(this.m4.multiplyMatrices(wide.projectionMatrix, camera.matrixWorldInverse));
+    const tmp = new Float32Array(16);
+    const buckets: number[][] = [[], [], [], []];   // impostors drawn near to far: the near cards hide the far ones before they are shaded
     for (const s of this.sets) {
-      const k = s.def.kind;
-      const far = (k === "tree" ? RANGE.tree : k === "sapling" ? RANGE.sapling : k === "plant" ? RANGE.plant : RANGE.prop) * this.scale;
-      const r0 = RANGE.tree0 * this.scale;
+      const k = s.def.kind, tree = k === "tree";
+      const far = tree ? RANGE.tree : (k === "sapling" ? RANGE.sapling : k === "plant" ? RANGE.plant : RANGE.prop) * this.scale;
+      const r0 = RANGE.tree0 * this.scale, fade = far * 0.75;
       const counts = s.lods.map(() => 0);
       for (let i = 0; i < s.def.count; i++) {
         const x = s.pos[i * 3], y = s.pos[i * 3 + 1], z = s.pos[i * 3 + 2];
         const d = Math.hypot(x - cp.x, z - cp.z);
-        if (d > far) continue;
+        if (d > far) { s.near[i] = 0; continue; }
+        if (tree) s.near[i] = d < r0 - 1 ? 1 : d > r0 + 1 ? 0 : s.near[i];
         this.sphere.center.set(x, y + s.lift, z); this.sphere.radius = s.radius + 1;
         if (d > 7 && !this.frustum.intersectsSphere(this.sphere)) continue;   // the few just behind still cast their shadows forward
-        const l = k !== "tree" || d < r0 ? 0 : s.lods.length - 1;
-        for (const p of s.lods[l]) p.mesh.instanceMatrix.array.set(p.mats.subarray(i * 16, i * 16 + 16), counts[l] * 16);
+        const l = !tree || s.near[i] ? 0 : s.lods.length - 1;
+        if (l > 0) { buckets[Math.min(3, Math.floor(d / 22))].push(i); continue; }
+        const f = tree || d < fade ? 1 : Math.max(0.02, (far - d) / (far - fade));
+        for (const p of s.lods[l]) {
+          let src = p.mats.subarray(i * 16, i * 16 + 16);
+          if (f < 1) {   // shrink about the instance's own foot
+            tmp.set(src);
+            for (let e = 0; e < 11; e++) if (e % 4 !== 3) tmp[e] *= f;
+            tmp[12] = x + (tmp[12] - x) * f; tmp[13] = y + (tmp[13] - y) * f; tmp[14] = z + (tmp[14] - z) * f;
+            src = tmp;
+          }
+          p.mesh.instanceMatrix.array.set(src, counts[l] * 16);
+        }
         counts[l]++;
+      }
+      if (tree) {
+        const l = s.lods.length - 1;
+        for (const b of buckets) { for (const i of b) { for (const p of s.lods[l]) p.mesh.instanceMatrix.array.set(p.mats.subarray(i * 16, i * 16 + 16), counts[l] * 16); counts[l]++; } b.length = 0; }
       }
       s.lods.forEach((parts, l) => parts.forEach((p) => {
         const im = p.mesh.instanceMatrix;

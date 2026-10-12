@@ -1,7 +1,9 @@
 import * as THREE from "three";
 import { HDRLoader } from "three/examples/jsm/loaders/HDRLoader.js";
-import { loadWorld, fixMaterials, Ground, type World } from "./world";
-import { Vegetation } from "./vegetation";
+import { loadWorld, fixMaterials, Ground, SPARSE, lod1, type World } from "./world";
+import { Vegetation, RANGE } from "./vegetation";
+import { Terrain } from "./terrain";
+import { densify } from "./densify";
 import { Player } from "./player";
 import { Door } from "./door";
 
@@ -59,8 +61,24 @@ let world: World;
 let veg: Vegetation;
 let player: Player;
 let sun: THREE.DirectionalLight;
-const statics: { obj: THREE.Object3D; c: THREE.Vector3; cast: boolean }[] = [];   // hidden beyond the mist
+/** obj: full detail; far: the reduced copy past 40 m (half in the mist); shells: backing for the pinholed scans, only needed close */
+const statics: { obj: THREE.Object3D; far?: THREE.Object3D; shells: THREE.Mesh[]; c: THREE.Vector3; cast: boolean; near: boolean }[] = [];
 const sunDir = new THREE.Vector3();
+
+/** Two of the scans (shipped whole, see export_web.py) are photogrammetry with pinholes all over: you saw the sky through
+ *  them. A copy of each big scan mesh, pushed 2 cm inward along its normals, sits behind every hole and closes it. */
+function backScan(root: THREE.Object3D): THREE.Mesh[] {
+  root.updateMatrixWorld(true);
+  const meshes: THREE.Mesh[] = [], shells: THREE.Mesh[] = [];
+  root.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh && (m.geometry.index?.count ?? 0) / 3 > 50000 && m.geometry.attributes.normal) meshes.push(m); });
+  for (const m of meshes) {
+    const e = 0.02 / m.matrixWorld.getMaxScaleOnAxis();
+    const g = m.geometry.clone(), p = g.attributes.position, n = g.attributes.normal;
+    for (let i = 0; i < p.count; i++) p.setXYZ(i, p.getX(i) - n.getX(i) * e, p.getY(i) - n.getY(i) * e, p.getZ(i) - n.getZ(i) * e);
+    const sh = new THREE.Mesh(g, m.material); sh.receiveShadow = true; m.add(sh); shells.push(sh);
+  }
+  return shells;
+}
 
 async function boot() {
   const [w, sky] = await Promise.all([
@@ -73,6 +91,11 @@ async function boot() {
   scene.environmentIntensity = 0.55;
 
   const d = w.data;
+  // the ground: one surface from the forest out into the mist, the same one the walker stands on
+  const terrain = new Terrain(w);
+  scene.add(terrain.mesh());
+  const added = densify(w, terrain, PLACES.map((p) => ({ x: p.x, z: -p.y, r: p.r })), d.spawn);
+  if (params.has("debug")) console.log("densify: +" + added + " instances");
   sunDir.fromArray(d.sun.dir).normalize();
   sun = new THREE.DirectionalLight(new THREE.Color().fromArray(d.sun.color), 2.8);
   sun.castShadow = tier.shadows;
@@ -84,28 +107,37 @@ async function boot() {
 
   // the statues, the structures, the ruins and the ground
   for (const s of d.statics) {
-    const g = w.glbs.get(s.file);
-    if (!g) continue;
-    const obj = s.matrix ? g.scene.clone(true) : g.scene;
-    if (s.matrix) { obj.matrixAutoUpdate = false; obj.matrix.fromArray(s.matrix); }
-    fixMaterials(obj, { shadows: s.name !== "ground", receive: true });
-    // the scans' marble was weathered by a node setup the web format can't carry: tone the bare albedo down to match
-    if (s.name.startsWith("ST_")) obj.traverse((o) => { const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial; if (m?.color) m.color.multiplyScalar(0.62); });
-    scene.add(obj);
-    if (s.name !== "ground" && s.name !== "ruins_posts") { const c = new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3()); statics.push({ obj, c, cast: true }); }
+    if (s.name === "ground") continue;   // replaced by the terrain mesh
+    const make = (f: string) => {
+      const g = w.glbs.get(f);
+      if (!g) return undefined;
+      const toned = !!g.userData.toned;
+      const obj = s.matrix ? g.scene.clone(true) : g.scene;
+      if (s.matrix) { obj.matrixAutoUpdate = false; obj.matrix.fromArray(s.matrix); }
+      fixMaterials(obj, { shadows: true, receive: true });
+      // the scans' marble was weathered by a node setup the web format can't carry: tone the bare albedo down to match (once per file)
+      if (s.name.startsWith("ST_") && !toned) obj.traverse((o) => { const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial; if (m?.color) m.color.multiplyScalar(0.62); });
+      g.userData.toned = true;
+      scene.add(obj); obj.name = s.name;
+      return obj;
+    };
+    const obj = make(s.file);
+    if (!obj) continue;
+    if (s.name === "ruins_posts") continue;   // the chapel ruins: always drawn
+    const far = make(lod1(s.file));
+    const shells = SPARSE.has(s.name) ? backScan(obj) : [];
+    const c = new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3());
+    statics.push({ obj, far, shells, c, cast: true, near: true });
   }
-  // past the detailed ground: a plain floor the mist swallows
-  const far = new THREE.Mesh(new THREE.PlaneGeometry(600, 600).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x5c4b3b, roughness: 1 }));
-  far.position.set(0, -0.25, -60); far.receiveShadow = true; scene.add(far);
 
-  // lantern glow: a handful of real lights at the landing; every flame also glows on its own
-  if (params.get("lights") !== "0") d.lanterns.slice(0, 4).forEach((p) => {
+  // lantern glow: two real lights at the landing (each one costs every lit pixel); every flame also glows on its own
+  if (params.get("lights") !== "0") d.lanterns.slice(0, 2).forEach((p) => {
     const l = new THREE.PointLight(0xffa04a, 6, 9, 2); l.position.fromArray(p); scene.add(l);
   });
 
   veg = new Vegetation(w, tier.shadows);
   scene.add(veg.group);
-  player = new Player(camera, new Ground(w), veg.trunks, d.spawn, canvas);
+  player = new Player(camera, new Ground(w, terrain), veg.trunks, d.spawn, canvas);
   player.settle();
   const fc = d.cameras["FCAM_B"];
   player.update(0);
@@ -113,7 +145,7 @@ async function boot() {
 
   // compile every shader now, not on the first step into a new clearing
   renderer.compile(scene, camera);
-  if (params.has("debug")) Object.assign(window, { game: { player, camera, renderer, veg, scene } });   // test hook: teleport and look
+  if (params.has("debug")) Object.assign(window, { game: { player, camera, renderer, veg, scene, statics, world: w, R: RANGE, sun } });   // test hook: teleport and look
   bar.style.width = "100%"; loadtxt.textContent = "The forest is ready.";
   if (mode === "forest") { enter.disabled = false; enter.focus(); }
   if (waiting) arrive();
@@ -185,9 +217,12 @@ function frame() {
     sun.position.copy(player.pos).addScaledVector(sunDir, 120); sun.target.position.copy(player.pos); sun.target.updateMatrixWorld();
     veg.update(camera);
     for (const s of statics) {
-      const d = s.c.distanceTo(player.pos), cast = d < 40;
-      s.obj.visible = d < 80 * veg.scale;
-      if (cast !== s.cast) { s.cast = cast; s.obj.traverse((o) => { o.castShadow = cast; }); }   // only when it changes
+      const d = s.c.distanceTo(player.pos), cast = d < 25, shown = d < 105;   // 105 m: the mist has taken them completely
+      s.near = d < 38 ? true : d > 42 ? false : s.near;                       // dead band: no flicker on the line
+      s.obj.visible = shown && (s.near || !s.far);
+      if (s.far) s.far.visible = shown && !s.near;
+      for (const m of s.shells) m.visible = d < 15;   // pinholes only read up close
+      if (cast !== s.cast) { s.cast = cast; for (const o of [s.obj, s.far]) o?.traverse((q) => { q.castShadow = cast; }); }   // only when it changes
     }
 
     // what is the walker near, and facing?
