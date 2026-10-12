@@ -132,6 +132,12 @@ Suryansh: "amazing looking, continue, and include all structures".
   small cluster at its place in the forest: the gold pick is the centrepiece, and the other three stand around it.
   They follow the same rule as the statues: dim silhouettes from far, clear up close, and at the forest's grand scale.
 
+### Structures scene approved (G2d, 2026-10-12)
+Suryansh approved forest v09 with the structures (`g2-scenes/structures_v09.html`, "i like it").
+- 27 of the 28 structures are used. The tower scan (stories_3) was dropped: it captured only the front, with a ground slab attached.
+- The arch is the west door of a ruined chapel. The chapel's block-built broken walls, fallen stones and flagstones were added at his request, so it reads as a building that is gone.
+- Remaining G2 item: **(e) one archive page**.
+
 ## 3. Realism and rendering: how "hyper-realistic + ray tracing" is achieved in a browser
 
 The blunt fact: **real-time path tracing of a dense forest is not possible in a browser on an
