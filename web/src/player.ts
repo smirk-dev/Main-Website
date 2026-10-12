@@ -1,7 +1,8 @@
 import * as THREE from "three";
 import type { Ground } from "./world";
+import type { Collision } from "./collide";
 
-const WALK = 3.0, RUN = 6.0, ACCEL = 22, FRICTION = 14, SENS = 0.0021, EYE = 1.65, RADIUS = 0.32;
+const WALK = 3.0, RUN = 6.0, ACCEL = 22, FRICTION = 14, SENS = 0.0021, EYE = 1.65, RADIUS = 0.24;
 /** The walkable area: the part of the forest that was built. Beyond it the trees go on, but you can't. (three.js x / z) */
 export const BOUNDS = { x0: -40, x1: 44, z0: -116, z1: 12 };
 
@@ -11,15 +12,10 @@ export class Player {
   readonly euler = new THREE.Euler(0, 0, 0, "YXZ");
   private keys = new Set<string>();
   private bob = 0;
-  private hash = new Map<string, { x: number; z: number; r: number }[]>();
   locked = false;
 
-  constructor(private cam: THREE.PerspectiveCamera, private ground: Ground, trunks: { x: number; z: number; r: number }[], spawn: number[], private el: HTMLElement) {
+  constructor(private cam: THREE.PerspectiveCamera, private ground: Ground, private walls: Collision, spawn: number[], private el: HTMLElement) {
     this.pos.set(spawn[0], 0, spawn[2]);
-    for (const t of trunks) {   // 4 m buckets so each step only checks its neighbourhood
-      const k = `${Math.floor(t.x / 4)},${Math.floor(t.z / 4)}`;
-      (this.hash.get(k) ?? this.hash.set(k, []).get(k)!).push(t);
-    }
     addEventListener("keydown", (e) => { this.keys.add(e.code); });
     addEventListener("keyup", (e) => { this.keys.delete(e.code); });
     addEventListener("blur", () => this.keys.clear());
@@ -38,12 +34,7 @@ export class Player {
 
   private blocked(x: number, z: number): boolean {
     if (x < BOUNDS.x0 || x > BOUNDS.x1 || z < BOUNDS.z0 || z > BOUNDS.z1) return true;   // the invisible fence
-    for (const [dx, dz] of [[0, 0], [RADIUS, 0], [-RADIUS, 0], [0, RADIUS], [0, -RADIUS], [0.7 * RADIUS, 0.7 * RADIUS], [-0.7 * RADIUS, 0.7 * RADIUS], [0.7 * RADIUS, -0.7 * RADIUS], [-0.7 * RADIUS, -0.7 * RADIUS]])
-      if (this.ground.solid(x + dx, z + dz)) return true;
-    const bx = Math.floor(x / 4), bz = Math.floor(z / 4);
-    for (let i = bx - 1; i <= bx + 1; i++) for (let j = bz - 1; j <= bz + 1; j++)
-      for (const t of this.hash.get(`${i},${j}`) ?? []) if (Math.hypot(x - t.x, z - t.z) < t.r + RADIUS) return true;
-    return false;
+    return this.walls.hits(x, z, RADIUS);   // the real surfaces, see collide.ts
   }
 
   update(dt: number) {

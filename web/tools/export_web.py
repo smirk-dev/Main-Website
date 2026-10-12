@@ -8,6 +8,7 @@ OUT = "C:/Users/surya/OneDrive/Documents/Obsidian Vault/suryansh/coding_projects
 args = sys.argv[sys.argv.index("--")+1:] if "--" in sys.argv else []
 ONLY = set(a for a in args if not a.startswith("-"))   # e.g. trees plants statics data sky
 def want(k): return not ONLY or k in ONLY
+PICK = set(a[1:] for a in args if a.startswith("+"))   # e.g. +SX_stories_0: statics only re-export these
 for d in ("", "trees", "plants", "static"): os.makedirs(OUT+d, exist_ok=True)
 def log(*a): print("X", *a, flush=True)
 rng = random.Random(3)
@@ -154,6 +155,31 @@ def export(objs, path):
     log("glb", os.path.basename(path), round(os.path.getsize(path)/1e6, 2), "MB")
 
 SPARSE = {"ST_under_fire_of_war", "ST_vigeland_mother_child"}   # pinholed photogrammetry: any collapse opens it into confetti, ship whole
+WHOLE = {"SX_stories_0", "SX_stories_2"}   # ivy-covered scans (the chapel arch, the overgrown tree): any collapse fuses the leaves into facets
+BACKED = {"SX_stories_0"}   # scans with a dark backing sheet to cut away (see drop_backing)
+def drop_backing(o, seed_lum=0.1, seed_area=0.05, grow_lum=0.13):
+    """Scans can carry an untextured backing sheet (the arch's: a dark curtain in front of the gate). Starting from its big dark
+    faces, take every edge-connected dark face with it and delete them; isolated dark faces (real shadowed stone) stay."""
+    mat = next((m for m in o.data.materials if m and m.use_nodes), None)
+    im = next((n.image for n in mat.node_tree.nodes if n.type == "TEX_IMAGE" and n.image), None) if mat else None
+    if not im: return 0
+    W, H = im.size; px = np.array(im.pixels[:], np.float32).reshape(H, W, 4)
+    bm = bmesh.new(); bm.from_mesh(o.data); uvl = bm.loops.layers.uv.active; bm.faces.ensure_lookup_table()
+    lum = {}
+    for f in bm.faces:
+        u = sum(l[uvl].uv.x for l in f.loops) / len(f.loops); v = sum(l[uvl].uv.y for l in f.loops) / len(f.loops)
+        lum[f.index] = px[int(min(0.999, v % 1) * H), int(min(0.999, u % 1) * W), :3].mean()
+    seen = set(); stack = [f for f in bm.faces if lum[f.index] < seed_lum and f.calc_area() > seed_area]
+    for f in stack: seen.add(f.index)
+    while stack:
+        f = stack.pop()
+        for e in f.edges:
+            for g in e.link_faces:
+                if g.index not in seen and lum[g.index] < grow_lum: seen.add(g.index); stack.append(g)
+    kill = [f for f in bm.faces if f.index in seen]
+    area = sum(f.calc_area() for f in kill)
+    bmesh.ops.delete(bm, geom=kill, context='FACES'); bm.to_mesh(o.data); bm.free(); o.data.update()
+    return len(kill), round(area, 1)
 def reduced_copy(src_objs, card_tris, card_grow, solid_tris, base=Matrix(), scan=False):
     """copies of src meshes (in base-relative space), cards thinned, solids collapsed so the whole set lands near solid_tris"""
     parts = []
@@ -274,18 +300,25 @@ if want("statics") or want("data"):
         if is_lantern_clone:   # same lantern, different place: reuse the file, transform in scene.json
             static_meta.append({"name": r.name, "file": "static/SX_landing_0.glb", "matrix": [x for c in (C4 @ r.matrix_world @ C4i @ (C4 @ bpy.data.objects['SX_landing_0'].matrix_world @ C4i).inverted()).col for x in c]})
             continue
-        if want("statics"):
+        if want("statics") and (not PICK or r.name in PICK):
             cap_images(meshes, 1024 if (r.name.startswith("ST_") or centre) else 512)
-            parts = reduced_copy(meshes, 1.0, 1.0, 1e9 if r.name in SPARSE else budget, scan=True)
+            temp = []
+            if r.name in BACKED:   # work on copies: the scene keeps the scan as it came
+                for o in meshes:
+                    t = o.copy(); t.data = o.data.copy(); bpy.context.scene.collection.objects.link(t); temp.append(t)
+                    log("backing", o.name, drop_backing(t))
+                meshes = temp
+            parts = reduced_copy(meshes, 1.0, 1.0, 1e9 if r.name in SPARSE | WHOLE else budget, scan=True)
             export(parts, OUT+fn)
             for p in parts: bpy.data.objects.remove(p)
             if r.name not in SPARSE:   # far version (> 40 m, half in the mist); the sparse scans just drop their backing shell there
                 parts = reduced_copy(meshes, 1.0, 1.0, max(1500, budget*0.2), scan=True)
                 export(parts, OUT+fn.replace(".glb", "_lod1.glb"))
                 for p in parts: bpy.data.objects.remove(p)
+            for t in temp: bpy.data.objects.remove(t)
         static_meta.append({"name": r.name, "file": fn})
     others = [o for o in bpy.data.objects if o.type == 'MESH' and (o.name == "RUINS" or o.name.startswith("Cylinder"))]
-    if want("statics"):
+    if want("statics") and not PICK:
         cap_images(others, 1024)
         parts = []
         for o in others:

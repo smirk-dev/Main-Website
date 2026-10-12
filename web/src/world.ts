@@ -6,6 +6,8 @@ import type { Terrain } from "./terrain";
 const A = "/assets/";
 /** pinholed scans shipped whole, no far copy (SPARSE in export_web.py) */
 export const SPARSE = new Set(["ST_under_fire_of_war", "ST_vigeland_mother_child"]);
+/** other scans with pinholes (the overgrown tree's ivy): they keep a far copy but also get the backing shell up close */
+export const HOLED = new Set([...SPARSE, "SX_stories_2"]);
 export const lod1 = (f: string) => f.replace(".glb", "_lod1.glb");
 
 export interface InstanceSet { name: string; kind: "tree" | "sapling" | "plant" | "prop"; files: string[]; count: number; offset: number; collide: number; bbox: number[] | null; impostor: string | null }

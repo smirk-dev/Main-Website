@@ -1,9 +1,10 @@
 import * as THREE from "three";
 import { HDRLoader } from "three/examples/jsm/loaders/HDRLoader.js";
-import { loadWorld, fixMaterials, Ground, SPARSE, lod1, type World } from "./world";
+import { loadWorld, fixMaterials, Ground, HOLED, lod1, type World } from "./world";
 import { Vegetation, RANGE } from "./vegetation";
 import { Terrain } from "./terrain";
 import { densify } from "./densify";
+import { Collision } from "./collide";
 import { Player } from "./player";
 import { Door } from "./door";
 
@@ -94,6 +95,7 @@ async function boot() {
   // the ground: one surface from the forest out into the mist, the same one the walker stands on
   const terrain = new Terrain(w);
   scene.add(terrain.mesh());
+  const walls = new Collision(terrain);
   const added = densify(w, terrain, PLACES.map((p) => ({ x: p.x, z: -p.y, r: p.r })), d.spawn);
   if (params.has("debug")) console.log("densify: +" + added + " instances");
   sunDir.fromArray(d.sun.dir).normalize();
@@ -103,7 +105,8 @@ async function boot() {
   Object.assign(sun.shadow.camera, { left: -30, right: 30, top: 30, bottom: -30, near: 1, far: 220 });
   sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.04;
   scene.add(sun, sun.target);
-  scene.add(new THREE.HemisphereLight(0xcfd6dc, 0x4a3a2a, 0.35));
+  const hemi = new THREE.HemisphereLight(0xcfd6dc, 0x4a3a2a, 0.35);
+  scene.add(hemi);
 
   // the statues, the structures, the ruins and the ground
   for (const s of d.statics) {
@@ -123,9 +126,10 @@ async function boot() {
     };
     const obj = make(s.file);
     if (!obj) continue;
+    walls.addObject(obj);   // full detail: you stop at the stone itself
     if (s.name === "ruins_posts") continue;   // the chapel ruins: always drawn
     const far = make(lod1(s.file));
-    const shells = SPARSE.has(s.name) ? backScan(obj) : [];
+    const shells = HOLED.has(s.name) ? backScan(obj) : [];
     const c = new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3());
     statics.push({ obj, far, shells, c, cast: true, near: true });
   }
@@ -135,9 +139,11 @@ async function boot() {
     const l = new THREE.PointLight(0xffa04a, 6, 9, 2); l.position.fromArray(p); scene.add(l);
   });
 
-  veg = new Vegetation(w, tier.shadows);
+  veg = new Vegetation(w, tier.shadows, renderer, sunDir, { sun, hemi, env: sky, envI: scene.environmentIntensity });
   scene.add(veg.group);
-  player = new Player(camera, new Ground(w, terrain), veg.trunks, d.spawn, canvas);
+  veg.solids(walls);
+  if (params.has("debug")) console.log("collision: " + walls.tris + " triangles");
+  player = new Player(camera, new Ground(w, terrain), walls, d.spawn, canvas);
   player.settle();
   const fc = d.cameras["FCAM_B"];
   player.update(0);
