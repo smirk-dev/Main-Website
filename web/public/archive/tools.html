@@ -167,6 +167,8 @@
   document.querySelectorAll('.back, footer .open').forEach(a => a.addEventListener('click', e => {
     if (parent !== window) { e.preventDefault(); parent.postMessage('back-to-forest', '*'); }
   }));
+  // Escape here, not only in the forest: once this page has the keyboard, the forest never hears the key
+  addEventListener('keydown', e => { if (e.key === 'Escape' && parent !== window) parent.postMessage('back-to-forest', '*'); });
   // "Try it here": the live app loads only when asked, in place of its screenshot
   document.querySelectorAll('.play').forEach(b => b.addEventListener('click', () => {
     const f = document.createElement('iframe');
