@@ -165,8 +165,8 @@ archive page and "Back to the forest" returns to the same spot. Built in `web/`;
   instead) and the head bob.
 - **Measured on this machine (Iris Xe, 1600×900, Chromium ANGLE D3D11):** first paint 0.09 s; the first statue is
   interactive after **13.6 MB** in 0.7 s (local server); 60 MB total after the forest. Act I 56–60 fps. Forest **true GPU time
-  20–23 ms a frame** (timer queries), i.e. ~43–50 fps: vegetation ~15 ms of it, shadows 8–10 ms. Without shadows (the
-  adaptive ladder's third rung) ~12 ms. So the integrated-GPU floor (30 fps) holds; 60 fps on an RTX 3060 class GPU is not
+  20–23 ms a frame** (timer queries), i.e. ~43–50 fps: vegetation 12–17 ms of it, shadows 7–10 ms. Without shadows (the
+  adaptive ladder's third rung) 12.5–15.6 ms. So the integrated-GPU floor (30 fps) holds; 60 fps on an RTX 3060 class GPU is not
   measured here. Note: headless rAF "fps" on this machine overstates (frames are queued faster than the GPU draws them).
 - **Tiers:** chosen at run time, not by a benchmark at load: if the measured fps stays under 40, the frame drops a rung
   (pixel ratio 1.25 → 1, then shorter vegetation ranges, then no shadows, then pixel ratio 0.8).
