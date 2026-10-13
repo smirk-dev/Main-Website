@@ -146,6 +146,35 @@ Suryansh approved `g2-scenes/archive/tools.html` ("seems fine for now"). All sev
 
 Copy may be revisited later ("for now"). **Next: G3 assembly.**
 
+### G3 assembly (2026-10-13): the full loop in one app
+Act I (scroll, 9 beats) → the door rises out of the last black → Enter walks through → the forest → each place opens its
+archive page and "Back to the forest" returns to the same spot. Built in `web/`; test switches `?door`, `?forest`, `?debug`,
+`?plates=0`, `?warm=0`, `?pr=`, `?shadows=0`.
+- **D8, how the statues are path traced: offline Cycles plates, not an in-browser path tracer.** `three-gpu-pathtracer` was
+  tried and ruled out: its shader took 58–178 s to compile on ANGLE/D3D11 (Iris Xe) and still drew a flat grey silhouette.
+  Instead each beat's settled frame is rendered in Cycles with the same poses and light rig (`web/tools/beats_render.py`,
+  1920×1080, 160 samples, denoised; 9 plates, 23–100 KB WebP). When the scroll rests on a beat its plate crossfades in over
+  the raster, and it fades out the moment the scroll moves. The plate is framed like the raster at any window shape
+  (checked at 16:9 and 16:10). The settled frame is still truly path traced, just ahead of time.
+- **D6 sound:** wind with insects under it (Gravity Sound, CC BY 4.0), a seamless 49 s loop (`assets/audio/forest.ogg`,
+  390 KB). Off until asked for: M in the forest, or the button on the pause screen. Quieter while a page is open.
+- **D7 credits:** `/archive/credits.html`, generated from each Sketchfab download's `license.txt` and the Poly Haven API
+  (`web/tools/build_credits.py`): 16 statues, 27 structures, 26 forest assets, 2 recordings. Linked from the archive index and the pause screen.
+- **Accessibility:** keyboard reaches Enter, Leave, Skip at the door; the story track is focusable and scrolls by keyboard;
+  "Skip to the door" and "Skip the walk" links; reduced motion turns off the scroll glide, the walk through the door (a fade
+  instead) and the head bob.
+- **Measured on this machine (Iris Xe, 1600×900, Chromium ANGLE D3D11):** first paint 0.09 s; the first statue is
+  interactive after **13.6 MB** in 0.7 s (local server); 60 MB total after the forest. Act I 56–60 fps. Forest **true GPU time
+  20–23 ms a frame** (timer queries), i.e. ~43–50 fps: vegetation ~15 ms of it, shadows 8–10 ms. Without shadows (the
+  adaptive ladder's third rung) ~12 ms. So the integrated-GPU floor (30 fps) holds; 60 fps on an RTX 3060 class GPU is not
+  measured here. Note: headless rAF "fps" on this machine overstates (frames are queued faster than the GPU draws them).
+- **Tiers:** chosen at run time, not by a benchmark at load: if the measured fps stays under 40, the frame drops a rung
+  (pixel ratio 1.25 → 1, then shorter vegetation ranges, then no shadows, then pixel ratio 0.8).
+- **Load stalls removed:** every texture and every statue/structure mesh is uploaded during Act I (they used to stall the
+  first sight of a clearing 1–3 s), and the vegetation's instance buffers rotate through three, so an update never writes a
+  buffer the GPU is still drawing from.
+- Story lines are still Lorem Ipsum, tagged by statue and beat, waiting for Suryansh's copy.
+
 ## 3. Realism and rendering: how "hyper-realistic + ray tracing" is achieved in a browser
 
 The blunt fact: **real-time path tracing of a dense forest is not possible in a browser on an

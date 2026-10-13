@@ -12,6 +12,8 @@ export class Player {
   readonly euler = new THREE.Euler(0, 0, 0, "YXZ");
   private keys = new Set<string>();
   private bob = 0;
+  /** 0 with prefers-reduced-motion: no head bob */
+  bobScale = 1;
   locked = false;
 
   constructor(private cam: THREE.PerspectiveCamera, private ground: Ground, private walls: Collision, spawn: number[], private el: HTMLElement) {
@@ -63,7 +65,7 @@ export class Player {
     this.pos.y += (gy - this.pos.y) * Math.min(1, dt * 12);   // smooth over the ground's small bumps
     const sp = Math.hypot(this.vel.x, this.vel.z);
     this.bob += dt * sp * 2.1;
-    const by = Math.sin(this.bob) * 0.035 * Math.min(1, sp / WALK);
+    const by = Math.sin(this.bob) * 0.035 * this.bobScale * Math.min(1, sp / WALK);
     this.cam.position.set(this.pos.x, this.pos.y + EYE + by, this.pos.z);
     this.cam.quaternion.setFromEuler(this.euler);
   }

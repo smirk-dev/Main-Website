@@ -10,6 +10,10 @@ export class Door {
   private left?: THREE.Object3D;
   private right?: THREE.Object3D;
   private day: THREE.SpotLight;
+  private key: THREE.SpotLight;
+  private rim: THREE.SpotLight;
+  /** 0..1: the door's own light coming up out of the black at the end of Act I */
+  reveal = 1;
   private angle = 0;     // current leaf swing, degrees
   private target = 0;
   private walking = -1;  // seconds into the walk-through, -1 = not started
@@ -31,8 +35,8 @@ export class Door {
     plate.position.set(0, 1.6, -6); this.scene.add(plate);
 
     // key (warm, front left) and rim (cool, behind right), as on the heroes; daylight from beyond the door
-    const key = new THREE.SpotLight(0xffd19e, 260, 14, 0.6, 0.6, 2); key.position.set(-3.6, 4.2, 3.4); key.target.position.set(0, 1.4, 0);
-    const rim = new THREE.SpotLight(0x9ebdff, 70, 12, 0.6, 0.7, 2); rim.position.set(3.4, 3.8, 1.2); rim.target.position.set(0, 1.4, 0);
+    const key = this.key = new THREE.SpotLight(0xffd19e, 260, 14, 0.6, 0.6, 2); key.position.set(-3.6, 4.2, 3.4); key.target.position.set(0, 1.4, 0);
+    const rim = this.rim = new THREE.SpotLight(0x9ebdff, 70, 12, 0.6, 0.7, 2); rim.position.set(3.4, 3.8, 1.2); rim.target.position.set(0, 1.4, 0);
     this.day = new THREE.SpotLight(0xffdbad, 0, 18, 0.75, 0.5, 1.4); this.day.position.set(0.2, 2.6, -2.4); this.day.target.position.set(0, 0, 4);
     this.day.castShadow = true; this.day.shadow.mapSize.set(1024, 1024); this.day.shadow.bias = -0.0005;
     this.scene.add(key, key.target, rim, rim.target, this.day, this.day.target, new THREE.AmbientLight(0xffffff, 0.04));
@@ -69,7 +73,8 @@ export class Door {
     this.angle += (this.target - this.angle) * Math.min(1, dt * (this.walking >= 0 ? 1.8 : 3.5));
     if (this.left) this.left.rotation.y = THREE.MathUtils.degToRad(this.angle);
     if (this.right) this.right.rotation.y = -THREE.MathUtils.degToRad(this.angle);
-    this.day.intensity = 220 * Math.min(1, this.angle / 16) + 160 * Math.max(0, (this.angle - 16) / 64);
+    this.day.intensity = (220 * Math.min(1, this.angle / 16) + 160 * Math.max(0, (this.angle - 16) / 64)) * this.reveal;
+    this.key.intensity = 260 * this.reveal; this.rim.intensity = 70 * this.reveal;
     if (this.walking >= 0) {
       this.walking += dt;
       // wait for the leaves to clear, then a slow push through the doorway, easing in

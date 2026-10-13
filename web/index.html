@@ -15,11 +15,36 @@
 <section id="gate" class="screen" hidden>
   <h1>Suryansh Mishra</h1>
   <p class="lede">This is a walk through a forest, built for a desktop with a keyboard and mouse.</p>
-  <p><a href="/archive/tools.html">See the work without the walk →</a></p>
+  <p><a href="/archive/index.html">See the work without the walk →</a></p>
 </section>
 
+<!-- Act I: the statues. Scrolling this (invisible) track drives the camera; each line belongs to one statue and one beat.
+     The copy is placeholder until Suryansh sends his: replace the text, keep the data-statue / data-beat tags. -->
+<!-- the path-traced settled frames of Act I (two layers for crossfading) -->
+<div id="plates" aria-hidden="true"><img alt=""><img alt=""></div>
+<section id="story" tabindex="0" aria-label="The story: scroll to move through it">
+  <div id="track"></div>
+</section>
+<div id="lines" aria-live="polite">
+  <header class="line intro" data-t="0">
+    <div class="kicker">Suryansh Mishra</div>
+    <p class="lede">Three figures, then a door.</p>
+    <p class="cue" id="cue">Loading…</p>
+  </header>
+  <p class="line" data-statue="engel" data-beat="emerge">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+  <p class="line" data-statue="engel" data-beat="reveal">Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, ut enim ad minim veniam.</p>
+  <p class="line" data-statue="engel" data-beat="close">Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.</p>
+  <p class="line" data-statue="milan_mourning" data-beat="emerge">Duis aute irure dolor in reprehenderit in voluptate velit esse.</p>
+  <p class="line" data-statue="milan_mourning" data-beat="reveal">Cillum dolore eu fugiat nulla pariatur, excepteur sint occaecat cupidatat non proident.</p>
+  <p class="line" data-statue="milan_mourning" data-beat="close">Sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  <p class="line" data-statue="maternal_affection" data-beat="emerge">Curabitur pretium tincidunt lacus, nulla gravida orci a odio.</p>
+  <p class="line" data-statue="maternal_affection" data-beat="reveal">Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris.</p>
+  <p class="line" data-statue="maternal_affection" data-beat="close">Integer in mauris eu nibh euismod gravida.</p>
+  <a class="skip skip-story" href="?door">Skip to the door</a>
+</div>
+
 <!-- Act II: the door in the void. Enter walks through it into the forest; Leave tries to close the tab. -->
-<section id="start">
+<section id="start" hidden>
   <header class="door-top">
     <div class="kicker">Suryansh Mishra</div>
     <p class="lede">Every structure in the forest beyond holds a part of my work.</p>
@@ -36,9 +61,10 @@
       <li><kbd>Shift</kbd> run</li>
       <li><b>Mouse</b> look</li>
       <li><kbd>E</kbd> open</li>
+      <li><kbd>M</kbd> sound</li>
       <li><kbd>Esc</kbd> pause</li>
     </ul>
-    <a class="skip" href="/archive/tools.html">Skip the walk</a>
+    <a class="skip" href="/archive/index.html">Skip the walk</a>
   </footer>
 </section>
 
@@ -51,6 +77,9 @@
 <section id="pause" class="screen" hidden>
   <h2>Paused</h2>
   <button id="resume">Back into the forest</button>
+  <button id="sound" class="ghost" aria-pressed="false">Sound off</button>
+  <p class="hint"><kbd>M</kbd> turns the sound on or off while you walk.</p>
+  <p class="hint"><a href="/archive/index.html">The archive</a> · <a href="/archive/credits.html">Credits</a></p>
 </section>
 
 <div id="hud" hidden>

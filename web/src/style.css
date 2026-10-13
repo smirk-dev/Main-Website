@@ -52,3 +52,27 @@ button.ghost:hover, button.ghost:focus-visible { background: rgba(255,255,255,.0
 #fade { position: fixed; inset: 0; z-index: 7; background: #bfc3c2; opacity: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; }
 #fadetxt { font: italic 400 20px var(--serif); color: #3a3a36; }
 #gone { background: #000; animation: fadein 1.2s ease-out; z-index: 8; }
+
+/* Act I: the statues. #story is an invisible scroll track over the canvas; #lines holds the story, one line per beat. */
+#story { position: fixed; inset: 0; z-index: 4; overflow-y: auto; scroll-snap-type: y proximity; outline: none; scrollbar-width: none; }
+#story::-webkit-scrollbar { display: none; }
+#track { position: relative; width: 1px; }
+#track > i { position: absolute; left: 0; width: 1px; height: 1px; scroll-snap-align: start; }
+#lines { position: fixed; inset: 0; z-index: 4; pointer-events: none; }
+#lines .line { position: absolute; top: 50%; max-width: min(420px, 30vw); margin: 0; transform: translateY(-50%); opacity: 0; will-change: opacity, transform;
+               font: italic 400 clamp(22px, 1.9vw, 30px)/1.42 var(--serif); color: #e2dccf; text-shadow: 0 2px 18px #000; }
+#lines .line.left { left: 9vw; } #lines .line.right { right: 9vw; text-align: right; }
+#lines .intro { left: 0; right: 0; max-width: none; text-align: center; font-style: normal; }
+#lines .intro .lede { margin: 12px auto 0; font-size: 22px; }
+#lines .cue { margin-top: 36px; font: 400 12px var(--sans); letter-spacing: .24em; text-transform: uppercase; color: var(--dim); }
+#lines .skip-story { position: absolute; left: auto; right: 32px; bottom: 26px; pointer-events: auto; transition: opacity .6s; }
+#plates { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+#plates img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .25s ease-out; }
+#plates img.on { opacity: 1; transition: opacity 1.1s ease-in-out; }
+/* a soft shadow behind each story line, so it stays readable when a close beat fills the frame */
+#lines .line:not(.intro)::before { content: ""; position: absolute; inset: -60px -90px; z-index: -1; background: radial-gradient(closest-side, rgba(0,0,0,.8), rgba(0,0,0,.45) 55%, rgba(0,0,0,0)); }
+
+/* pause: back in, the sound, and the way out */
+#pause #sound { margin-top: 14px; }
+#pause .hint { margin: 22px 0 0; font-size: 13px; color: var(--dim); }
+#pause .hint + .hint { margin-top: 10px; }

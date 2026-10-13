@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Credits · Suryansh Mishra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap">
+<style>
+  :root {
+    --ink: #0b0c0d; --ink-2: #121416; --line: #23272a; --text: #d9d6cf; --dim: #8d8a83; --faint: #5d5b56;
+    --live: #9fc79a; --archived: #d6b47c; --reference: #9fb4c9; --accent: #e8d9b8;
+    --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif; --sans: Inter, system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ink); color: var(--text); font: 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+  body { margin: 0; }
+  a { color: inherit; }
+  .skip { position: absolute; left: -999px; } .skip:focus { left: 16px; top: 16px; z-index: 9; background: var(--ink-2); padding: 8px 12px; }
+
+  /* the clearing you came from, fading into the archive */
+  .hero { position: relative; height: 72vh; min-height: 520px; overflow: hidden; }
+  .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; filter: saturate(.8) brightness(.78); }
+  .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(11,12,13,.15) 0%, rgba(11,12,13,.2) 40%, var(--ink) 98%); }
+  .back { position: absolute; z-index: 2; top: 28px; left: 40px; font-size: 14px; letter-spacing: .02em; color: var(--text); text-decoration: none;
+          padding: 8px 14px 8px 12px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; background: rgba(11,12,13,.35); backdrop-filter: blur(6px); }
+  .back:hover, .back:focus-visible { border-color: rgba(255,255,255,.45); }
+  .title { position: absolute; z-index: 2; left: 0; right: 0; bottom: 6vh; max-width: 1240px; margin: 0 auto; padding: 0 40px; }
+  .kicker { font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--dim); }
+  h1 { font: 400 clamp(56px, 7vw, 104px)/0.95 var(--serif); margin: 10px 0 18px; color: #f1ece2; letter-spacing: -.01em; }
+  .lede { max-width: 620px; font: italic 400 23px/1.45 var(--serif); color: #c8c3b8; margin: 0; }
+
+  main { max-width: 1240px; margin: 0 auto; padding: 40px 40px 120px; }
+  .count { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 8px;
+           font-size: 13px; color: var(--faint); letter-spacing: .04em; }
+
+  .entry { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 56px; align-items: center; padding: 64px 0; border-bottom: 1px solid var(--line); }
+  .entry:nth-of-type(even) .preview { order: 2; }
+  .preview { position: relative; aspect-ratio: 16 / 10; border-radius: 6px; overflow: hidden; background: var(--ink-2); border: 1px solid var(--line);
+             box-shadow: 0 30px 60px -30px rgba(0,0,0,.8); }
+  .preview img, .preview iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; object-position: top; display: block;
+                                  transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .preview iframe { width: 1600px; height: 1000px; inset: auto; left: 0; top: 0; transform-origin: 0 0; object-fit: initial; transition: none; }
+  .entry:hover .preview img { transform: scale(1.015); }
+  .play { position: absolute; right: 14px; bottom: 14px; font: 500 13px var(--sans); color: #111; background: var(--accent); border: 0; border-radius: 999px;
+          padding: 9px 16px; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,.4); }
+  .play:hover, .play:focus-visible { background: #fff; }
+  .num { font: 500 12px var(--sans); color: var(--faint); letter-spacing: .2em; font-variant-numeric: tabular-nums lining-nums; }
+  h2 { font: 500 42px/1.05 var(--serif); margin: 6px 0 14px; color: #f1ece2; }
+  .desc { margin: 0 0 26px; color: #bdb9b0; font-size: 16.5px; }
+  dl { display: grid; grid-template-columns: 84px 1fr; gap: 8px 16px; margin: 0 0 28px; font-size: 14px; }
+  dt { color: var(--faint); text-transform: uppercase; letter-spacing: .14em; font-size: 11px; padding-top: 3px; }
+  dd { margin: 0; color: var(--text); }
+  .row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .badge { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; padding: 4px 10px 4px 9px; border-radius: 999px; border: 1px solid currentColor; }
+  .badge::before { content: "●"; font-size: 8px; margin-right: 7px; vertical-align: 2px; }
+  .badge.live { color: var(--live); } .badge.archived { color: var(--archived); } .badge.reference { color: var(--reference); }
+  .open { font-size: 15px; text-decoration: none; border-bottom: 1px solid rgba(232,217,184,.4); color: var(--accent); padding-bottom: 2px; }
+  .open:hover, .open:focus-visible { border-color: var(--accent); }
+  .note { font-size: 13px; color: var(--faint); }
+
+  footer { max-width: 1240px; margin: 0 auto; padding: 0 40px 80px; display: flex; justify-content: space-between; color: var(--faint); font-size: 13px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<style>
+  .top { padding-top: 72px; } .top h1 { margin-top: 0; }
+  h2 { font-size: 34px; margin: 64px 0 8px; } .intro { color: #bdb9b0; max-width: 720px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 18px; }
+  th { text-align: left; font: 500 11px var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); padding: 0 16px 10px 0; border-bottom: 1px solid var(--line); }
+  td { padding: 11px 16px 11px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td a { text-decoration: none; border-bottom: 1px solid rgba(232,217,184,.25); } td a:hover, td a:focus-visible { border-color: var(--accent); }
+  .src { color: var(--faint); font-size: 12px; margin-left: 6px; }
+</style>
+<main class="top">
+  <div class="kicker">Suryansh Mishra</div>
+  <h1>Credits</h1>
+  <p class="lede">The statues, the stones and the forest were made by other people, and shared freely. Thank you.</p>
+  <p class="intro">Every third-party asset on this site is listed here with its author and licence. Those under CC BY are credited as their licence asks; the CC0 ones are credited anyway. Most were simplified, retextured, weathered or rescaled to fit the scene (CC BY asks that changes be noted); any flaw that added is mine, not the authors'.</p>
+  <h2>Statues</h2>
+<table><thead><tr><th>Work</th><th>By</th><th>Licence</th><th>Where</th></tr></thead><tbody>
+<tr><td><a href="https://sketchfab.com/3d-models/engel-f48198cd16264e1ca44fb21cc14a3759" rel="noopener">Engel</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/www.noe-3d.at" rel="noopener">noe-3d.at</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>Act I</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/milano-cimitero-monumentale-mourning-angel-c1685650128c425c8995b74b291a5966" rel="noopener">Milano, Cimitero monumentale, Mourning angel</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/Giovanni.Gallo" rel="noopener">Giovanni.Gallo</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>Act I</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/maternal-affection-fcbd7acf26814169a5bd3a6ca9cb2003" rel="noopener">Maternal affection</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/fitzwilliammuseum" rel="noopener">Fitzwilliam Museum</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>Act I</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/mother-with-child-bronze-sculpture-64a265ba7b2f46bb86b81c195c828d53" rel="noopener">Mother with Child - Bronze Sculpture</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/MaximilianRex" rel="noopener">Max Rex</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/black-angel-of-oakland-cemetery-db9e0abb1f2245209f465d272dc844e4" rel="noopener">Black Angel of Oakland Cemetery</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/lauren.chesire" rel="noopener">lauren.chesire</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/broken-wing-angel-statue-3d-scan-ee2dfa611cb84ef5816036277a818477" rel="noopener">Broken Wing Angel Statue 3D-Scan</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/towerdweller" rel="noopener">TowerDweller.com 3D-Scan Hunter</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/the-death-and-the-mother-fa844de90c204d178abdde35c3a04656" rel="noopener">The Death and the mother</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/norgeotloic" rel="noopener">Loïc Norgeot</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/engel-statue-scan-retopology-602e423e27ca4f9c938e98980c888b5d" rel="noopener">Engel Statue Scan - Retopology</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/refref1990" rel="noopener">Refref1990</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/the-fallen-angels-by-salvatore-albano-80ac0f5514a74204a7cff3925cb4e161" rel="noopener">The Fallen Angels by Salvatore Albano</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/alban" rel="noopener">alban</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/the-grim-reaper-51b8ce3443044897a6560827fad75cba" rel="noopener">The Grim Reaper</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/gunsesfercho" rel="noopener">fercho gunses</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/madonna-and-child-74e4278b29214c7eb0268628477e8bcd" rel="noopener">Madonna and child</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/edemaistre" rel="noopener">emm</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/mary-evora-a864230e91964df193a8007582cd82c5" rel="noopener">Mary_Evora</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/m47325_uevora" rel="noopener">Ye Myat Lwin</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/marble-angel-memorial-rookwood-cemetery-sydney-c9d92d4488e94043bfe1b7b9d86d0b92" rel="noopener">Marble Angel Memorial - Rookwood Cemetery Sydney</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/rookwoodgothica" rel="noopener">rookwoodgothica</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/silence-angel-sculpture-03628a6d36e04542b6014ddb07b85c63" rel="noopener">Silence - Angel Sculpture</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/drvrstudio" rel="noopener">drvrstudio</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/mother-and-child-statue-under-fire-of-war-1f73312d54654956a0d0681191fdc14d" rel="noopener">Mother and Child Statue &quot;Under Fire of War&quot;</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/seirogan" rel="noopener">seirogan</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/mother-and-child-gustav-vigeland-9b07da4b08b049e1a90db036edfc0497" rel="noopener">Mother and Child, Gustav Vigeland</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/johngreenstone" rel="noopener">Epic_Tree_Store</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The forest</td></tr>
+</tbody></table>
+  <h2>The structures</h2>
+<table><thead><tr><th>Work</th><th>By</th><th>Licence</th><th>Where</th></tr></thead><tbody>
+<tr><td><a href="https://sketchfab.com/3d-models/boundary-way-road-marker-stone-fdb45e7ebafe4638b7a6b12644ab779c" rel="noopener">Boundary way road marker stone</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/matousekfoto" rel="noopener">matousekfoto</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The milestones</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/richmond-milestone-c162865d1be44f8aae38ece536d9437a" rel="noopener">Richmond Milestone</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/artfletch" rel="noopener">artfletch</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The milestones</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/mijlpaal-uit-de-renaissance-362e0e1959ae441cad747cdfe0dab74b" rel="noopener">Mijlpaal uit de Renaissance</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/rmo_leiden" rel="noopener">The National Museum of Antiquities</a></td><td><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0-1.0</a></td><td>The milestones</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/sandstone-pillar-d02ff8bc89c34103afed70309a2cb869" rel="noopener">Sandstone Pillar</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/megalitharchive" rel="noopener">Megalith Archive</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The milestones</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/callanish-967bbaf8fde44ce780283987762270fd" rel="noopener">Callanish</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/megalitharchive" rel="noopener">megalitharchive</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The stone ring</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/chessboard-made-of-concrete-de83d4e16c584ff582a4b5ff43ba3551" rel="noopener">Chessboard made of concrete</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/gorllu" rel="noopener">Goromor</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The stone ring</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/stone-table-benches-371c4a19b3d847dfba74d21b3f19a99d" rel="noopener">Stone Table &amp; Benches</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/eydeet" rel="noopener">Eydeet</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The stone ring</td></tr>
+<tr><td><a href="https://polyhaven.com/a/chess_set" rel="noopener">Chess Set</a> <span class="src">Poly Haven</span></td><td>Riley Queen</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The stone ring</td></tr>
+<tr><td><a href="https://polyhaven.com/a/Lantern_01" rel="noopener">Lantern 01</a> <span class="src">Poly Haven</span></td><td>Rajil Jose Macatangay</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The lanterns</td></tr>
+<tr><td><a href="https://polyhaven.com/a/wooden_lantern_01" rel="noopener">Wooden Lantern 01</a> <span class="src">Poly Haven</span></td><td>James Ray Cock</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The lanterns</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/old-oil-lamp-aaa99a374e0c4a98868383c42ff6ae0d" rel="noopener">Old oil lamp</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/rudavin" rel="noopener">rudavin</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The lanterns</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/arabian-hanging-lamps-c8eafb62343b4d258f0480af923f3e91" rel="noopener">Arabian Hanging Lamps</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/charlieeoshea" rel="noopener">cha</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The lanterns</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/gunnersbury-park-arch-32a77f451e0942fba85bc2a1f7d4bd80" rel="noopener">Gunnersbury Park Arch</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/artfletch" rel="noopener">artfletch</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The ruined chapel</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/old-stone-gate-ce9132cc47f94190842f3ef4c8806f6c" rel="noopener">Old Stone Gate</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/magann" rel="noopener">magann</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The ruined chapel</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/garden-arch-photogrammetry-db578b15c8444a7ea03970efd970211e" rel="noopener">Garden Arch Photogrammetry</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/bent_bacherach" rel="noopener">bent_bacherach</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The ruined chapel</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/crank-easel-b68c2c8c85dd41dda8fa020e954322e1" rel="noopener">Crank easel</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/WirtualneMuzeaMalopolski" rel="noopener">Virtual Museums of Małopolska</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The easels</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/wooden-easel-dirty-and-painted-7cf01ab661ea4e649d2145f103b898bc" rel="noopener">Wooden Easel | dirty and painted</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/vruderkuss" rel="noopener">vrtim</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The easels</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/underwood-typewriter-vintage-free-raw-scan-4c5e323a09e44c2f909a04c64c0c2cca" rel="noopener">Underwood Typewriter Vintage Free Raw Scan</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/JordanF3DScans" rel="noopener">Jordan F</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The easels</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/writing-desk-a7ab3ce6627d4663b88c0717a4020ca2" rel="noopener">Writing Desk</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/OsianOHM" rel="noopener">Osian3D</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The easels</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/anvil-1-7fda222f6a6544cf983cd614d6742636" rel="noopener">Anvil 1</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/dontshootnow" rel="noopener">Beer Knight</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The anvils</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/old-anvil-709ee604d04545d8ab867c1e3f427bf6" rel="noopener">Old Anvil</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/pomiary.inzynierskie" rel="noopener">pomiary.inzynierskie</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The anvils</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/armillary-sphere-1771-41e23659c75241459eec6477d9e77c93" rel="noopener">Armillary sphere (1771)</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/WirtualneMuzeaMalopolski" rel="noopener">Virtual Museums of Małopolska</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The anvils</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/astrolabe-530bd21edcdf4c4695cc4c8af856d6bf" rel="noopener">Astrolabe</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/WirtualneMuzeaMalopolski" rel="noopener">Virtual Museums of Małopolska</a></td><td><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0-1.0</a></td><td>The anvils</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/old-water-well-dinan-c38426987e6c452d91dcea3b036883a8" rel="noopener">Old Water well - Dinan</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/noxfcna" rel="noopener">noxfcna</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The wells and mirrors</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/mirror-cf964a1ff455478ba65771400a4ea1ab" rel="noopener">Mirror</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/eucocker" rel="noopener">eucocker</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The wells and mirrors</td></tr>
+<tr><td><a href="https://sketchfab.com/3d-models/venice-well-3d-scan-asset-bd2b067ca4b64b829f6b56f91fc9e725" rel="noopener">Venice well 3D Scan Asset</a> <span class="src">Sketchfab</span></td><td><a href="https://sketchfab.com/Marcin.Adamski1" rel="noopener">Marcin.Adamski1</a></td><td><a href="http://creativecommons.org/licenses/by/4.0/" rel="noopener">CC-BY-4.0</a></td><td>The wells and mirrors</td></tr>
+<tr><td><a href="https://polyhaven.com/a/ornate_mirror_01" rel="noopener">Ornate Mirror 01</a> <span class="src">Poly Haven</span></td><td>James Ray Cock</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The wells and mirrors</td></tr>
+</tbody></table>
+  <h2>The forest, the door and the sky</h2>
+<table><thead><tr><th>Work</th><th>By</th><th>Licence</th><th>Where</th></tr></thead><tbody>
+<tr><td><a href="https://polyhaven.com/a/boulder_01" rel="noopener">Boulder 01</a> <span class="src">Poly Haven</span></td><td>Rico Cilliers</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/brown_mud_leaves_01" rel="noopener">Brown Mud Leaves 01</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/dead_tree_trunk" rel="noopener">Dead Tree Trunk</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/dead_tree_trunk_02" rel="noopener">Dead Tree Trunk 02</a> <span class="src">Poly Haven</span></td><td>Jenelle van Heerden, Rico Cilliers</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/dry_branches_medium_01" rel="noopener">Dry Branches Medium 01</a> <span class="src">Poly Haven</span></td><td>Rico Cilliers</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/fern_02" rel="noopener">Fern 02</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel, Rico Cilliers</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/fir_sapling" rel="noopener">Fir Sapling</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel, Rico Cilliers</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/fir_sapling_medium" rel="noopener">Fir Sapling Medium</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel, Rico Cilliers</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/fir_tree_01" rel="noopener">Fir Tree 01</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel, Rico Cilliers</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/forest_ground_04" rel="noopener">Forest Ground 04</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel, Rico Cilliers</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/forest_leaves_04" rel="noopener">Forest Leaves 04</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/grass_medium_01" rel="noopener">Grass Medium 01</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel, Rico Cilliers</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/kloppenheim_06_puresky" rel="noopener">Kloppenheim 06 (Pure Sky)</a> <span class="src">Poly Haven</span></td><td>Greg Zaal, Jarod Guest</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/large_castle_door" rel="noopener">Large Castle Door</a> <span class="src">Poly Haven</span></td><td>Tina</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/lichen_rock" rel="noopener">Lichen Rock</a> <span class="src">Poly Haven</span></td><td>Rico Cilliers</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/moss_01" rel="noopener">Moss 01</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/pine_roots" rel="noopener">Pine Roots</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/pine_sapling_medium" rel="noopener">Pine Sapling Medium</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel, Rico Cilliers</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/pine_sapling_small" rel="noopener">Pine Sapling Small</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel, Rico Cilliers</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/pine_tree_01" rel="noopener">Pine Tree 01</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel, Rico Cilliers</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/rock_moss_set_01" rel="noopener">Rock Moss Set 01</a> <span class="src">Poly Haven</span></td><td>Kless Gyzen</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/rock_moss_set_02" rel="noopener">Rock Moss Set 02</a> <span class="src">Poly Haven</span></td><td>Kless Gyzen</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/root_cluster_01" rel="noopener">Root Cluster 01</a> <span class="src">Poly Haven</span></td><td>Jenelle van Heerden, Rico Cilliers</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/tree_small_02" rel="noopener">Tree Small 02</a> <span class="src">Poly Haven</span></td><td>Rico Cilliers</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/tree_stump_01" rel="noopener">Tree Stump 01</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+<tr><td><a href="https://polyhaven.com/a/tree_stump_02" rel="noopener">Tree Stump 02</a> <span class="src">Poly Haven</span></td><td>Rob Tuytel</td><td><a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener">CC0</a></td><td>The forest</td></tr>
+</tbody></table>
+  <h2>Sound</h2>
+<table><thead><tr><th>Work</th><th>By</th><th>Licence</th><th>Where</th></tr></thead><tbody>
+<tr><td><a href="https://commons.wikimedia.org/wiki/File:Wind_in_forest_(Gravity_Sound).wav" rel="noopener">Wind in forest (Gravity Sound)</a> <span class="src">Wikimedia Commons</span></td><td><a href="https://www.gravitysound.studio/" rel="noopener">Gravity Sound</a></td><td><a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a></td><td>The forest's sound, mixed with the other recording, looped and levelled</td></tr>
+<tr><td><a href="https://commons.wikimedia.org/wiki/File:Forest_ambience_(Gravity_Sound).wav" rel="noopener">Forest ambience (Gravity Sound)</a> <span class="src">Wikimedia Commons</span></td><td><a href="https://www.gravitysound.studio/" rel="noopener">Gravity Sound</a></td><td><a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a></td><td>The forest's sound, mixed with the other recording, looped and levelled</td></tr>
+</tbody></table>
+  <h2>Type and code</h2>
+  <p class="intro">Cormorant Garamond and Inter (SIL Open Font License), served by Google Fonts. Rendered with <a class="open" href="https://threejs.org" rel="noopener">three.js</a> (MIT) and, offline, Blender Cycles.</p>
+</main>
+<footer><a class="open" href="/">Walk the forest</a><a class="open" href="./">The archive</a></footer>
+</html>

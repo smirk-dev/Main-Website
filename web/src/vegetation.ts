@@ -28,7 +28,11 @@ function skyLight(tex: THREE.DataTexture) {
 }
 const IMP_N = 8, IMP_W = 256, IMP_H = 512;   // impostor views round each tree, and the size of each view
 
-interface Part { mesh: THREE.InstancedMesh; mats: Float32Array; fade?: THREE.InstancedBufferAttribute }   // mats: instance×node matrices, 16 floats each
+interface Part { mesh: THREE.InstancedMesh; mats: Float32Array; fade?: THREE.InstancedBufferAttribute; ring?: Ring }   // mats: instance×node matrices, 16 floats each
+/** RING buffers per instanced attribute, used in turn: writing into the one the GPU drew from a frame ago stalled ANGLE/D3D11
+ *  ~120 ms on every update (Iris Xe), i.e. a hitch every half metre of walking. With three, the one written is idle. */
+interface Ring { k: number; m: THREE.InstancedBufferAttribute[]; f: THREE.InstancedBufferAttribute[]; n: number; nf: number }
+const RING = 3;
 interface Set { def: InstanceSet; pos: Float32Array; lods: Part[][]; radius: number; lift: number }
 
 // screen-space noise for the dissolve: the near tree keeps the pixels below its weight, the impostor the rest
@@ -241,6 +245,15 @@ export class Vegetation {
     return { mesh: im, mats, fade };
   }
 
+  /** move a part on to the next buffer of its ring (made on first use) */
+  private flip(p: Part) {
+    const make = (n: number, size: number) => new THREE.InstancedBufferAttribute(new Float32Array(n), size).setUsage(THREE.DynamicDrawUsage);
+    const r = (p.ring ??= { k: -1, m: [], f: [], n: p.mesh.instanceMatrix.array.length, nf: p.fade?.array.length ?? 0 });
+    r.k = (r.k + 1) % RING;
+    p.mesh.instanceMatrix = r.m[r.k] ??= make(r.n, 16);
+    if (p.fade) { p.fade = r.f[r.k] ??= make(r.nf, 1); p.mesh.geometry.setAttribute("ifade", p.fade); }
+  }
+
   private last = new THREE.Vector3(1e9, 0, 0);
   private lastDir = new THREE.Vector3();
   private dir = new THREE.Vector3();
@@ -257,6 +270,7 @@ export class Vegetation {
     camera.getWorldDirection(this.dir);
     if (cp.distanceTo(this.last) < 0.5 && this.dir.dot(this.lastDir) > 0.995 && this.scale === this.lastScale) return;
     this.last.copy(cp); this.lastDir.copy(this.dir); this.lastScale = this.scale;
+    for (const s of this.sets) for (const parts of s.lods) for (const p of parts) this.flip(p);
     const wide = camera.clone(); wide.fov = Math.min(150, camera.fov + 25); wide.updateProjectionMatrix(); wide.updateMatrixWorld();
     this.frustum.setFromProjectionMatrix(this.m4.multiplyMatrices(wide.projectionMatrix, camera.matrixWorldInverse));
     const tmp = new Float32Array(16);

@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const { categories } = JSON.parse(readFileSync(root + "content/works.json", "utf8"));
+const credits = JSON.parse(readFileSync(root + "content/credits.json", "utf8"));   // tools/build_credits.py
 const out = root + "public/archive/";
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -177,6 +178,47 @@ ${STYLE}
 ${rows}
   </div>
 </main>
+<footer><a class="open" href="/">Walk the forest instead</a><a class="open" href="credits.html">Credits</a></footer>
+</html>
+`;
+}
+
+// D7: every model, scan, texture and sky that isn't ours, with its author and licence
+function creditsPage() {
+  const where = { landing: "The lanterns", earlier: "The wells and mirrors", stories: "The ruined chapel", games: "The stone ring", work: "The milestones", art: "The easels", tools: "The anvils" };
+  const lic = (c) => c.license_url ? `<a href="${esc(c.license_url)}" rel="noopener">${esc(c.license)}</a>` : esc(c.license);
+  const by = (c) => c.author ? (c.author_url ? `<a href="${esc(c.author_url)}" rel="noopener">${esc(c.author)}</a>` : esc(c.author)) : "";
+  const table = (rows, place) => `<table><thead><tr><th>Work</th><th>By</th><th>Licence</th><th>Where</th></tr></thead><tbody>
+${rows.map((c) => `<tr><td><a href="${esc(c.url)}" rel="noopener">${esc(c.title)}</a> <span class="src">${esc(c.source)}</span></td><td>${by(c)}</td><td>${lic(c)}</td><td>${esc(place(c))}</td></tr>`).join("\n")}
+</tbody></table>`;
+  return `${HEAD("Credits")}
+${STYLE}
+<style>
+  .top { padding-top: 72px; } .top h1 { margin-top: 0; }
+  h2 { font-size: 34px; margin: 64px 0 8px; } .intro { color: #bdb9b0; max-width: 720px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 18px; }
+  th { text-align: left; font: 500 11px var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); padding: 0 16px 10px 0; border-bottom: 1px solid var(--line); }
+  td { padding: 11px 16px 11px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td a { text-decoration: none; border-bottom: 1px solid rgba(232,217,184,.25); } td a:hover, td a:focus-visible { border-color: var(--accent); }
+  .src { color: var(--faint); font-size: 12px; margin-left: 6px; }
+</style>
+<main class="top">
+  <div class="kicker">Suryansh Mishra</div>
+  <h1>Credits</h1>
+  <p class="lede">The statues, the stones and the forest were made by other people, and shared freely. Thank you.</p>
+  <p class="intro">Every third-party asset on this site is listed here with its author and licence. Those under CC BY are credited as their licence asks; the CC0 ones are credited anyway. Most were simplified, retextured, weathered or rescaled to fit the scene (CC BY asks that changes be noted); any flaw that added is mine, not the authors'.</p>
+  <h2>Statues</h2>
+${table(credits.statues, (c) => c.where)}
+  <h2>The structures</h2>
+${table(credits.structures, (c) => where[c.where] ?? c.where)}
+  <h2>The forest, the door and the sky</h2>
+${table(credits.forest, () => "The forest")}
+  <h2>Sound</h2>
+${table(credits.sound, (c) => c.where)}
+  <h2>Type and code</h2>
+  <p class="intro">Cormorant Garamond and Inter (SIL Open Font License), served by Google Fonts. Rendered with <a class="open" href="https://threejs.org" rel="noopener">three.js</a> (MIT) and, offline, Blender Cycles.</p>
+</main>
+<footer><a class="open" href="/">Walk the forest</a><a class="open" href="./">The archive</a></footer>
 </html>
 `;
 }
@@ -188,4 +230,5 @@ for (const c of categories) {
   else if (existsSync(f)) unlinkSync(f);
 }
 writeFileSync(out + "index.html", index(shown));
+writeFileSync(out + "credits.html", creditsPage());
 console.log(`archive: ${shown.map((c) => `${c.key} (${c.entries.length})`).join(", ")}; empty, no page: ${categories.filter((c) => !c.entries.length).map((c) => c.key).join(", ") || "none"}`);

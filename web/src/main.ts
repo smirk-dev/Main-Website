@@ -7,6 +7,8 @@ import { densify } from "./densify";
 import { Collision } from "./collide";
 import { Player } from "./player";
 import { Door } from "./door";
+import { Statues, Plates } from "./statues";
+import { Ambience } from "./sound";
 import works from "../content/works.json";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -15,7 +17,7 @@ const params = new URLSearchParams(location.search);
 
 // D2: desktop only. Touch-first or small screens get the plain archive.
 if (matchMedia("(pointer: coarse)").matches || innerWidth < 900) {
-  $("start").hidden = true; $("gate").hidden = false;
+  $("start").hidden = true; $("story").hidden = true; $("lines").hidden = true; $("gate").hidden = false;
   throw new Error("desktop only");
 }
 
@@ -51,12 +53,47 @@ scene.fog = new THREE.FogExp2(FOG, 0.021);
 const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 400);
 const door = new Door();
 door.resize(innerWidth / innerHeight);
-let mode: "door" | "forest" = params.has("forest") ? "forest" : "door";   // ?forest skips the door (tests)
+const statues = new Statues();
+const plates = new Plates($("plates"));
+const usePlates = params.get("plates") !== "0";   // test switch: raster only
+if (params.has("debug")) Object.assign(window, { act1: { statues, plates } });
+statues.resize(innerWidth / innerHeight);
+// Act I → II → III. ?door starts at the door, ?forest skips both (tests)
+let mode: "statues" | "door" | "forest" = params.has("forest") ? "forest" : params.has("door") ? "door" : "statues";
 addEventListener("resize", () => {
   renderer.setSize(innerWidth, innerHeight, false);
   camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
-  door.resize(innerWidth / innerHeight);
+  door.resize(innerWidth / innerHeight); statues.resize(innerWidth / innerHeight); layoutStory();
 });
+
+// ---------- Act I: the scroll track ----------
+const story = $("story"), track = $("track"), lines = $("lines"), cue = $("cue");
+const STEP = 0.85;                          // viewport heights of scroll per key of the timeline
+const LAST = statues.keys.length - 1;       // the last black key; one more step brings the door up
+const lineEls = Array.from(lines.querySelectorAll<HTMLElement>(".line")).map((el) => {
+  const s = ["engel", "milan_mourning", "maternal_affection"].indexOf(el.dataset.statue ?? "");
+  const b = ["emerge", "reveal", "close"].indexOf(el.dataset.beat ?? "");
+  // the text takes the third of the frame the statue leaves empty
+  if (s >= 0) el.classList.add(s === 1 ? "right" : "left");
+  return { el, t: s >= 0 ? statues.beats[s][b] : 0, intro: s < 0 };
+});
+function layoutStory() {
+  const step = innerHeight * STEP;
+  track.style.height = `${(LAST + 1) * step + innerHeight}px`;
+  track.replaceChildren(...[0, ...statues.beats.flat(), LAST + 1].map((t) => { const i = document.createElement("i"); i.style.top = `${t * step}px`; return i; }));
+}
+layoutStory();
+let storyT = 0, stillSince = performance.now();
+story.addEventListener("scroll", () => { stillSince = performance.now(); });
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+/** resolves once the reader has stopped scrolling for a moment (or has left Act I): the forest's heavy set-up runs then, so the story never stutters */
+/** yield a frame while someone is watching; in a hidden tab rAF never fires, so don't wait for it */
+const nextFrame = () => (document.hidden ? Promise.resolve() : new Promise<void>((r) => requestAnimationFrame(() => r())));
+const calm = () => new Promise<void>((res) => { const k = () => (mode !== "statues" || performance.now() - stillSince > 1200 ? res() : setTimeout(k, 200)); k(); });
+if (mode === "statues") {
+  story.focus();
+  statues.load(() => { cue.textContent = "Scroll"; }).catch((e) => { console.error(e); cue.textContent = "The statues failed to load. Scroll on to the door."; });
+} else { story.hidden = true; lines.hidden = true; $("start").hidden = false; }
 
 // ---------- load ----------
 const bar = $("bar"), loadtxt = $("loadtxt"), enter = $("enter") as HTMLButtonElement;
@@ -88,6 +125,7 @@ async function boot() {
     loadWorld((f, label) => { bar.style.width = `${Math.round(f * 100)}%`; loadtxt.textContent = `Loading ${label}…`; }),
     new HDRLoader().loadAsync("/assets/sky_1k.hdr"),
   ]);
+  await calm();
   world = w;
   sky.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = sky;
@@ -97,6 +135,7 @@ async function boot() {
   // the ground: one surface from the forest out into the mist, the same one the walker stands on
   const terrain = new Terrain(w);
   scene.add(terrain.mesh());
+  await calm();
   const walls = new Collision(terrain);
   const added = densify(w, terrain, PLACES.map((p) => ({ x: p.x, z: -p.y, r: p.r })), d.spawn);
   if (params.has("debug")) console.log("densify: +" + added + " instances");
@@ -141,18 +180,52 @@ async function boot() {
     const l = new THREE.PointLight(0xffa04a, 6, 9, 2); l.position.fromArray(p); scene.add(l);
   });
 
+  await calm();
   veg = new Vegetation(w, tier.shadows, renderer, sunDir, { sun, hemi, env: sky, envI: scene.environmentIntensity });
   scene.add(veg.group);
   veg.solids(walls);
   if (params.has("debug")) console.log("collision: " + walls.tris + " triangles");
   player = new Player(camera, new Ground(w, terrain), walls, d.spawn, canvas);
+  if (reduced) player.bobScale = 0;
   player.settle();
   const fc = d.cameras["FCAM_B"];
   player.update(0);
   player.lookAt(fc.target[0], fc.target[1] - 0.6, fc.target[2]);   // first look: down the trail towards the fork angel
 
   // compile every shader now, not on the first step into a new clearing
-  renderer.compile(scene, camera);
+  await calm();
+  await renderer.compileAsync(scene, camera);
+  // ...and upload every texture, a few a frame: compileAsync leaves textures for their first draw, and the 4K maps of a
+  // clearing's statues and structures stalled the walk 2-3 s on its first sight of them (Iris Xe, ANGLE D3D11)
+  const texs = new Set<THREE.Texture>();
+  if (params.get("warm") !== "0") {   // test switch: ?warm=0 leaves uploads to the first draw
+  scene.traverse((o) => {
+    const m = o as THREE.Mesh;
+    for (const mt of [m.material, m.customDepthMaterial].flat()) if (mt) for (const v of Object.values(mt)) if (v instanceof THREE.Texture) texs.add(v);
+  });
+  let up = 0;
+  for (const t of texs) {
+    renderer.initTexture(t);
+    if (++up % 3 === 0) { await nextFrame(); await calm(); loadtxt.textContent = `Loading the forest… ${Math.round((100 * up) / texs.size)}%`; }
+  }
+  // the same for the meshes: draw each statue and structure once, alone and unculled, into one pixel of the canvas (with
+  // the forest's tone mapping, so it builds the programs the walk will use), so its vertex buffers are on the GPU before
+  // the walker meets it (a 1 M-face scan's first draw cost ~1 s). The next frame redraws the whole canvas.
+  const all = statics.flatMap((s) => [s.obj, s.far, ...s.shells].filter((o) => !!o) as THREE.Object3D[]);
+  veg.group.visible = false;
+  for (const o of all) {
+    for (const x of all) x.visible = x === o;
+    const culled: THREE.Object3D[] = [];
+    o.traverse((q) => { if (q.frustumCulled) { q.frustumCulled = false; culled.push(q); } });
+    const tm = renderer.toneMapping; renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.setScissorTest(true); renderer.setScissor(0, 0, 1, 1); renderer.render(scene, camera); renderer.setScissorTest(false);
+    renderer.toneMapping = tm;
+    for (const q of culled) q.frustumCulled = true;
+    await nextFrame(); await calm();
+  }
+  for (const x of all) x.visible = true;   // the loop sets the real visibility on its first frame
+  veg.group.visible = true;
+  }
   if (params.has("debug")) Object.assign(window, { game: { player, camera, renderer, veg, scene, statics, world: w, R: RANGE, sun } });   // test hook: teleport and look
   bar.style.width = "100%"; loadtxt.textContent = "The forest is ready.";
   if (mode === "forest") { enter.disabled = false; enter.focus(); }
@@ -173,19 +246,28 @@ function arrive() {
   mode = "forest"; start.hidden = true; hud.hidden = false; lock();
   fade.style.transition = "opacity 1.4s ease-out"; fade.style.opacity = "0";
 }
-door.load().then(() => { if (mode === "door") enter.disabled = false; })   // no auto-focus: focus eases the door ajar.catch((e) => { console.error(e); enter.disabled = false; });
+// no auto-focus: focus eases the door ajar
+door.load().then(() => { if (mode !== "forest") enter.disabled = false; }).catch((e) => { console.error(e); enter.disabled = false; });
 enter.onmouseenter = enter.onfocus = () => door.ajar(true);
 enter.onmouseleave = enter.onblur = () => door.ajar(false);
 enter.onclick = () => {
   if (mode === "forest") { start.hidden = true; hud.hidden = false; lock(); return; }
   enter.disabled = true; $("leave").setAttribute("disabled", "");
+  mode = "door"; door.reveal = 1; story.hidden = true; lines.hidden = true; plates.show(-1, 0);
   (start.querySelector(".door-top") as HTMLElement).style.opacity = "0";
   (start.querySelector(".door-bottom") as HTMLElement).style.opacity = "0";
-  door.onThrough = arrive; door.enter();
+  // reduced motion: no push through the doorway, just a fade to the forest
+  if (reduced) { fade.style.transition = "opacity .6s"; fade.style.opacity = "1"; setTimeout(arrive, 650); }
+  else { door.onThrough = arrive; door.enter(); }
 };
 // D3: browsers only let a script close a tab it opened; if the tab is still here, say so
 $("leave").onclick = () => { window.close(); setTimeout(() => { $("gone").hidden = false; }, 300); };
 $("resume").onclick = lock;
+const sound = new Ambience(), soundBtn = $("sound");
+sound.onchange = (on, err) => {
+  soundBtn.textContent = err ? "Sound unavailable" : on ? "Sound on" : "Sound off"; soundBtn.setAttribute("aria-pressed", String(on));
+};
+soundBtn.onclick = () => sound.toggle();
 canvas.onclick = () => { if (!reading && start.hidden) lock(); };
 document.addEventListener("pointerlockchange", () => {
   const on = document.pointerLockElement === canvas;
@@ -194,15 +276,16 @@ document.addEventListener("pointerlockchange", () => {
 
 let focus: (typeof PLACES)[number] | null = null;
 function openPage(p: (typeof PLACES)[number]) {
-  reading = true; page.src = PAGES[p.key]; panel.hidden = false; hud.hidden = true;
+  reading = true; page.src = PAGES[p.key]; panel.hidden = false; hud.hidden = true; sound.duck(true);
   document.exitPointerLock();
 }
 function closePage() {
-  reading = false; panel.hidden = true; hud.hidden = false; page.src = "about:blank"; lock();
+  reading = false; panel.hidden = true; hud.hidden = false; page.src = "about:blank"; sound.duck(false); lock();
 }
 addEventListener("keydown", (e) => {
   if (e.code === "KeyE" && focus && !reading && player?.locked) openPage(focus);
   if (e.code === "Escape" && reading) closePage();
+  if (e.code === "KeyM" && mode === "forest" && !e.repeat) sound.toggle();
 });
 // the archive page's "Back to the forest" posts this
 addEventListener("message", (e) => { if (e.data === "back-to-forest") closePage(); });
@@ -216,10 +299,48 @@ let lastPlace = "";
 
 function frame() {
   clock.update(); const dt = Math.min(clock.getDelta(), 0.05);
-  if (mode === "door") {
+  if (mode === "statues") {
+    // the camera follows the scroll with a little lag, so a wheel notch glides instead of jumping
+    const target = story.scrollTop / (innerHeight * STEP);
+    storyT = reduced ? target : storyT + (target - storyT) * Math.min(1, dt * 5);
+    if (Math.abs(target - storyT) < 1e-4) storyT = target;
+    const t = storyT;
+    for (const l of lineEls) {
+      const d = l.intro ? Math.max(0, t) / 0.6 : Math.abs(t - l.t) / 0.42, o = Math.max(0, 1 - d);
+      l.el.style.opacity = String(o * o * (3 - 2 * o));
+      if (!l.intro) l.el.style.transform = `translateY(calc(-50% + ${((t - l.t) * -26).toFixed(1)}px))`;
+    }
+    const doorF = THREE.MathUtils.smoothstep(t, LAST + 0.15, LAST + 0.9);
+    ($("lines").querySelector(".skip-story") as HTMLElement).style.opacity = String(1 - doorF);
+    const st = $("start");
+    if (doorF > 0) {
+      plates.show(-1, 0);
+      // the door rises out of the same black the last statue went into
+      st.hidden = false; st.style.opacity = String(doorF); st.style.pointerEvents = doorF > 0.6 ? "" : "none";
+      door.reveal = doorF; door.update(dt);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.render(door.scene, door.camera);
+    } else {
+      st.hidden = true;
+      renderer.toneMapping = THREE.AgXToneMapping;
+      // resting: the scroll and the camera have both stopped (the camera eases in for a moment after the wheel)
+      const rest = performance.now() - stillSince > 350 && storyT === target;
+      if (statues.ready) {
+        const { statue } = statues.update(Math.min(t, LAST));
+        plates.preload(statue);
+        renderer.render(statues.scene, statues.camera);
+        // at rest on a beat, the path-traced plate of exactly this frame fades in over the raster
+        const b = statues.beats[statue].findIndex((bt) => Math.abs(bt - t) < 0.02);
+        if (usePlates && rest && b >= 0) plates.show(statue, b); else plates.show(-1, 0);
+      }
+      else renderer.clear();
+    }
+  } else if (mode === "door") {
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
     door.update(dt);   // may hand over to the forest (arrive) as the camera crosses the threshold
-    if (mode === "door") { fade.style.opacity = String(door.through); renderer.render(door.scene, door.camera); }
+    if (mode === "door") { if (!reduced) fade.style.opacity = String(door.through); renderer.render(door.scene, door.camera); }
   } else if (world && !reading) {
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
     player.update(dt);
     // the sun's shadow box follows the walker
     sun.position.copy(player.pos).addScaledVector(sunDir, 120); sun.target.position.copy(player.pos); sun.target.updateMatrixWorld();
