@@ -213,18 +213,6 @@
      "play": true
     },
     {
-     "name": "Tilewar",
-     "desc": "A shared grid that anyone can claim tiles on, live. When two people click the same tile at the same instant, the database's row locks pick exactly one winner and every browser hears the result at once.",
-     "role": "Take-home assignment for InboxKit",
-     "year": "2026",
-     "stack": "Next.js, Fastify, Socket.IO, PostgreSQL, Redis, TypeScript",
-     "status": "archived",
-     "note": "The game server is no longer running",
-     "shot": "tilewar.jpg",
-     "shotAlt": "Tilewar: a grey grid with a scatter of blue and cyan claimed tiles, a live activity panel and a player name tag",
-     "play": false
-    },
-    {
      "name": "Code Warrior",
      "desc": "Your real GitHub activity, turned into an RPG character. Stars, pull requests, commits, issues and reviews become experience that sets a rank from C to SSS, character stats, quests, badges and a place on a global leaderboard.",
      "role": "Personal project",
