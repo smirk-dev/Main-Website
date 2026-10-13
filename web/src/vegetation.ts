@@ -38,8 +38,16 @@ interface Set { def: InstanceSet; pos: Float32Array; lods: Part[][]; radius: num
 // screen-space noise for the dissolve: the near tree keeps the pixels below its weight, the impostor the rest
 const IGN = "float ign(vec2 p) { return fract(52.9829189 * fract(dot(p, vec2(0.06711056, 0.00583715)))); }\n";
 
+const Q = new URLSearchParams(location.search);
+/** Cut-out cards (needles, leaves) take their alpha from a mip this much blurrier than their colour: a needle thinner than a
+ *  pixel then reads as part of a clump instead of a speckle of lone pixels (there's no MSAA to average it). ?abias= for tests. */
+const ABIAS = Number(Q.get("abias") ?? 0.5).toFixed(2);   // 1.25 and 0.8 turned crowns into dark blobs; 0.5 keeps the needles
+/** impostors: blend the two nearest of the eight views (default), or ?imp=dither for the old per-pixel pick between them */
+const IMP_DITHER = Q.get("imp") === "dither";
+
 /** Lets a detailed tree dissolve out pixel by pixel as its impostor dissolves in (per-instance `ifade`, 1 = all detail). */
 function dissolve(mat: THREE.Material) {
+  const cut = (mat as THREE.MeshStandardMaterial).alphaTest > 0 && !!(mat as THREE.MeshStandardMaterial).map;
   mat.onBeforeCompile = (sh) => {
     sh.vertexShader = sh.vertexShader
       .replace("#include <common>", "#include <common>\nattribute float ifade;\nvarying float vFade;")
@@ -47,6 +55,8 @@ function dissolve(mat: THREE.Material) {
     sh.fragmentShader = sh.fragmentShader
       .replace("#include <common>", "#include <common>\nvarying float vFade;\n" + IGN)
       .replace("#include <clipping_planes_fragment>", "#include <clipping_planes_fragment>\nif (ign(gl_FragCoord.xy) >= vFade) discard;");
+    if (cut) sh.fragmentShader = sh.fragmentShader.replace("#include <map_fragment>", `#include <map_fragment>
+      diffuseColor.a = opacity * texture2D(map, vMapUv, ${ABIAS}).a;`);
   };
   mat.needsUpdate = true;
 }
@@ -197,10 +207,13 @@ export class Vegetation {
       vec4 mvPosition = viewMatrix * vec4(wp, 1.0);
       gl_Position = projectionMatrix * mvPosition;`;
     const decl = "uniform float uN;\nvarying float vFrame;\nvarying vec3 vAx;\nvarying vec3 vAz;\nvarying float vFade;\n";
-    // pick the view per pixel, dithered between the two nearest, so walking round a tree never snaps
+    // the two nearest views, blended by angle, so walking round a tree never snaps (a per-pixel pick between them, the
+    // first version, read as dither noise over every distant crown). iuv: the nearest view alone, for the shadow.
     const pick = `
-      float fi = floor(vFrame); if (ign(gl_FragCoord.xy + vec2(23.0, 47.0)) < fract(vFrame)) fi += 1.0; fi = mod(fi, uN);
-      vec2 iuv = vec2((fi + clamp(vMapUv.x, 0.004, 0.996)) / uN, vMapUv.y);
+      float f0 = floor(vFrame), ft = fract(vFrame), f1 = mod(f0 + 1.0, uN);
+      ${IMP_DITHER ? "if (ign(gl_FragCoord.xy + vec2(23.0, 47.0)) < ft) f0 = f1; ft = 0.0;" : ""}
+      float cu = clamp(vMapUv.x, 0.004, 0.996);
+      vec2 uv0 = vec2((f0 + cu) / uN, vMapUv.y), uv1 = vec2((f1 + cu) / uN, vMapUv.y), iuv = ft < 0.5 ? uv0 : uv1;
       vec2 gx = dFdx(vMapUv) * vec2(1.0 / uN, 1.0), gy = dFdy(vMapUv) * vec2(1.0 / uN, 1.0);`;
     const uN = { value: IMP_N }, uNor = { value: nor.texture }, uSun = { value: this.sunDir }, uEye = { value: this.eye };
     mat.onBeforeCompile = (sh) => {
@@ -212,10 +225,15 @@ export class Vegetation {
       sh.fragmentShader = sh.fragmentShader
         .replace("#include <common>", "#include <common>\n" + decl + "uniform sampler2D uNor;\nuniform vec3 uSunCol, uSunDir, uSky, uGnd, uGlow;\nuniform float uShade;\n" + IGN)
         .replace("#include <map_fragment>", "if (ign(gl_FragCoord.xy) < vFade) discard;" + pick + `
-          diffuseColor *= textureGrad(map, iuv, gx, gy);`)
+          vec4 c0 = textureGrad(map, uv0, gx, gy), c1 = textureGrad(map, uv1, gx, gy);
+          // colour from the views' own mips, weighted by their coverage so one view's empty texels don't grey the other's;
+          // alpha from blurrier mips (see ABIAS)
+          float ab = exp2(${ABIAS}), a0 = textureGrad(map, uv0, gx * ab, gy * ab).a, a1 = textureGrad(map, uv1, gx * ab, gy * ab).a;
+          float w0 = c0.a * (1.0 - ft), w1 = c1.a * ft;
+          diffuseColor *= vec4((c0.rgb * w0 + c1.rgb * w1) / max(w0 + w1, 1e-3), mix(a0, a1, ft));`)
         .replace("#include <alphatest_fragment>", `#include <alphatest_fragment>
           {
-            vec4 impNor = textureGrad(uNor, iuv, gx, gy);
+            vec4 impNor = mix(textureGrad(uNor, uv0, gx, gy), textureGrad(uNor, uv1, gx, gy), ft);
             vec3 ln = impNor.xyz * 2.0 - 1.0, wn = normalize(vAx * ln.x + vec3(0.0, ln.y, 0.0) + vAz * ln.z);
             vec3 irr = uSunCol * max(dot(wn, uSunDir), 0.0) * uShade + mix(uGnd, uSky, 0.5 * wn.y + 0.5);
             diffuseColor.rgb = diffuseColor.rgb * irr * RECIPROCAL_PI + uGlow * diffuseColor.rgb * impNor.a;
