@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { HDRLoader } from "three/examples/jsm/loaders/HDRLoader.js";
-import { loadWorld, fixMaterials, Ground, HOLED, lod1, type World } from "./world";
+import { loadWorld, fixMaterials, Ground, HOLED, lod1, mid, type World } from "./world";
 import { Vegetation, RANGE } from "./vegetation";
 import { Terrain } from "./terrain";
 import { densify } from "./densify";
@@ -125,8 +125,9 @@ let world: World;
 let veg: Vegetation;
 let player: Player;
 let sun: THREE.DirectionalLight;
-/** obj: full detail; far: the reduced copy past 40 m (half in the mist); shells: backing for the pinholed scans, only needed close */
-const statics: { obj: THREE.Object3D; far?: THREE.Object3D; shells: THREE.Mesh[]; c: THREE.Vector3; cast: boolean; near: boolean }[] = [];
+/** obj: full detail (a statue's whole scan: within 12 m only); mid: a statue's 30k copy, 12-40 m; far: the reduced copy past
+ *  40 m (half in the mist); shells: backing for the pinholed scans, only needed close */
+const statics: { obj: THREE.Object3D; mid?: THREE.Object3D; far?: THREE.Object3D; shells: THREE.Mesh[]; c: THREE.Vector3; cast: boolean; near: boolean; close: boolean }[] = [];
 const sunDir = new THREE.Vector3();
 
 /** Two of the scans (shipped whole, see export_web.py) are photogrammetry with pinholes all over: you saw the sky through
@@ -217,12 +218,15 @@ async function boot() {
     };
     const obj = make(s.file);
     if (!obj) continue;
-    walls.addObject(obj);   // full detail: you stop at the stone itself
-    if (s.name === "ruins_posts") continue;   // the chapel ruins: always drawn
+    if (s.name === "ruins_posts") { walls.addObject(obj); continue; }   // the chapel ruins: always drawn
     const far = make(lod1(s.file));
+    // you stop at the stone itself; a statue's 6k far copy is as good as its whole scan at the 10 cm collision grid and
+    // keeps the load from walking 120-480k triangles per statue
+    walls.addObject(s.name.startsWith("ST_") && far ? far : obj);
     const shells = HOLED.has(s.name) ? backScan(obj) : [];
     const c = new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3());
-    statics.push({ obj, far, shells, c, cast: true, near: true });
+    const md = s.name.startsWith("ST_") ? make(mid(s.file)) : undefined;
+    statics.push({ obj, mid: md, far, shells, c, cast: true, near: true, close: true });
   }
 
   // lantern glow: a handful of real lights at the landing; every flame also glows on its own
@@ -262,7 +266,7 @@ async function boot() {
   // the same for the meshes: draw each statue and structure once, alone and unculled, into one pixel of the canvas (with
   // the forest's tone mapping, so it builds the programs the walk will use), so its vertex buffers are on the GPU before
   // the walker meets it (a 1 M-face scan's first draw cost ~1 s). The next frame redraws the whole canvas.
-  const all = statics.flatMap((s) => [s.obj, s.far, ...s.shells].filter((o) => !!o) as THREE.Object3D[]);
+  const all = statics.flatMap((s) => [s.obj, s.mid, s.far, ...s.shells].filter((o) => !!o) as THREE.Object3D[]);
   veg.group.visible = false;
   for (const o of all) {
     for (const x of all) x.visible = x === o;
@@ -331,7 +335,11 @@ function openPage(p: (typeof PLACES)[number]) {
   document.exitPointerLock();
 }
 function closePage() {
-  reading = false; panel.hidden = true; hud.hidden = false; page.src = "about:blank"; sound.duck(false); lock();
+  reading = false; panel.hidden = true; hud.hidden = false; page.src = "about:blank"; sound.duck(false);
+  // take the keyboard back from the page: hiding its iframe leaves focus inside it, so W/A/S/D went to a blank frame and
+  // the walker could look round but not move ("stuck in one place after opening a structure")
+  page.blur(); canvas.focus({ preventScroll: true }); window.focus();
+  lock();
 }
 addEventListener("keydown", (e) => {
   if (e.code === "KeyE" && focus && !reading && player?.locked) openPage(focus);
@@ -344,7 +352,7 @@ addEventListener("message", (e) => { if (e.data === "back-to-forest") closePage(
 // ---------- loop ----------
 const clock = new THREE.Timer();
 const fpsEl = $("fps"); fpsEl.hidden = !params.has("debug");
-let frames = 0, acc = 0, slow = 0;
+let frames = 0, acc = 0, slow = 0, shadowEvery = 1, tick = 0;
 const look = new THREE.Vector3(), to = new THREE.Vector3();
 let lastPlace = "";
 
@@ -400,10 +408,12 @@ function frame() {
     for (const s of statics) {
       const d = s.c.distanceTo(player.pos), cast = d < 25, shown = d < 105;   // 105 m: the mist has taken them completely
       s.near = d < 38 ? true : d > 42 ? false : s.near;                       // dead band: no flicker on the line
-      s.obj.visible = shown && (s.near || !s.far);
+      s.close = d < 11 ? true : d > 13 ? false : s.close;                    // a statue's whole scan only within ~12 m
+      s.obj.visible = shown && (s.near || !s.far) && (s.close || !s.mid);
+      if (s.mid) s.mid.visible = shown && s.near && !s.close;
       if (s.far) s.far.visible = shown && !s.near;
       for (const m of s.shells) m.visible = d < 15;   // pinholes only read up close
-      if (cast !== s.cast) { s.cast = cast; for (const o of [s.obj, s.far]) o?.traverse((q) => { q.castShadow = cast; }); }   // only when it changes
+      if (cast !== s.cast) { s.cast = cast; for (const o of [s.obj, s.mid, s.far]) o?.traverse((q) => { q.castShadow = cast; }); }   // only when it changes
     }
 
     // what is the walker near, and facing?
@@ -417,10 +427,12 @@ function frame() {
     }
     focus = best;
     prompt.hidden = !best;
-    if (best) prompt.querySelector("span")!.textContent = `Open ${best.label}`;
+    const say = best ? `Open ${best.label}` : "", span = prompt.querySelector("span")!;
+    if (say && span.textContent !== say) span.textContent = say;   // not every frame: the prompt sits on a backdrop blur
     const nm = near ? near.where : "";
     if (nm !== lastPlace) { place.style.opacity = nm ? "1" : "0"; if (nm) place.textContent = nm; lastPlace = nm; }
 
+    if (!renderer.shadowMap.autoUpdate && ++tick % shadowEvery === 0) renderer.shadowMap.needsUpdate = true;
     renderer.render(scene, camera);
 
     // keep it smooth: if frames run long for a few seconds, draw less (resolution first, then range, then shadows)
@@ -431,7 +443,9 @@ function frame() {
         slow++;
         if (slow === 1 && tier.pixel > 1) { tier.pixel = 1; renderer.setPixelRatio(1); }
         else if (slow === 2) veg.scale = 0.8;
-        else if (slow === 3 && tier.shadows) { renderer.shadowMap.enabled = false; sun.castShadow = false; }
+        // never switch shadows off here: that recompiles every material in one frame (40 -> 70 programs, a 5-15 s freeze on
+        // Iris Xe, felt as "stuck near the statues"). Redraw the shadow map every 4th frame instead, which compiles nothing.
+        else if (slow === 3 && tier.shadows) { renderer.shadowMap.autoUpdate = false; shadowEvery = 4; }
         else if (slow === 4) { renderer.setPixelRatio(0.8); veg.scale = 0.65; }
       }
       frames = 0; acc = 0;

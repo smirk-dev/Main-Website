@@ -308,9 +308,24 @@ if want("statics") or want("data"):
                     t = o.copy(); t.data = o.data.copy(); bpy.context.scene.collection.objects.link(t); temp.append(t)
                     log("backing", o.name, drop_backing(t))
                 meshes = temp
-            parts = reduced_copy(meshes, 1.0, 1.0, 1e9 if r.name in SPARSE | WHOLE else budget, scan=True)
+            # statues ship whole up close (30k collapses showed every facet: "I can see the triangles"); the few sources
+            # that are low-poly to begin with get one smooth subdivision; all of them shade smooth
+            whole = r.name in SPARSE | WHOLE or r.name.startswith("ST_")
+            parts = reduced_copy(meshes, 1.0, 1.0, 1e9 if whole else budget, scan=True)
+            if r.name.startswith("ST_"):
+                for p in parts:
+                    for poly in p.data.polygons: poly.use_smooth = True
+                    if ntris(p) < 40000:
+                        m = p.modifiers.new("sub", 'SUBSURF'); m.levels = m.render_levels = 1; m.uv_smooth = 'PRESERVE_BOUNDARIES'
+                    log("statue", p.name, ntris(p), "tris", "(+subsurf)" if ntris(p) < 40000 else "")
             export(parts, OUT+fn)
             for p in parts: bpy.data.objects.remove(p)
+            if r.name.startswith("ST_") and r.name not in SPARSE:   # 12-38 m: the old 30k collapse, smooth (the whole scan cost 10-20 ms a frame on the walk)
+                parts = reduced_copy(meshes, 1.0, 1.0, budget, scan=True)
+                for p in parts:
+                    for poly in p.data.polygons: poly.use_smooth = True
+                export(parts, OUT+fn.replace(".glb", "_mid.glb"))
+                for p in parts: bpy.data.objects.remove(p)
             if r.name not in SPARSE:   # far version (> 40 m, half in the mist); the sparse scans just drop their backing shell there
                 parts = reduced_copy(meshes, 1.0, 1.0, max(1500, budget*0.2), scan=True)
                 export(parts, OUT+fn.replace(".glb", "_lod1.glb"))

@@ -9,6 +9,7 @@ export const SPARSE = new Set(["ST_under_fire_of_war", "ST_vigeland_mother_child
 /** other scans with pinholes (the overgrown tree's ivy): they keep a far copy but also get the backing shell up close */
 export const HOLED = new Set([...SPARSE, "SX_stories_2"]);
 export const lod1 = (f: string) => f.replace(".glb", "_lod1.glb");
+export const mid = (f: string) => f.replace(".glb", "_mid.glb");   // statues only, 12-40 m
 
 export interface InstanceSet { name: string; kind: "tree" | "sapling" | "plant" | "prop"; files: string[]; count: number; offset: number; collide: number; bbox: number[] | null; impostor: string | null }
 export interface SceneData {
@@ -40,6 +41,7 @@ export async function loadWorld(onProgress: (f: number, label: string) => void):
   for (const s of data.statics) if (s.name !== "ground") {   // the ground is built from height.bin (terrain.ts)
     files.add(s.file);
     if (/^S[TX]_/.test(s.name) && !SPARSE.has(s.name)) files.add(lod1(s.file));
+    if (/^ST_/.test(s.name) && !SPARSE.has(s.name)) files.add(mid(s.file));
   }
   for (const i of data.instances) for (const f of i.kind === "tree" ? i.files.slice(0, 1) : i.files) files.add(f);   // trees: full model + impostor only
   const list = [...files];
