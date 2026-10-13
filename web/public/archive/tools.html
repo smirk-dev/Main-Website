@@ -65,8 +65,8 @@
 
 <a class="skip" href="#entries">Skip to the projects</a>
 <header class="hero">
-  <img src="forest_v09_SCAM_tools.png" alt="Two anvils, an armillary sphere and an astrolabe in a misty pine clearing">
-  <a class="back" href="#" aria-label="Back to the forest, to the anvils">← Back to the forest</a>
+  <img src="hero_tools.jpg" alt="Two anvils, an armillary sphere and an astrolabe in a misty pine clearing">
+  <a class="back" href="./" aria-label="Back to the forest, to the anvils">← Back to the forest</a>
   <div class="title">
     <div class="kicker">The anvils · Tools and engineering</div>
     <h1>Tools &amp; engineering</h1>
@@ -78,7 +78,7 @@
   <div class="count"><span>7 projects</span><span>All live</span></div>
 
   <article class="entry">
-    <div class="preview"><img src="shots/studio.png" alt="Universal 3D Studio's editor: an outliner, a 3D viewport with a cube, a properties panel and a timeline" loading="lazy">
+    <div class="preview"><img src="shots/studio.jpg" alt="Universal 3D Studio's editor: an outliner, a 3D viewport with a cube, a properties panel and a timeline" loading="lazy">
       <button class="play" data-src="https://3d-renderer-nu.vercel.app">Try it here</button></div>
     <div>
       <div class="num">01</div>
@@ -90,7 +90,7 @@
   </article>
 
   <article class="entry">
-    <div class="preview"><img src="shots/cube.png" alt="Cube Solver: a 3D cube and an unfolded colour net with Scramble and Solve buttons" loading="lazy">
+    <div class="preview"><img src="shots/cube.jpg" alt="Cube Solver: a 3D cube and an unfolded colour net with Scramble and Solve buttons" loading="lazy">
       <button class="play" data-src="https://cube-solver-olive.vercel.app">Try it here</button></div>
     <div>
       <div class="num">02</div>
@@ -102,7 +102,7 @@
   </article>
 
   <article class="entry">
-    <div class="preview"><img src="shots/img2css.png" alt="img2css: a green-on-black terminal listing its commands" loading="lazy">
+    <div class="preview"><img src="shots/img2css.jpg" alt="img2css: a green-on-black terminal listing its commands" loading="lazy">
       <button class="play" data-src="https://img2css-nu.vercel.app">Try it here</button></div>
     <div>
       <div class="num">03</div>
@@ -114,7 +114,7 @@
   </article>
 
   <article class="entry">
-    <div class="preview"><img src="shots/solvebook.png" alt="DSA Solvebook dashboard: 915 problems solved, a year of daily activity, and progress goals" loading="lazy"></div>
+    <div class="preview"><img src="shots/solvebook.jpg" alt="DSA Solvebook dashboard: 915 problems solved, a year of daily activity, and progress goals" loading="lazy"></div>
     <div>
       <div class="num">04</div>
       <h2>DSA Solvebook</h2>
@@ -125,7 +125,7 @@
   </article>
 
   <article class="entry">
-    <div class="preview"><img src="shots/nebula.png" alt="NebulaStock: a price chart for Apple with a forecast line, accuracy panels and a news sentiment feed" loading="lazy">
+    <div class="preview"><img src="shots/nebula.jpg" alt="NebulaStock: a price chart for Apple with a forecast line, accuracy panels and a news sentiment feed" loading="lazy">
       <button class="play" data-src="https://nebulastock.vercel.app">Try it here</button></div>
     <div>
       <div class="num">05</div>
@@ -137,7 +137,7 @@
   </article>
 
   <article class="entry">
-    <div class="preview"><img src="shots/family.png" alt="Family Hierarchy: two family trees laid out side by side on an infinite canvas" loading="lazy">
+    <div class="preview"><img src="shots/family.jpg" alt="Family Hierarchy: two family trees laid out side by side on an infinite canvas" loading="lazy">
       <button class="play" data-src="https://ancestricheritage.vercel.app">Try it here</button></div>
     <div>
       <div class="num">06</div>
@@ -149,7 +149,7 @@
   </article>
 
   <article class="entry">
-    <div class="preview"><img src="shots/kaggle.png" alt="A grid of 34 colourful hexagonal Kaggle badges" loading="lazy"></div>
+    <div class="preview"><img src="shots/kaggle.jpg" alt="A grid of 34 colourful hexagonal Kaggle badges" loading="lazy"></div>
     <div>
       <div class="num">07</div>
       <h2>Kaggle README Badges</h2>
@@ -160,10 +160,10 @@
   </article>
 </main>
 
-<footer><span>Suryansh Mishra</span><a href="#" class="open">← Back to the forest</a></footer>
+<footer><span>Suryansh Mishra</span><a href="./" class="open">← Back to the forest</a></footer>
 
 <script>
-  // inside the forest, "Back to the forest" closes this page and returns to the anvils
+  // inside the forest, "Back to the forest" closes this page and returns to the clearing; on its own it goes to the index
   document.querySelectorAll('.back, footer .open').forEach(a => a.addEventListener('click', e => {
     if (parent !== window) { e.preventDefault(); parent.postMessage('back-to-forest', '*'); }
   }));

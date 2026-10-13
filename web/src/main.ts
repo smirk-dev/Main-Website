@@ -7,6 +7,7 @@ import { densify } from "./densify";
 import { Collision } from "./collide";
 import { Player } from "./player";
 import { Door } from "./door";
+import works from "../content/works.json";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const canvas = $("c") as HTMLCanvasElement;
@@ -28,7 +29,8 @@ const PLACES = [
   { key: "art", label: "Art and writing", where: "The easels", x: -8, y: 100, r: 6 },
   { key: "tools", label: "Tools and engineering", where: "The anvils", x: 22, y: 96, r: 7 },
 ].map((p) => ({ ...p, pos: new THREE.Vector3(p.x, 0, -p.y) }));
-const PAGES: Record<string, string> = { tools: "/archive/tools.html" };
+// a category opens its page only once it has real entries (content/works.json, built by tools/build_archive.mjs)
+const PAGES: Record<string, string> = Object.fromEntries(works.categories.filter((c) => c.entries.length).map((c) => [c.key, `/archive/${c.key}.html`]));
 
 // ---------- renderer ----------
 // test switches (?pr= pixel ratio, ?shadows=0, ?lights=0, ?aa=1)

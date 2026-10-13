@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Games · Suryansh Mishra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap">
+<style>
+  :root {
+    --ink: #0b0c0d; --ink-2: #121416; --line: #23272a; --text: #d9d6cf; --dim: #8d8a83; --faint: #5d5b56;
+    --live: #9fc79a; --archived: #d6b47c; --reference: #9fb4c9; --accent: #e8d9b8;
+    --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif; --sans: Inter, system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ink); color: var(--text); font: 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+  body { margin: 0; }
+  a { color: inherit; }
+  .skip { position: absolute; left: -999px; } .skip:focus { left: 16px; top: 16px; z-index: 9; background: var(--ink-2); padding: 8px 12px; }
+
+  /* the clearing you came from, fading into the archive */
+  .hero { position: relative; height: 72vh; min-height: 520px; overflow: hidden; }
+  .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; filter: saturate(.8) brightness(.78); }
+  .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(11,12,13,.15) 0%, rgba(11,12,13,.2) 40%, var(--ink) 98%); }
+  .back { position: absolute; z-index: 2; top: 28px; left: 40px; font-size: 14px; letter-spacing: .02em; color: var(--text); text-decoration: none;
+          padding: 8px 14px 8px 12px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; background: rgba(11,12,13,.35); backdrop-filter: blur(6px); }
+  .back:hover, .back:focus-visible { border-color: rgba(255,255,255,.45); }
+  .title { position: absolute; z-index: 2; left: 0; right: 0; bottom: 6vh; max-width: 1240px; margin: 0 auto; padding: 0 40px; }
+  .kicker { font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--dim); }
+  h1 { font: 400 clamp(56px, 7vw, 104px)/0.95 var(--serif); margin: 10px 0 18px; color: #f1ece2; letter-spacing: -.01em; }
+  .lede { max-width: 620px; font: italic 400 23px/1.45 var(--serif); color: #c8c3b8; margin: 0; }
+
+  main { max-width: 1240px; margin: 0 auto; padding: 40px 40px 120px; }
+  .count { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 8px;
+           font-size: 13px; color: var(--faint); letter-spacing: .04em; }
+
+  .entry { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 56px; align-items: center; padding: 64px 0; border-bottom: 1px solid var(--line); }
+  .entry:nth-of-type(even) .preview { order: 2; }
+  .preview { position: relative; aspect-ratio: 16 / 10; border-radius: 6px; overflow: hidden; background: var(--ink-2); border: 1px solid var(--line);
+             box-shadow: 0 30px 60px -30px rgba(0,0,0,.8); }
+  .preview img, .preview iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; object-position: top; display: block;
+                                  transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .preview iframe { width: 1600px; height: 1000px; inset: auto; left: 0; top: 0; transform-origin: 0 0; object-fit: initial; transition: none; }
+  .entry:hover .preview img { transform: scale(1.015); }
+  .play { position: absolute; right: 14px; bottom: 14px; font: 500 13px var(--sans); color: #111; background: var(--accent); border: 0; border-radius: 999px;
+          padding: 9px 16px; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,.4); }
+  .play:hover, .play:focus-visible { background: #fff; }
+  .num { font: 500 12px var(--sans); color: var(--faint); letter-spacing: .2em; font-variant-numeric: tabular-nums lining-nums; }
+  h2 { font: 500 42px/1.05 var(--serif); margin: 6px 0 14px; color: #f1ece2; }
+  .desc { margin: 0 0 26px; color: #bdb9b0; font-size: 16.5px; }
+  dl { display: grid; grid-template-columns: 84px 1fr; gap: 8px 16px; margin: 0 0 28px; font-size: 14px; }
+  dt { color: var(--faint); text-transform: uppercase; letter-spacing: .14em; font-size: 11px; padding-top: 3px; }
+  dd { margin: 0; color: var(--text); }
+  .row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .badge { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; padding: 4px 10px 4px 9px; border-radius: 999px; border: 1px solid currentColor; }
+  .badge::before { content: "●"; font-size: 8px; margin-right: 7px; vertical-align: 2px; }
+  .badge.live { color: var(--live); } .badge.archived { color: var(--archived); } .badge.reference { color: var(--reference); }
+  .open { font-size: 15px; text-decoration: none; border-bottom: 1px solid rgba(232,217,184,.4); color: var(--accent); padding-bottom: 2px; }
+  .open:hover, .open:focus-visible { border-color: var(--accent); }
+  .note { font-size: 13px; color: var(--faint); }
+
+  footer { max-width: 1240px; margin: 0 auto; padding: 0 40px 80px; display: flex; justify-content: space-between; color: var(--faint); font-size: 13px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<a class="skip" href="#entries">Skip to the games</a>
+<header class="hero">
+  <img src="hero_games.jpg" alt="A ring of standing stones in a misty pine clearing">
+  <a class="back" href="./" aria-label="Back to the forest, to the stone ring">← Back to the forest</a>
+  <div class="title">
+    <div class="kicker">The stone ring · Games</div>
+    <h1>Games</h1>
+    <p class="lede">Things to play, in the browser, with nothing to install.</p>
+  </div>
+</header>
+
+<main id="entries">
+  <div class="count"><span>5 games</span><span>4 live · 1 archived</span></div>
+
+  <article class="entry">
+    <div class="preview"><img src="shots/chess.jpg" alt="Chess Royale: a brown and cream board in the starting position beside a panel set to Elo 1900, playing White" loading="lazy">
+      <button class="play" data-src="https://royalchessgame.vercel.app">Try it here</button></div>
+    <div>
+      <div class="num">01</div>
+      <h2>Royal Chess</h2>
+      <p class="desc">Chess against the real Stockfish engine, compiled to WebAssembly and running in your browser. The difficulty is honest: each level limits the engine's strength with its own Elo setting rather than making it blunder at random.</p>
+      <dl><dt>Role</dt><dd>Personal project</dd><dt>Year</dt><dd>2026</dd><dt>Stack</dt><dd>React, TypeScript, Vite, Stockfish (WebAssembly), chess.js</dd></dl>
+      <div class="row"><span class="badge live">Live</span><a class="open" href="https://royalchessgame.vercel.app" target="_blank" rel="noopener">Open royalchessgame.vercel.app ↗</a></div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="preview"><img src="shots/backrooms.jpg" alt="A dim mustard-yellow room in film grain, a flashlight pool on the far wall around a doorway into darkness" loading="lazy">
+      <button class="play" data-src="https://backroomss.vercel.app">Try it here</button></div>
+    <div>
+      <div class="num">02</div>
+      <h2>Backrooms</h2>
+      <p class="desc">A short first-person horror walk where the place itself is the threat: no combat, no jump-scares, no HUD. Five floors, a sanity that drains, something that hunts by sound, and markers you left yourself that may not be real.</p>
+      <dl><dt>Role</dt><dd>Personal project</dd><dt>Year</dt><dd>2026</dd><dt>Stack</dt><dd>Three.js, TypeScript, Vite, Web Audio</dd></dl>
+      <div class="row"><span class="badge live">Live</span><a class="open" href="https://backroomss.vercel.app" target="_blank" rel="noopener">Open backroomss.vercel.app ↗</a></div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="preview"><img src="shots/voxelcraft.jpg" alt="VoxelCraft in Creative mode: blocky grass terraces, large oak trees, a lavender sky and a hotbar of blocks" loading="lazy">
+      <button class="play" data-src="https://voxelcraft-pi.vercel.app">Try it here</button></div>
+    <div>
+      <div class="num">03</div>
+      <h2>VoxelCraft</h2>
+      <p class="desc">A voxel sandbox written from scratch for the browser: terrain with biomes, caves and trees, streamed in chunks, an inventory with crafting, a day and night cycle, and Creative and Survival modes. Every texture is generated in code.</p>
+      <dl><dt>Role</dt><dd>Personal project</dd><dt>Year</dt><dd>2026</dd><dt>Stack</dt><dd>React Three Fiber, Three.js, TypeScript, Zustand, Web Audio</dd></dl>
+      <div class="row"><span class="badge live">Live</span><a class="open" href="https://voxelcraft-pi.vercel.app" target="_blank" rel="noopener">Open voxelcraft-pi.vercel.app ↗</a></div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="preview"><img src="shots/tilewar.jpg" alt="Tilewar: a grey grid with a scatter of blue and cyan claimed tiles, a live activity panel and a player name tag" loading="lazy"></div>
+    <div>
+      <div class="num">04</div>
+      <h2>Tilewar</h2>
+      <p class="desc">A shared grid that anyone can claim tiles on, live. When two people click the same tile at the same instant, the database's row locks pick exactly one winner and every browser hears the result at once.</p>
+      <dl><dt>Role</dt><dd>Take-home assignment for InboxKit</dd><dt>Year</dt><dd>2026</dd><dt>Stack</dt><dd>Next.js, Fastify, Socket.IO, PostgreSQL, Redis, TypeScript</dd></dl>
+      <div class="row"><span class="badge archived">Archived</span><span class="note">The game server is no longer running</span></div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="preview"><img src="shots/codewarrior.jpg" alt="Code Warrior's pixel-art title on a starfield, a row of ranks from C to SSS and a Sign in with GitHub button" loading="lazy"></div>
+    <div>
+      <div class="num">05</div>
+      <h2>Code Warrior</h2>
+      <p class="desc">Your real GitHub activity, turned into an RPG character. Stars, pull requests, commits, issues and reviews become experience that sets a rank from C to SSS, character stats, quests, badges and a place on a global leaderboard.</p>
+      <dl><dt>Role</dt><dd>Personal project</dd><dt>Year</dt><dd>2026</dd><dt>Stack</dt><dd>Next.js, TypeScript, Supabase, NextAuth, TanStack Query, Framer Motion</dd></dl>
+      <div class="row"><span class="badge live">Live</span><a class="open" href="https://code-warrior-liart.vercel.app" target="_blank" rel="noopener">Open code-warrior-liart.vercel.app ↗</a><span class="note">Sign in with GitHub to play</span></div>
+    </div>
+  </article>
+</main>
+
+<footer><span>Suryansh Mishra</span><a href="./" class="open">← Back to the forest</a></footer>
+
+<script>
+  // inside the forest, "Back to the forest" closes this page and returns to the clearing; on its own it goes to the index
+  document.querySelectorAll('.back, footer .open').forEach(a => a.addEventListener('click', e => {
+    if (parent !== window) { e.preventDefault(); parent.postMessage('back-to-forest', '*'); }
+  }));
+  // "Try it here": the live app loads only when asked, in place of its screenshot
+  document.querySelectorAll('.play').forEach(b => b.addEventListener('click', () => {
+    const f = document.createElement('iframe');
+    f.src = b.dataset.src; f.title = b.closest('.entry').querySelector('h2').textContent + ' (live)';
+    f.allow = 'camera; clipboard-write; fullscreen'; f.loading = 'eager';
+    const p = b.parentElement; p.querySelector('img').replaceWith(f); b.remove(); fit(p); f.focus();
+  }));
+  // the app runs at desktop size (1600×1000) and is scaled to the frame, so it looks as it does full-screen
+  function fit(p) { const f = p.querySelector('iframe'); if (f) f.style.transform = `scale(${p.clientWidth / 1600})`; }
+  addEventListener('resize', () => document.querySelectorAll('.preview').forEach(fit));
+</script>
+</html>

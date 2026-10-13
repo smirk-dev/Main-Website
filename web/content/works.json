@@ -1,0 +1,438 @@
+{
+ "categories": [
+  {
+   "key": "landing",
+   "where": "The lanterns",
+   "title": "Landing pages for people",
+   "noun": "sites",
+   "lede": "Front doors built for other people: a staffing firm, an agency, a professor, a pilgrimage. One lantern each.",
+   "hero": "hero_landing.jpg",
+   "heroAlt": "Hanging lanterns on iron posts in a misty pine clearing",
+   "entries": [
+    {
+     "name": "Dreamweave",
+     "desc": "The website of a Noida staffing and workforce company: contract staffing, permanent recruitment, NAPS apprenticeships, payroll and compliance, and facility management, across eight pages, with a woven-knot mark and a belt of thirty real client logos.",
+     "role": "Built for Dreamweave, a family business",
+     "year": "2026",
+     "stack": "HTML, CSS, vanilla JavaScript",
+     "status": "live",
+     "url": "https://dreamweavein.vercel.app",
+     "note": "The redesign; dreamweave.in still serves the older site",
+     "shot": "dreamweave.jpg",
+     "shotAlt": "Dreamweave's homepage: a navy hero reading 'The right people, ready when you are.' beside a large cyan woven knot",
+     "play": false
+    },
+    {
+     "name": "Celestia",
+     "desc": "A landing page for a creative and branding agency that pairs brands and websites with optimisation for AI assistants: a showreel split on the diagonal, a numbered list of services around an interactive 3D arrow, and a glowing cursor.",
+     "role": "Agency concept",
+     "year": "2025–2026",
+     "stack": "HTML, CSS, vanilla JavaScript, Three.js",
+     "status": "live",
+     "url": "https://celestia-site-umber.vercel.app",
+     "note": "celestia.studio is no longer up",
+     "shot": "celestia.jpg",
+     "shotAlt": "Celestia's hero: the CELESTIA wordmark and 'We are a full stack creative agency' beside a glowing teal star held in two hands",
+     "play": false
+    },
+    {
+     "name": "Advuman",
+     "desc": "A scroll-driven landing page for Advuman, weekly trade-risk intelligence for UK companies trading with India. The pinned hero puts a 3D globe, with the UK–India route lit in gold, behind the word SIGNALS.",
+     "role": "Built for Advuman",
+     "year": "2026",
+     "stack": "Next.js, React, TypeScript, Tailwind, React Three Fiber, Framer Motion",
+     "status": "live",
+     "url": "https://advuman-landing-page.vercel.app",
+     "shot": "advuman-landing.jpg",
+     "shotAlt": "Advuman's hero: a dark globe with a gold UK-to-India route behind giant grey SIGNALS lettering and the line 'Know before it hits your bottom line.'",
+     "play": false
+    },
+    {
+     "name": "HIVE",
+     "desc": "An academic portfolio for Dr. Pooja Sarin on a single page: research interests, publications and awards, a news timeline, editorial roles and collaborators, with counters that count up and a dark mode.",
+     "role": "Built for Dr. Pooja Sarin",
+     "year": "2025",
+     "stack": "HTML, CSS, vanilla JavaScript",
+     "status": "live",
+     "url": "https://hive-pooja-sarin.vercel.app",
+     "shot": "hive.jpg",
+     "shotAlt": "HIVE's hero: a round portrait of Dr. Pooja Sarin beside her name, title, affiliations and publication counters",
+     "play": false
+    },
+    {
+     "name": "CommunityConnect",
+     "desc": "A sales page pitching a custom app for running a housing society: a feature carousel, tabbed features for residents, management, security and admins, a five-step timeline, testimonials and a demo form.",
+     "role": "Freelance pitch",
+     "year": "2025",
+     "stack": "HTML, Tailwind, vanilla JavaScript",
+     "status": "live",
+     "url": "https://freelancingakshatvaidsaas.vercel.app",
+     "note": "A pitch mock-up: the images are placeholders",
+     "shot": "communityconnect.jpg",
+     "shotAlt": "CommunityConnect's hero on a blue gradient: 'Custom Society Management App — Built Just for You' with demo and feature buttons",
+     "play": false
+    },
+    {
+     "name": "Mahakal Yatra",
+     "desc": "A planner for a pilgrimage from Indore to the Mahakaleshwar temple in Ujjain, for a group of eight: a filterable itinerary, 22 places, hotels, ways to get there, optional upgrades and a live budget across three tiers.",
+     "year": "2026",
+     "stack": "Next.js, React, TypeScript, Tailwind",
+     "status": "live",
+     "url": "https://ujjaintrip.vercel.app",
+     "shot": "mahakal.jpg",
+     "shotAlt": "Mahakal Yatra's homepage: 'Ujjain Mahakal Yatra, Complete Trip Planner — Indore to Ujjain' with cards for places, hotels, transport and budget tiers",
+     "play": false
+    }
+   ]
+  },
+  {
+   "key": "earlier",
+   "where": "The wells and mirrors",
+   "title": "Earlier selves",
+   "noun": "sites",
+   "lede": "The portfolios this site replaced, kept as they were.",
+   "hero": "hero_earlier.jpg",
+   "heroAlt": "A stone well and a tall mirror standing among young pines in the mist",
+   "entries": [
+    {
+     "name": "This site, before",
+     "desc": "My first main site: a single purple-on-black page with a looping orb, drifting particles, and three doors out, to the coding portfolio, the art gallery and the blog. The forest replaced it.",
+     "role": "Personal site",
+     "year": "2025",
+     "stack": "HTML, CSS, vanilla JavaScript, Tailwind",
+     "status": "archived",
+     "shot": "mainsite2023.jpg",
+     "shotAlt": "The old site: a glowing iridescent orb over dark purple, 'Hi, I'm Suryansh Mishra', and View My Work, Get In Touch and Resume buttons",
+     "play": false
+    },
+    {
+     "name": "The browser portfolio",
+     "desc": "A coding portfolio dressed as a Chrome window: drag the tabs for Home, About, AI/ML, Full Stack and Extras, read the address bar, and switch to Incognito for the dark mode. All of it in one HTML file.",
+     "role": "Personal site",
+     "year": "2025",
+     "stack": "HTML, CSS, vanilla JavaScript, EmailJS",
+     "status": "live",
+     "url": "https://suryanshcodes.vercel.app",
+     "shot": "suryanshcodes.jpg",
+     "shotAlt": "A Chrome-style window with tabs, a portfolio://home address bar and an Incognito button, showing a photo, a name and links",
+     "play": false
+    }
+   ]
+  },
+  {
+   "key": "stories",
+   "where": "The ruined chapel",
+   "title": "Stories & experiences",
+   "noun": "experiences",
+   "lede": "Websites that tell something as you move through them: scroll, orbit, listen.",
+   "hero": "hero_stories.jpg",
+   "heroAlt": "A ruined gothic arch and broken stone walls in a pine forest",
+   "entries": [
+    {
+     "name": "ASHFALL",
+     "desc": "A requiem in six lights: six full-screen scenes you scroll through, a water shader that ripples around the cursor to reveal a hidden image beneath, and a score generated live in the browser. The sixth scene blooms to white and becomes the first again.",
+     "role": "Personal project",
+     "year": "2026",
+     "stack": "Hand-written WebGL and GLSL, Web Audio, vanilla JavaScript, no dependencies",
+     "status": "live",
+     "url": "https://ashfall-iota.vercel.app",
+     "note": "Best with sound",
+     "shot": "ashfall.jpg",
+     "shotAlt": "ASHFALL's title, 'A requiem in six lights.', over a glowing orange and violet burst, with 'Scroll to begin' beneath",
+     "play": true
+    },
+    {
+     "name": "AI History Concept Map",
+     "desc": "A 3D map of the ideas I keep returning to, from machine learning and quantum computing to language and culture: 45 nodes in six colours, linked where they touch. Drag to turn it, scroll to zoom, click a node to read it.",
+     "role": "Personal project",
+     "year": "2025",
+     "stack": "Three.js, vanilla JavaScript, one HTML file",
+     "status": "live",
+     "url": "https://aihistoryconceptmap.vercel.app",
+     "shot": "aihistory.jpg",
+     "shotAlt": "A dark 3D graph of coloured spheres joined by curved lines and labelled LangChain, Quantum Computing, AI Bias and more, with a legend of six categories",
+     "play": true
+    },
+    {
+     "name": "Global Broadcasting System",
+     "desc": "A broadcast control room around a turning 3D Earth with six ground stations. Switch each station between live, standby and off, add or edit channels, and open real news live streams in place.",
+     "role": "Personal project",
+     "year": "2025",
+     "stack": "React, TypeScript, React Three Fiber, Three.js, Tailwind, Vite",
+     "status": "live",
+     "url": "https://broadcastglobal.vercel.app",
+     "shot": "broadcast.jpg",
+     "shotAlt": "A control room: a globe dotted with station markers on a starfield, viewer counts above, and station cards with Go Live, Standby and Stop buttons",
+     "play": true
+    }
+   ]
+  },
+  {
+   "key": "games",
+   "where": "The stone ring",
+   "title": "Games",
+   "noun": "games",
+   "lede": "Things to play, in the browser, with nothing to install.",
+   "hero": "hero_games.jpg",
+   "heroAlt": "A ring of standing stones in a misty pine clearing",
+   "entries": [
+    {
+     "name": "Royal Chess",
+     "desc": "Chess against the real Stockfish engine, compiled to WebAssembly and running in your browser. The difficulty is honest: each level limits the engine's strength with its own Elo setting rather than making it blunder at random.",
+     "role": "Personal project",
+     "year": "2026",
+     "stack": "React, TypeScript, Vite, Stockfish (WebAssembly), chess.js",
+     "status": "live",
+     "url": "https://royalchessgame.vercel.app",
+     "shot": "chess.jpg",
+     "shotAlt": "Chess Royale: a brown and cream board in the starting position beside a panel set to Elo 1900, playing White",
+     "play": true
+    },
+    {
+     "name": "Backrooms",
+     "desc": "A short first-person horror walk where the place itself is the threat: no combat, no jump-scares, no HUD. Five floors, a sanity that drains, something that hunts by sound, and markers you left yourself that may not be real.",
+     "role": "Personal project",
+     "year": "2026",
+     "stack": "Three.js, TypeScript, Vite, Web Audio",
+     "status": "live",
+     "url": "https://backroomss.vercel.app",
+     "shot": "backrooms.jpg",
+     "shotAlt": "A dim mustard-yellow room in film grain, a flashlight pool on the far wall around a doorway into darkness",
+     "play": true
+    },
+    {
+     "name": "VoxelCraft",
+     "desc": "A voxel sandbox written from scratch for the browser: terrain with biomes, caves and trees, streamed in chunks, an inventory with crafting, a day and night cycle, and Creative and Survival modes. Every texture is generated in code.",
+     "role": "Personal project",
+     "year": "2026",
+     "stack": "React Three Fiber, Three.js, TypeScript, Zustand, Web Audio",
+     "status": "live",
+     "url": "https://voxelcraft-pi.vercel.app",
+     "shot": "voxelcraft.jpg",
+     "shotAlt": "VoxelCraft in Creative mode: blocky grass terraces, large oak trees, a lavender sky and a hotbar of blocks",
+     "play": true
+    },
+    {
+     "name": "Tilewar",
+     "desc": "A shared grid that anyone can claim tiles on, live. When two people click the same tile at the same instant, the database's row locks pick exactly one winner and every browser hears the result at once.",
+     "role": "Take-home assignment for InboxKit",
+     "year": "2026",
+     "stack": "Next.js, Fastify, Socket.IO, PostgreSQL, Redis, TypeScript",
+     "status": "archived",
+     "note": "The game server is no longer running",
+     "shot": "tilewar.jpg",
+     "shotAlt": "Tilewar: a grey grid with a scatter of blue and cyan claimed tiles, a live activity panel and a player name tag",
+     "play": false
+    },
+    {
+     "name": "Code Warrior",
+     "desc": "Your real GitHub activity, turned into an RPG character. Stars, pull requests, commits, issues and reviews become experience that sets a rank from C to SSS, character stats, quests, badges and a place on a global leaderboard.",
+     "role": "Personal project",
+     "year": "2026",
+     "stack": "Next.js, TypeScript, Supabase, NextAuth, TanStack Query, Framer Motion",
+     "status": "live",
+     "url": "https://code-warrior-liart.vercel.app",
+     "note": "Sign in with GitHub to play",
+     "shot": "codewarrior.jpg",
+     "shotAlt": "Code Warrior's pixel-art title on a starfield, a row of ranks from C to SSS and a Sign in with GitHub button",
+     "play": false
+    }
+   ]
+  },
+  {
+   "key": "work",
+   "where": "The milestones",
+   "title": "Work",
+   "noun": "places",
+   "lede": "Where I have worked, and what was built there.",
+   "hero": "hero_work.jpg",
+   "heroAlt": "A milestone and a stone column on a forest trail in the mist",
+   "entries": [
+    {
+     "name": "Alethman",
+     "desc": "India-first news intelligence. It reads Indian news at scale, clusters and maps the stories, and flags when coverage of one event splits into opposing narratives. Three products run on the same engine: Pramaan, Polity and Arctus.",
+     "role": "Co-founder and CTO",
+     "year": "2026",
+     "stack": "Next.js, MapLibre, deck.gl, Python, PostgreSQL with pgvector, Claude",
+     "status": "reference",
+     "url": "https://alethman.com",
+     "linkText": "Visit alethman.com ↗",
+     "shot": "alethman.jpg",
+     "shotAlt": "Alethman's homepage: 'The signal is rarely missing.' beside a dark panel of moving record columns and a feed of findings",
+     "play": false
+    },
+    {
+     "name": "Advuman",
+     "desc": "A London trade-risk intelligence start-up watching the UK–India corridor. As its software engineer I built the source collectors, an asynchronous PostgreSQL pipeline, classification of events by a language model, and the analysts' dashboard.",
+     "role": "Software Engineer, remote",
+     "year": "2026",
+     "stack": "Python, PostgreSQL, Claude, Streamlit",
+     "status": "reference",
+     "url": "https://advuman-landing-page.vercel.app",
+     "linkText": "Visit Advuman ↗",
+     "shot": "advuman.jpg",
+     "shotAlt": "Advuman's landing page: a dark globe with a gold arc from the UK to India in front of a huge grey SIGNALS wordmark",
+     "play": false
+    },
+    {
+     "name": "InboxKit",
+     "desc": "Email infrastructure for outreach teams: Google, Microsoft 365 and Azure mailboxes, domains and DNS across registrars, warm-up, inbox-placement tests and white-label resellers. I joined as a full-stack intern and became a forward deployed engineer, on the API server and on ENPOLL, the company's AI support platform.",
+     "role": "Full-stack intern, then Forward Deployed Engineer",
+     "year": "2026",
+     "stack": "Next.js, TypeScript, Node.js, Express, MongoDB, BullMQ, Go",
+     "status": "reference",
+     "url": "https://www.inboxkit.com",
+     "linkText": "Visit inboxkit.com ↗",
+     "shot": "inboxkit.jpg",
+     "shotAlt": "InboxKit's homepage: 'Everything you need to land in primary' with a Get Started button and a row of G2 badges",
+     "play": false
+    }
+   ]
+  },
+  {
+   "key": "art",
+   "where": "The easels",
+   "title": "Art & writing",
+   "noun": "projects",
+   "lede": "Drawings, mathematics made visible, and words.",
+   "hero": "hero_art.jpg",
+   "heroAlt": "Wooden easels standing in a pine clearing in the mist",
+   "entries": [
+    {
+     "name": "smirkarts",
+     "desc": "My studio as an artist: ballpoint portraits, ink illustrations and concept art in a gallery that drifts by on its own, with prints and commissions on offer. One hand-written page.",
+     "role": "Personal project",
+     "year": "2025",
+     "stack": "HTML, CSS, vanilla JavaScript, EmailJS",
+     "status": "live",
+     "url": "https://smirkarts.vercel.app",
+     "shot": "smirkarts.jpg",
+     "shotAlt": "Selected Works: a pencil study of a classical bust, a painted figure before a gold and blue mandala, an ink manga drawing, and a marker illustration of a muscled figure",
+     "play": false
+    },
+    {
+     "name": "Bonfire",
+     "desc": "Poems and thoughts, kept round a fire. A pixel-art bonfire throws off embers and smoke, and six tents around it hold the poems, thoughts, stories, favourites, inspirations and an about page, with the fire's music playing low.",
+     "role": "Personal project",
+     "year": "2025",
+     "stack": "HTML, vanilla JavaScript, Web Animations",
+     "status": "live",
+     "url": "https://bonfireblog.vercel.app",
+     "shot": "bonfire.jpg",
+     "shotAlt": "Bonfire: a glowing orange title over a pixel-art campfire ringed by six tents labelled Stories, Poems, Inspirations, Thoughts, Favorites and About",
+     "play": false
+    },
+    {
+     "name": "Sine & Sketch",
+     "desc": "A studio for pictures made of pure mathematics, after the methods of Hamid Naderi Yeganeh. Write the function that colours every pixel on the GPU, release thousands of shapes driven by sines, rebuild a photograph from ellipses, or turn a sketch into Fourier equations.",
+     "role": "Personal project",
+     "year": "2026",
+     "stack": "Vanilla JavaScript, WebGL2 and GLSL, Canvas, its own formula compiler",
+     "status": "live",
+     "url": "https://sine-and-sketch.vercel.app",
+     "note": "Exports PNG, SVG, PDF and layered PSD",
+     "shot": "sinesketch.jpg",
+     "shotAlt": "Sine & Sketch: 'Pictures made of pure math.' beside a polar rose, above a marble-vein picture and the functions that draw it",
+     "play": true
+    }
+   ]
+  },
+  {
+   "key": "tools",
+   "where": "The anvils",
+   "title": "Tools & engineering",
+   "noun": "projects",
+   "lede": "Things built to be used: editors, solvers, converters and the small services that keep the rest running.",
+   "hero": "hero_tools.jpg",
+   "heroAlt": "Two anvils, an armillary sphere and an astrolabe in a misty pine clearing",
+   "entries": [
+    {
+     "name": "Universal 3D Studio",
+     "desc": "A Blender-inspired 3D editor that runs entirely in the browser: an outliner, transforms, materials, modifiers and a timeline. Projects are saved on your own machine.",
+     "role": "Personal project",
+     "year": "2026",
+     "stack": "Three.js, React, TypeScript, Zustand, Vite",
+     "status": "live",
+     "url": "https://3d-renderer-nu.vercel.app",
+     "shot": "studio.jpg",
+     "shotAlt": "Universal 3D Studio's editor: an outliner, a 3D viewport with a cube, a properties panel and a timeline",
+     "play": true
+    },
+    {
+     "name": "Cube Solver",
+     "desc": "Scan or paint in a scrambled Rubik's cube and get a step-by-step solve, one move at a time. Handles 2×2, 3×3, Mirror and Ghost cubes, with larger cubes experimental.",
+     "role": "Personal project",
+     "year": "2026",
+     "stack": "React, TypeScript, Zustand, Vite",
+     "status": "live",
+     "url": "https://cube-solver-olive.vercel.app",
+     "shot": "cube.jpg",
+     "shotAlt": "Cube Solver: a 3D cube and an unfolded colour net with Scramble and Solve buttons",
+     "play": true
+    },
+    {
+     "name": "img2css",
+     "desc": "A terminal in the browser that turns any image into pure CSS, a single element painted with box-shadows. It can also build CSS animations from frames. Nothing leaves your machine.",
+     "role": "Personal project",
+     "year": "2026",
+     "stack": "Plain JavaScript, Web Workers, no dependencies",
+     "status": "live",
+     "url": "https://img2css-nu.vercel.app",
+     "shot": "img2css.jpg",
+     "shotAlt": "img2css: a green-on-black terminal listing its commands",
+     "play": true
+    },
+    {
+     "name": "DSA Solvebook",
+     "desc": "An automated proof-of-work portfolio. A scraper collects every accepted LeetCode solution, commits it, and the site rebuilds itself, with no manual entry. 915 problems solved and counting.",
+     "role": "Personal project",
+     "year": "2026",
+     "stack": "Python, Next.js, TypeScript, Tailwind, GitHub Actions",
+     "status": "live",
+     "url": "https://dsa-solvebook.vercel.app",
+     "shot": "solvebook.jpg",
+     "shotAlt": "DSA Solvebook dashboard: 915 problems solved, a year of daily activity, and progress goals",
+     "play": false
+    },
+    {
+     "name": "NebulaStock",
+     "desc": "A stock forecasting dashboard: compare tickers, read the forecast against the price, check each model's accuracy, and follow market sentiment from the news.",
+     "role": "Personal project",
+     "year": "2025",
+     "stack": "React, TypeScript, Vite",
+     "status": "live",
+     "url": "https://nebulastock.vercel.app",
+     "shot": "nebula.jpg",
+     "shotAlt": "NebulaStock: a price chart for Apple with a forecast line, accuracy panels and a news sentiment feed",
+     "play": true
+    },
+    {
+     "name": "Family Hierarchy",
+     "desc": "Several family trees on one infinite canvas, with people linked across trees, auto-layout, focus on one branch, and export to PDF.",
+     "role": "Personal project",
+     "year": "2025–2026",
+     "stack": "Next.js, React, React Flow, Drizzle, Turso",
+     "status": "live",
+     "url": "https://ancestricheritage.vercel.app",
+     "note": "View only to the public",
+     "shot": "family.jpg",
+     "shotAlt": "Family Hierarchy: two family trees laid out side by side on an infinite canvas",
+     "play": true
+    },
+    {
+     "name": "Kaggle README Badges",
+     "desc": "A small serverless service that draws all 34 of my Kaggle badges as one self-contained SVG, ready to embed in a GitHub README, and refreshes itself daily.",
+     "role": "Personal project",
+     "year": "2026",
+     "stack": "Node.js, Vercel Functions, SVG",
+     "status": "live",
+     "url": "https://kaggle-readme-badges.vercel.app/api/kaggle-badges",
+     "linkText": "Open the badge SVG ↗",
+     "shot": "kaggle.jpg",
+     "shotAlt": "A grid of 34 colourful hexagonal Kaggle badges",
+     "play": false
+    }
+   ]
+  }
+ ]
+}
