@@ -1,4 +1,4 @@
-# The video tour's route: A* over the game's own collision (0.5 m grid, 0.75 m clearance, the trail cheaper), from the
+# The video tour's route: A* over the game's own collision (0.5 m grid, 1.25 m clearance (0.75 m brushed trunks), the trail cheaper), from the
 # spawn through every place in order, plus the statue avenue. Writes tour_route.json (polyline + stops) and a top-down plot.
 import json
 from playwright.sync_api import sync_playwright
