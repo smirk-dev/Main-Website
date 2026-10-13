@@ -11,7 +11,7 @@ Run from a scratch work directory (outputs land there), with the dev server on :
 3. `PY=python ./all.sh` — renders `g5/tour_frames/f00000.jpg…` (1600×900, ~0.35 s a frame on Iris Xe). It sets `game.film.hold`, so the
    loop draws once per pose; a free-running loop in headless Chrome queued seconds of draws ahead of every screenshot (5 s a frame).
    Don't edit anything `main.ts` imports while it runs: Vite hot-reloads the page and the run dies.
-4. `./encode.sh <out.mp4> [crf] [gop] [width]` — H.264, no B-frames, a keyframe every `gop` frames (seeks stay short).
+4. `./encode.sh [outdir]` — `tour_av1.mp4` (AV1 720p, ~140 MB) and `tour.mp4` (H.264 960p, ~61 MB); `tour.ts` streams AV1 where it decodes.
 
-Then copy the film to `public/assets/tour/tour.mp4`, a frame to `poster.jpg`, and write `tour.json`
+Then copy both films to `public/assets/tour/`, frame 0 at 1280 wide to `poster.jpg`, and write `tour.json`
 (`{fps, frames, stops: [{key, f0, f1}]}` from `tour_cam.json`). `public/assets/` is not in git.
