@@ -46,18 +46,31 @@ const ABIAS = Number(Q.get("abias") ?? 0.5).toFixed(2);   // 1.25 and 0.8 turned
 const IMP_DITHER = Q.get("imp") === "dither";
 
 /** Lets a detailed tree dissolve out pixel by pixel as its impostor dissolves in (per-instance `ifade`, 1 = all detail). */
+const FLARE_LIFT = Number(Q.get("flift") ?? 0.8).toFixed(2);
 function dissolve(mat: THREE.Material) {
   const cut = (mat as THREE.MeshStandardMaterial).alphaTest > 0 && !!(mat as THREE.MeshStandardMaterial).map;
+  // the trunks' base flare carries a baked ring of the scan's forest floor out to 0.74 m, far darker than this ground: it
+  // read as a black skirt round every tree. Cut it back to a ragged edge 0.36-0.52 m out, as high as its rim rises (0.35 m;
+  // fixed to the trunk, not dithered), and lift what is left of it near the ground towards this ground's brightness.
+  const flare = /_trunk_[abc]$/.test(mat.name) && Q.get("flare") !== "1";
   mat.onBeforeCompile = (sh) => {
     sh.vertexShader = sh.vertexShader
-      .replace("#include <common>", "#include <common>\nattribute float ifade;\nvarying float vFade;")
-      .replace("#include <begin_vertex>", "#include <begin_vertex>\nvFade = ifade;");
+      .replace("#include <common>", "#include <common>\nattribute float ifade;\nvarying float vFade;\nvarying vec3 vLoc;")
+      .replace("#include <begin_vertex>", "#include <begin_vertex>\nvFade = ifade;\nvLoc = position;");
     sh.fragmentShader = sh.fragmentShader
-      .replace("#include <common>", "#include <common>\nvarying float vFade;\n" + IGN)
-      .replace("#include <clipping_planes_fragment>", "#include <clipping_planes_fragment>\nif (ign(gl_FragCoord.xy) >= vFade) discard;");
+      .replace("#include <common>", "#include <common>\nvarying float vFade;\nvarying vec3 vLoc;\n" + IGN)
+      .replace("#include <clipping_planes_fragment>", "#include <clipping_planes_fragment>\nif (ign(gl_FragCoord.xy) >= vFade) discard;" + (flare ? `
+        float fa = atan(vLoc.z, vLoc.x), fr = length(vLoc.xz);
+        float edge = 0.44 + 0.05 * sin(fa * 5.0 + 1.3) + 0.03 * sin(fa * 11.0 + 4.1);
+        if (vLoc.y < 0.35 && fr > edge) discard;` : ""));
     if (cut) sh.fragmentShader = sh.fragmentShader.replace("#include <map_fragment>", `#include <map_fragment>
       diffuseColor.a = opacity * texture2D(map, vMapUv, ${ABIAS}).a;`);
+    if (flare) sh.fragmentShader = sh.fragmentShader.replace("#include <map_fragment>", `#include <map_fragment>
+      diffuseColor.rgb *= 1.0 + ${FLARE_LIFT} * smoothstep(0.4, 0.05, vLoc.y) * smoothstep(0.22, 0.4, fr);`);
   };
+  // three keys compiled programs on onBeforeCompile's source text, the same for every material here: without this a
+  // flare material would be handed a program compiled for some other part
+  mat.customProgramCacheKey = () => `dissolve${cut ? "-cut" : ""}${flare ? "-flare" : ""}`;
   mat.needsUpdate = true;
 }
 

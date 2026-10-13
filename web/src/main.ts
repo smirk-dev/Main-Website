@@ -14,6 +14,8 @@ import works from "../content/works.json";
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const canvas = $("c") as HTMLCanvasElement;
 const params = new URLSearchParams(location.search);
+/** the untextured statue parts' stone, sRGB (?stone=rrggbb to try others) */
+const STONE = "#" + (params.get("stone") ?? "8e8a82");
 
 // D2: desktop only. Touch-first or small screens get the plain archive.
 if (matchMedia("(pointer: coarse)").matches || innerWidth < 900) {
@@ -203,7 +205,12 @@ async function boot() {
       fixMaterials(obj, { shadows: true, receive: true });
       if (s.name.startsWith("SX_landing")) seatFlames(obj);
       // the scans' marble was weathered by a node setup the web format can't carry: tone the bare albedo down to match (once per file)
-      if (s.name.startsWith("ST_") && !toned) obj.traverse((o) => { const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial; if (m?.color) m.color.multiplyScalar(0.62); });
+      // A part with no texture at all (the fork's broken-wing angel) got only that 0.62 and read as chalk-white plaster: it takes
+      // a weathered grey stone instead
+      if (s.name.startsWith("ST_") && !toned) obj.traverse((o) => {
+        const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial; if (!m?.color) return;
+        if (m.map) m.color.multiplyScalar(0.62); else { m.color.set(STONE); m.roughness = 0.92; }
+      });
       g.userData.toned = true;
       scene.add(obj); obj.name = s.name;
       return obj;
