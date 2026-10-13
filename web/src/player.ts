@@ -14,6 +14,7 @@ export class Player {
   private bob = 0;
   /** 0 with prefers-reduced-motion: no head bob */
   bobScale = 1;
+  slideOn = true;
   locked = false;
 
   constructor(private cam: THREE.PerspectiveCamera, private ground: Ground, private walls: Collision, spawn: number[], private el: HTMLElement) {
@@ -54,12 +55,15 @@ export class Player {
     const rate = wl > 0 ? ACCEL : FRICTION;
     if (dl > 1e-5) { const t = Math.min(1, rate * dt / dl); this.vel.x += dvx * t; this.vel.z += dvz * t; }
 
-    // slide along whatever is in the way: try the full step, then each axis alone
+    // slide along whatever is in the way: try the full step, then the step turned a little either way (so a trunk you
+    // meet off-centre is walked round, not stuck on), then each axis alone
     const nx = this.pos.x + this.vel.x * dt, nz = this.pos.z + this.vel.z * dt;
     if (!this.blocked(nx, nz)) { this.pos.x = nx; this.pos.z = nz; }
-    else if (!this.blocked(nx, this.pos.z)) { this.pos.x = nx; this.vel.z = 0; }
-    else if (!this.blocked(this.pos.x, nz)) { this.pos.z = nz; this.vel.x = 0; }
-    else { this.vel.x = 0; this.vel.z = 0; }
+    else if (!this.slide(dt)) {
+      if (!this.blocked(nx, this.pos.z)) { this.pos.x = nx; this.vel.z = 0; }
+      else if (!this.blocked(this.pos.x, nz)) { this.pos.z = nz; this.vel.x = 0; }
+      else { this.vel.x = 0; this.vel.z = 0; }
+    }
 
     const gy = this.ground.height(this.pos.x, this.pos.z);
     this.pos.y += (gy - this.pos.y) * Math.min(1, dt * 12);   // smooth over the ground's small bumps
@@ -68,6 +72,19 @@ export class Player {
     const by = Math.sin(this.bob) * 0.035 * this.bobScale * Math.min(1, sp / WALK);
     this.cam.position.set(this.pos.x, this.pos.y + EYE + by, this.pos.z);
     this.cam.quaternion.setFromEuler(this.euler);
+  }
+
+  /** The blocked step turned by 25°, 50°, 75° to either side, shortened by the cosine; the first that's free is taken,
+   *  (?slide=0 turns this off, for comparison). */
+  private slide(dt: number): boolean {
+    if (!this.slideOn) return false;
+    const vx = this.vel.x, vz = this.vel.z;
+    for (const a of [0.44, 0.87, 1.31]) for (const sgn of [1, -1]) {
+      const c = Math.cos(a), s = Math.sin(a) * sgn;
+      const tx = (vx * c - vz * s) * c, tz = (vx * s + vz * c) * c;
+      if (!this.blocked(this.pos.x + tx * dt, this.pos.z + tz * dt)) { this.pos.x += tx * dt; this.pos.z += tz * dt; this.vel.set(tx, 0, tz); return true; }
+    }
+    return false;
   }
 
   /** Free spawn spot: if the given one is inside something, step outward until it isn't. */

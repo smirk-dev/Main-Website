@@ -56,7 +56,7 @@ door.resize(innerWidth / innerHeight);
 const statues = new Statues();
 const plates = new Plates($("plates"));
 const usePlates = params.get("plates") !== "0";   // test switch: raster only
-if (params.has("debug")) Object.assign(window, { act1: { statues, plates } });
+if (params.has("debug")) Object.assign(window, { act1: { statues, plates, door } });
 statues.resize(innerWidth / innerHeight);
 // Act I → II → III. ?door starts at the door, ?forest skips both (tests)
 let mode: "statues" | "door" | "forest" = params.has("forest") ? "forest" : params.has("door") ? "door" : "statues";
@@ -77,23 +77,45 @@ const lineEls = Array.from(lines.querySelectorAll<HTMLElement>(".line")).map((el
   if (s >= 0) el.classList.add(s === 1 ? "right" : "left");
   return { el, t: s >= 0 ? statues.beats[s][b] : 0, intro: s < 0 };
 });
+/** scroll per key interval: where the light is out at both ends (between two statues) a short stretch, so the black never
+ *  reads as the page having stopped. Past the last key the door comes up at one step per key. */
+const SEG = statues.keys.slice(0, -1).map((a, i) => { const b = statues.keys[i + 1]; return a.key + a.rim === 0 && b.key + b.rim === 0 ? 0.3 : 1; });
+const CUM = SEG.reduce<number[]>((c, l) => (c.push(c[c.length - 1] + l), c), [0]);
+/** timeline position (keys) → scroll position (steps), and back */
+const toScroll = (t: number) => { if (t >= LAST) return CUM[LAST] + (t - LAST); const i = Math.max(0, Math.floor(t)); return CUM[i] + (t - i) * SEG[i]; };
+const fromScroll = (u: number) => { if (u >= CUM[LAST]) return LAST + (u - CUM[LAST]); let i = 0; while (i < LAST - 1 && CUM[i + 1] <= u) i++; return i + (u - CUM[i]) / SEG[i]; };
+/** the scroll stops: the title, every beat, the door */
+const STOPS = [0, ...statues.beats.flat(), LAST + 1].map(toScroll);
 function layoutStory() {
   const step = innerHeight * STEP;
-  track.style.height = `${(LAST + 1) * step + innerHeight}px`;
-  track.replaceChildren(...[0, ...statues.beats.flat(), LAST + 1].map((t) => { const i = document.createElement("i"); i.style.top = `${t * step}px`; return i; }));
+  track.style.height = `${toScroll(LAST + 1) * step + innerHeight}px`;
+  track.replaceChildren(...STOPS.map((u) => { const i = document.createElement("i"); i.style.top = `${u * step}px`; return i; }));
 }
 layoutStory();
 let storyT = 0, stillSince = performance.now();
 story.addEventListener("scroll", () => { stillSince = performance.now(); });
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-/** resolves once the reader has stopped scrolling for a moment (or has left Act I): the forest's heavy set-up runs then, so the story never stutters */
+// the keyboard pages from stop to stop, so no beat (and no line) is ever paged past
+story.addEventListener("keydown", (e) => {
+  const fwd = ["PageDown", "ArrowDown", "ArrowRight"].includes(e.key) || (e.key === " " && !e.shiftKey);
+  const back = ["PageUp", "ArrowUp", "ArrowLeft"].includes(e.key) || (e.key === " " && e.shiftKey);
+  const home = e.key === "Home", end = e.key === "End";
+  if (!fwd && !back && !home && !end) return;
+  e.preventDefault();
+  const step = innerHeight * STEP, u = story.scrollTop / step;
+  const to = home ? 0 : end ? STOPS[STOPS.length - 1] : fwd ? STOPS.find((x) => x > u + 0.05) : [...STOPS].reverse().find((x) => x < u - 0.05);
+  if (to !== undefined) story.scrollTo({ top: to * step, behavior: reduced ? "auto" : "smooth" });
+});
 /** yield a frame while someone is watching; in a hidden tab rAF never fires, so don't wait for it */
 const nextFrame = () => (document.hidden ? Promise.resolve() : new Promise<void>((r) => requestAnimationFrame(() => r())));
+/** resolves once the reader has stopped scrolling for a moment (or has left Act I): the forest's heavy set-up runs then, so the story never stutters */
 const calm = () => new Promise<void>((res) => { const k = () => (mode !== "statues" || performance.now() - stillSince > 1200 ? res() : setTimeout(k, 200)); k(); });
-if (mode === "statues") {
-  story.focus();
-  statues.load(() => { cue.textContent = "Scroll"; }).catch((e) => { console.error(e); cue.textContent = "The statues failed to load. Scroll on to the door."; });
-} else { story.hidden = true; lines.hidden = true; $("start").hidden = false; }
+if (mode === "statues") story.focus();
+else { story.hidden = true; lines.hidden = true; $("start").hidden = false; }
+/** Act I's statues download first and alone; the door and the forest wait for them */
+const act1 = mode === "statues"
+  ? statues.load(() => { cue.textContent = "Scroll"; }).catch((e) => { console.error(e); cue.textContent = "The statues failed to load. Scroll on to the door."; })
+  : Promise.resolve();
 
 // ---------- load ----------
 const bar = $("bar"), loadtxt = $("loadtxt"), enter = $("enter") as HTMLButtonElement;
@@ -120,7 +142,27 @@ function backScan(root: THREE.Object3D): THREE.Mesh[] {
   return shells;
 }
 
+/** A flame that isn't inside any lantern of its cluster (one in SX_landing_3 hung 1.4 m under its lamps and read as a
+ *  floating white oval) is moved into the nearest lantern, a little below its middle. */
+function seatFlames(root: THREE.Object3D) {
+  root.updateMatrixWorld(true);
+  const flames: THREE.Mesh[] = [], lamps: THREE.Box3[] = [];
+  root.traverse((o) => { const m = o as THREE.Mesh; if (!m.isMesh) return;
+    if ((m.material as THREE.Material).name === "lantern_flame") flames.push(m); else lamps.push(new THREE.Box3().setFromObject(m)); });
+  const c = new THREE.Vector3(), lc = new THREE.Vector3();
+  for (const f of flames) {
+    new THREE.Box3().setFromObject(f).getCenter(c);
+    if (!lamps.length || lamps.some((b) => b.clone().expandByScalar(0.03).containsPoint(c))) continue;
+    let best = lamps[0], bd = Infinity;
+    for (const b of lamps) { b.getCenter(lc); const d = Math.hypot(lc.x - c.x, lc.z - c.z); if (d < bd) { bd = d; best = b; } }
+    best.getCenter(lc); lc.y -= (best.max.y - best.min.y) * 0.12;
+    f.position.add(f.parent!.worldToLocal(lc.clone()).sub(f.parent!.worldToLocal(c.clone())));
+    f.updateMatrixWorld(true);
+  }
+}
+
 async function boot() {
+  await act1;
   const [w, sky] = await Promise.all([
     loadWorld((f, label) => { bar.style.width = `${Math.round(f * 100)}%`; loadtxt.textContent = `Loading ${label}…`; }),
     new HDRLoader().loadAsync("/assets/sky_1k.hdr"),
@@ -159,6 +201,7 @@ async function boot() {
       const obj = s.matrix ? g.scene.clone(true) : g.scene;
       if (s.matrix) { obj.matrixAutoUpdate = false; obj.matrix.fromArray(s.matrix); }
       fixMaterials(obj, { shadows: true, receive: true });
+      if (s.name.startsWith("SX_landing")) seatFlames(obj);
       // the scans' marble was weathered by a node setup the web format can't carry: tone the bare albedo down to match (once per file)
       if (s.name.startsWith("ST_") && !toned) obj.traverse((o) => { const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial; if (m?.color) m.color.multiplyScalar(0.62); });
       g.userData.toned = true;
@@ -187,6 +230,7 @@ async function boot() {
   if (params.has("debug")) console.log("collision: " + walls.tris + " triangles");
   player = new Player(camera, new Ground(w, terrain), walls, d.spawn, canvas);
   if (reduced) player.bobScale = 0;
+  player.slideOn = params.get("slide") !== "0";
   player.settle();
   const fc = d.cameras["FCAM_B"];
   player.update(0);
@@ -247,7 +291,7 @@ function arrive() {
   fade.style.transition = "opacity 1.4s ease-out"; fade.style.opacity = "0";
 }
 // no auto-focus: focus eases the door ajar
-door.load().then(() => { if (mode !== "forest") enter.disabled = false; }).catch((e) => { console.error(e); enter.disabled = false; });
+act1.then(() => door.load()).then(() => { if (mode !== "forest") enter.disabled = false; }).catch((e) => { console.error(e); enter.disabled = false; });
 enter.onmouseenter = enter.onfocus = () => door.ajar(true);
 enter.onmouseleave = enter.onblur = () => door.ajar(false);
 enter.onclick = () => {
@@ -301,7 +345,7 @@ function frame() {
   clock.update(); const dt = Math.min(clock.getDelta(), 0.05);
   if (mode === "statues") {
     // the camera follows the scroll with a little lag, so a wheel notch glides instead of jumping
-    const target = story.scrollTop / (innerHeight * STEP);
+    const target = fromScroll(story.scrollTop / (innerHeight * STEP));
     storyT = reduced ? target : storyT + (target - storyT) * Math.min(1, dt * 5);
     if (Math.abs(target - storyT) < 1e-4) storyT = target;
     const t = storyT;
@@ -311,7 +355,8 @@ function frame() {
       if (!l.intro) l.el.style.transform = `translateY(calc(-50% + ${((t - l.t) * -26).toFixed(1)}px))`;
     }
     const doorF = THREE.MathUtils.smoothstep(t, LAST + 0.15, LAST + 0.9);
-    ($("lines").querySelector(".skip-story") as HTMLElement).style.opacity = String(1 - doorF);
+    const skip = $("lines").querySelector(".skip-story") as HTMLElement;
+    skip.style.opacity = String(1 - doorF); skip.style.visibility = doorF > 0.5 ? "hidden" : "";
     const st = $("start");
     if (doorF > 0) {
       plates.show(-1, 0);
@@ -360,7 +405,7 @@ function frame() {
     for (const p of PLACES) {
       to.set(p.pos.x - player.pos.x, 0, p.pos.z - player.pos.z);
       const d = to.length();
-      if (d < p.r + 10 && d < nearD) { near = p; nearD = d; }
+      if (d < p.r + 4 && d < nearD) { near = p; nearD = d; }
       if (d < p.r && PAGES[p.key] && (d < 3 || to.normalize().dot(look.setY(0).normalize()) > 0.45) && d < bestD) { best = p; bestD = d; }
     }
     focus = best;

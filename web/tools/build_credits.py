@@ -9,13 +9,21 @@ WEB = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 scene = json.load(open(os.path.join(WEB, "public/assets/scene.json"), encoding="utf-8"))
 shipped = {s["name"] for s in scene["statics"]}
 
+# authors who renamed their Sketchfab account since the download: the licence's name stays, the link follows the account
+# (checked 2026-10-13 against api.sketchfab.com/v3/models/<uid>; the old profile URLs 404)
+RENAMED = {"https://sketchfab.com/drvrstudio": ("andreidrmb", "https://sketchfab.com/andreidrmb"),
+           "https://sketchfab.com/vruderkuss": ("lil_bentley", "https://sketchfab.com/lil_bentley")}
+
 def sketchfab(folder):
     t = open(os.path.join(folder, "license.txt"), encoding="utf-8").read()
     g = lambda k: (re.search(r"\* " + k + r":\s*(.+)", t) or [None, ""])[1].strip()
     author = g("author"); m = re.match(r"(.+?)\s*\((https?://[^)]+)\)", author)
     lic = g("license type"); lm = re.match(r"(.+?)\s*\((https?://[^)]+)\)", lic)
-    return {"title": g("title"), "url": g("source"), "author": m[1] if m else author, "author_url": m[2] if m else "",
+    c = {"title": g("title"), "url": g("source"), "author": m[1] if m else author, "author_url": m[2] if m else "",
             "license": lm[1] if lm else lic, "license_url": lm[2] if lm else "", "source": "Sketchfab"}
+    if c["author_url"] in RENAMED:
+        now, url = RENAMED[c["author_url"]]; c["author"] = f"{c['author']} (now {now})"; c["author_url"] = url
+    return c
 
 out = {"statues": [], "structures": [], "forest": []}
 # the three Act I heroes, then the thirteen forest statues

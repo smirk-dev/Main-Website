@@ -76,3 +76,6 @@ button.ghost:hover, button.ghost:focus-visible { background: rgba(255,255,255,.0
 #pause #sound { margin-top: 14px; }
 #pause .hint { margin: 22px 0 0; font-size: 13px; color: var(--dim); }
 #pause .hint + .hint { margin-top: 10px; }
+/* the daylight through the door's grilles falls on the floor under the choices: a soft shadow keeps the words readable */
+.door-bottom { position: relative; }
+.door-bottom::before { content: ""; position: absolute; inset: -30px -140px -20px; z-index: -1; pointer-events: none; background: radial-gradient(closest-side, rgba(0,0,0,.82), rgba(0,0,0,.55) 60%, rgba(0,0,0,0)); }

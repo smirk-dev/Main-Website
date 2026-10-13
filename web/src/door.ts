@@ -20,6 +20,8 @@ export class Door {
   private from = new THREE.Vector3(0.6, 1.55, 8.5);
   private look = new THREE.Vector3(0, 1.45, 0);
   onThrough?: () => void;
+  /** the lens shift, as a fraction of the frame's height */
+  private static SHIFT = 0.075;
 
   constructor() {
     this.scene.background = new THREE.Color(0x000000);
@@ -27,12 +29,14 @@ export class Door {
 
     // obsidian floor: near-black and glossy so the spill of light reads on it
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x060606, roughness: 0.22, metalness: 0 }));
-    floor.position.z = 29.95; floor.receiveShadow = true; this.scene.add(floor);
+    // its back edge runs 6 cm under the void wall (z -0.09): with it short of the wall, the forest plate below floor level
+    // showed through the gap as a thin line drawn right across the void
+    floor.position.z = 29.85; floor.receiveShadow = true; this.scene.add(floor);
 
     // the approved forest view, seen only through the doorway
     const tex = new THREE.TextureLoader().load("/assets/door/forest_plate.webp"); tex.colorSpace = THREE.SRGBColorSpace;
     const plate = new THREE.Mesh(new THREE.PlaneGeometry(14, 7.9), new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }));
-    plate.position.set(0, 1.6, -6); this.scene.add(plate);
+    plate.position.set(0, 1.6, -6); plate.name = "forest_plate"; this.scene.add(plate);
 
     // key (warm, front left) and rim (cool, behind right), as on the heroes; daylight from beyond the door
     const key = this.key = new THREE.SpotLight(0xffd19e, 260, 14, 0.6, 0.6, 2); key.position.set(-3.6, 4.2, 3.4); key.target.position.set(0, 1.4, 0);
@@ -63,9 +67,11 @@ export class Door {
   enter() { if (this.walking < 0) { this.target = 80; this.walking = 0; } }
 
   resize(aspect: number) {
-    // the approved render's 50 mm lens, opened to about 38 mm so the words above and the choices below clear the door
+    // the approved render's 50 mm lens, opened to about 34 mm, and the frame shifted down (a lens shift: the door's
+    // verticals stay straight) so the door sits between the words above and the choices below instead of under them
     this.camera.aspect = aspect;
-    this.camera.fov = THREE.MathUtils.radToDeg(2 * Math.atan((18 / 38) / Math.max(aspect, 1.2)));
+    this.camera.fov = THREE.MathUtils.radToDeg(2 * Math.atan((18 / 34) / Math.max(aspect, 1.2)));
+    this.camera.setViewOffset(aspect, 1, 0, Door.SHIFT, aspect, 1);   // (sets aspect to fullWidth / fullHeight)
     this.camera.updateProjectionMatrix();
   }
 
@@ -80,7 +86,8 @@ export class Door {
       // wait for the leaves to clear, then a slow push through the doorway, easing in
       const t = THREE.MathUtils.clamp((this.walking - 0.7) / 2.6, 0, 1), e = t * t * (3 - 2 * t);
       this.camera.position.set(THREE.MathUtils.lerp(0.6, 0, e), THREE.MathUtils.lerp(1.55, 1.6, e), THREE.MathUtils.lerp(8.5, -1.5, e));
-      this.camera.fov = THREE.MathUtils.lerp(this.camera.fov, 50, Math.min(1, dt * 1.2 * t)); this.camera.updateProjectionMatrix();
+      this.camera.fov = THREE.MathUtils.lerp(this.camera.fov, 50, Math.min(1, dt * 1.2 * t));
+      const A = this.camera.aspect; this.camera.setViewOffset(A, 1, 0, Door.SHIFT * (1 - e), A, 1); this.camera.updateProjectionMatrix();
       this.camera.lookAt(0, 1.5, -6);
       if (t >= 1 && this.onThrough) { const f = this.onThrough; this.onThrough = undefined; f(); }
     }

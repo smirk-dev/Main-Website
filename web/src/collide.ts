@@ -4,8 +4,8 @@ import { BOUNDS } from "./player";
 
 /** What a walker bumps into, built in the browser from the very meshes on screen: every triangle of a statue, a wall, a
  *  trunk or a rock that passes between knee and head height marks the 10 cm cells under it. So you stop at the bark or
- *  the stone, not at a circle or a coarse cell around it, and low things (roots, pebbles, a fallen branch) can be stepped over. */
-const CS = 0.1, LO = 0.3, HI = 1.8, MARGIN = 2;
+ *  the stone, not at a circle or a coarse cell around it, and low things (roots, pebbles, a fallen branch, flagstones) can be stepped over. */
+const CS = 0.1, LO = Number(new URLSearchParams(location.search).get("lo") ?? 0.45), HI = 1.8, MARGIN = 2;   // LO: a flagstone or a low rubble edge is stepped over (?lo= for tests)
 
 export class Collision {
   private x0 = BOUNDS.x0 - MARGIN; private z0 = BOUNDS.z0 - MARGIN;
