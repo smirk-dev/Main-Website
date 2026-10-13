@@ -9,7 +9,7 @@ import { Player } from "./player";
 import { Door } from "./door";
 import { Statues, Plates } from "./statues";
 import { Ambience } from "./sound";
-import works from "../content/works.json";
+import { PLACE_LIST, PAGES } from "./places";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const canvas = $("c") as HTMLCanvasElement;
@@ -24,17 +24,7 @@ if (matchMedia("(pointer: coarse)").matches || innerWidth < 900) {
 }
 
 /** The seven places in the forest. Blender XY centres; each opens its archive page. A category without a page has no prompt. */
-const PLACES = [
-  { key: "landing", label: "Landing pages for people", where: "The lanterns", x: -6.5, y: 15, r: 6 },
-  { key: "earlier", label: "Earlier selves", where: "The wells and mirrors", x: -22, y: 30, r: 7 },
-  { key: "stories", label: "Stories and experiences", where: "The ruined chapel", x: -2, y: 80, r: 9 },
-  { key: "games", label: "Games", where: "The stone ring", x: -30, y: 88, r: 13 },
-  { key: "work", label: "Work", where: "The milestones", x: 36, y: 85, r: 7 },
-  { key: "art", label: "Art and writing", where: "The easels", x: -8, y: 100, r: 6 },
-  { key: "tools", label: "Tools and engineering", where: "The anvils", x: 22, y: 96, r: 7 },
-].map((p) => ({ ...p, pos: new THREE.Vector3(p.x, 0, -p.y) }));
-// a category opens its page only once it has real entries (content/works.json, built by tools/build_archive.mjs)
-const PAGES: Record<string, string> = Object.fromEntries(works.categories.filter((c) => c.entries.length).map((c) => [c.key, `/archive/${c.key}.html`]));
+const PLACES = PLACE_LIST.map((p) => ({ ...p, pos: new THREE.Vector3(p.x, 0, -p.y) }));
 
 // ---------- renderer ----------
 // test switches (?pr= pixel ratio, ?shadows=0, ?lights=0, ?aa=1)
@@ -281,7 +271,7 @@ async function boot() {
   for (const x of all) x.visible = true;   // the loop sets the real visibility on its first frame
   veg.group.visible = true;
   }
-  if (params.has("debug")) Object.assign(window, { game: { player, camera, renderer, veg, scene, statics, world: w, R: RANGE, sun } });   // test hook: teleport and look
+  if (params.has("debug")) Object.assign(window, { game: { player, camera, renderer, veg, scene, statics, world: w, R: RANGE, sun, film } });   // test hook: teleport and look
   bar.style.width = "100%"; loadtxt.textContent = "The forest is ready.";
   if (mode === "forest") { enter.disabled = false; enter.focus(); }
   if (waiting) arrive();
@@ -355,8 +345,13 @@ const fpsEl = $("fps"); fpsEl.hidden = !params.has("debug");
 let frames = 0, acc = 0, slow = 0, shadowEvery = 1, tick = 0;
 const look = new THREE.Vector3(), to = new THREE.Vector3();
 let lastPlace = "";
+// offline rendering (the scroll tour, scratch tools): with hold set the loop draws only when asked, once per captured frame.
+// Headless Chrome runs rAF faster than the GPU drains, so a free-running loop queued seconds of draws ahead of every capture.
+const film = { hold: false, once: false };
 
 function frame() {
+  if (film.hold && !film.once) { requestAnimationFrame(frame); return; }
+  film.once = false;
   clock.update(); const dt = Math.min(clock.getDelta(), 0.05);
   if (mode === "statues") {
     // the camera follows the scroll with a little lag, so a wheel notch glides instead of jumping

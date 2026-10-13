@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suryansh Mishra · a walk through the forest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="/src/tour.css">
+</head>
+<body>
+<video id="film" muted playsinline preload="auto" poster="/assets/tour/poster.jpg" aria-label="A walk through the forest, moved by scrolling"></video>
+
+<header id="bar">
+  <a class="name" href="/">Suryansh Mishra</a>
+  <a class="walk" href="/?forest">Walk it yourself →</a>
+</header>
+
+<div id="hint"><span id="load">Loading the walk · <b>0</b>%</span><span id="go" hidden>Scroll to walk into the forest</span></div>
+
+<nav id="rail" aria-label="Places along the walk"></nav>
+
+<aside id="card" hidden>
+  <p class="where"></p>
+  <h2 class="label"></h2>
+  <button class="open" type="button">Open <kbd>E</kbd></button>
+</aside>
+
+<div id="track"></div>
+
+<section id="panel" hidden>
+  <iframe id="page" title="Archive"></iframe>
+</section>
+
+<script type="module" src="/src/tour.ts"></script>
+</body>
+</html>

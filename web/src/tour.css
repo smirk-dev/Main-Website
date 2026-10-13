@@ -1,0 +1,52 @@
+:root { --ink: #0b0c0d; --text: #e9e4d9; --dim: #a8a397; --accent: #e8d9b8; --serif: "Cormorant Garamond", Georgia, serif; --sans: Inter, system-ui, sans-serif; }
+* { box-sizing: border-box; }
+html { background: var(--ink); }
+body { margin: 0; color: var(--text); font: 15px/1.5 var(--sans); -webkit-font-smoothing: antialiased; }
+[hidden] { display: none !important; }
+a { color: var(--accent); }
+
+/* the film stays put; the page scrolls a tall empty track under it, and the scroll position picks the frame */
+#film { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; background: var(--ink); pointer-events: none; }
+#track { height: 3200vh; }
+
+#bar { position: fixed; top: 0; left: 0; right: 0; z-index: 3; display: flex; justify-content: space-between; align-items: baseline; padding: 24px 32px;
+  background: linear-gradient(rgba(8,9,10,.45), transparent); pointer-events: none; }
+#bar a { pointer-events: auto; text-decoration: none; color: var(--text); text-shadow: 0 1px 8px rgba(0,0,0,.45); }
+#bar .name { font: 500 22px var(--serif); letter-spacing: .01em; }
+#bar .walk { font-size: 14px; color: rgba(240,235,225,.85); }
+#bar .walk:hover, #bar .walk:focus-visible { color: #fff; }
+
+#hint { position: fixed; left: 50%; bottom: 9vh; transform: translateX(-50%); z-index: 2; font: italic 400 21px var(--serif); color: rgba(240,235,225,.9);
+  text-shadow: 0 1px 10px rgba(0,0,0,.6); transition: opacity .8s; pointer-events: none; text-align: center; }
+#hint b { font-weight: 500; font-style: normal; font-family: var(--sans); font-size: 15px; }
+#hint.gone { opacity: 0; }
+
+/* the places, as a column of marks down the right edge; each jumps to its stop */
+#rail { position: fixed; right: 26px; top: 50%; transform: translateY(-50%); z-index: 3; display: flex; flex-direction: column; gap: 14px; }
+#rail button { all: unset; cursor: pointer; display: flex; align-items: center; justify-content: flex-end; gap: 10px; font-size: 13px; color: rgba(240,235,225,.0);
+  text-shadow: 0 1px 6px rgba(0,0,0,.6); transition: color .3s; }
+#rail button::after { content: ""; width: 7px; height: 7px; border-radius: 50%; border: 1px solid rgba(240,235,225,.75); transition: background .3s, transform .3s; }
+#rail:hover button, #rail button:focus-visible { color: rgba(240,235,225,.85); }
+#rail button.past::after { background: rgba(240,235,225,.75); }
+#rail button.here::after { background: var(--accent); transform: scale(1.5); }
+#rail button.here { color: rgba(240,235,225,.95); }
+
+#card { position: fixed; left: 32px; bottom: 32px; z-index: 2; text-align: left;   /* off-centre: the camera centres each place */ padding: 18px 30px 20px; border-radius: 18px;
+  background: rgba(10,11,12,.5); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); animation: rise .5s ease-out; min-width: 300px; }
+#card .where { margin: 0; font: italic 400 18px var(--serif); color: var(--dim); }
+#card .label { margin: 2px 0 14px; font: 500 30px/1.15 var(--serif); }
+#card .open { font: 500 14px var(--sans); color: var(--ink); background: var(--accent); border: 0; border-radius: 999px; padding: 9px 20px; cursor: pointer; }
+#card .open:hover, #card .open:focus-visible { background: #fff; }
+#card .open kbd { font: 11px var(--sans); opacity: .6; margin-left: 6px; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+
+#panel { position: fixed; inset: 0; z-index: 6; background: var(--ink); animation: fadein .45s ease-out; }
+#panel iframe { width: 100%; height: 100%; border: 0; display: block; }
+@keyframes fadein { from { opacity: 0; } }
+
+@media (max-width: 700px) {
+  #bar { padding: 16px 18px; } #bar .name { font-size: 19px; }
+  #rail { right: 12px; } #card { min-width: 0; left: 18px; right: 18px; bottom: 18px; } #card .label { font-size: 25px; }
+}
+@media (pointer: coarse) { #card .open kbd { display: none; } }
+@media (prefers-reduced-motion: reduce) { #card, #panel { animation: none; } }
