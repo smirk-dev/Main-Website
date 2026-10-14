@@ -12,4 +12,12 @@ ffmpeg -hide_banner -loglevel error -y $IN -vf "scale=1600:900:flags=lanczos:out
   -c:v libsvtav1 -preset 8 -crf 42 -g 24 -svtav1-params tune=0 $C -movflags +faststart -an "$OUT/tour_av1.mp4"
 ffmpeg -hide_banner -loglevel error -y $IN -vf "scale=1280:720:flags=lanczos:out_color_matrix=bt709:out_range=tv,format=yuv420p" \
   -c:v libx264 -preset slow -crf 26 -g 24 -keyint_min 24 -sc_threshold 0 -bf 0 $C -movflags +faststart -an "$OUT/tour.mp4"
-ls -l "$OUT"/tour_av1.mp4 "$OUT"/tour.mp4 | awk '{printf "%s  %.0f MB\n", $9, $5/1048576}'
+# Vercel's Hobby plan refuses any file over 100 MB, so each film ships as two halves cut at a keyframe (stream copy, no
+# re-encode); tour.ts plays them as one. The cut frame goes into tour.json as "parts".
+CUT=1512   # a multiple of the keyframe interval, near the middle
+for f in tour_av1 tour; do
+  ffmpeg -hide_banner -loglevel error -y -i "$OUT/$f.mp4" -c copy -map 0 -f segment -segment_frames $CUT -reset_timestamps 1 \
+    -segment_format_options movflags=+faststart "$OUT/${f}_%d.mp4"
+done
+python -I -c "import json,sys; p=sys.argv[1]; d=json.load(open(p)); d['parts']=[0,$CUT]; json.dump(d,open(p,'w'))" "$OUT/tour.json"
+ls -l "$OUT"/tour_av1_?.mp4 "$OUT"/tour_?.mp4 | awk '{printf "%s  %.0f MB\n", $9, $5/1048576}'
