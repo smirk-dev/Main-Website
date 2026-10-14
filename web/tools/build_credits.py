@@ -58,5 +58,13 @@ out["sound"] = [dict(GS, title=t, url="https://commons.wikimedia.org/wiki/File:"
                      where="The forest's sound, mixed with the other recording, looped and levelled")
                 for t in ("Wind in forest (Gravity Sound)", "Forest ambience (Gravity Sound)")]
 
+# the music (public/assets/audio/hero.ogg, music.ogg): a section of each, levelled and crossfade-looped
+SB = {"author": "Scott Buckley", "author_url": "https://www.scottbuckley.com.au/", "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/", "source": "scottbuckley.com.au"}
+out["sound"] += [dict(SB, title="Katabasis I", url="https://www.scottbuckley.com.au/library/katabasis-i/",
+                      where="The music of the statues and the door: its quiet middle, looped"),
+                 dict(SB, title="Memories Of Stone", url="https://www.scottbuckley.com.au/library/memories-of-stone/",
+                      where="The forest's music: its first three minutes, looped under the forest's sound")]
+
 json.dump(out, open(os.path.join(WEB, "content/credits.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 print({k: len(v) for k, v in out.items()})

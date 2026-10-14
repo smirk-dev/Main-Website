@@ -19,6 +19,12 @@
   <p><a href="/archive/index.html">See the work without the walk →</a></p>
 </section>
 
+<!-- the title: a key or a click here is what lets the music begin (browsers allow sound only after one) -->
+<section id="title" hidden>
+  <h1>Suryansh Mishra</h1>
+  <p class="press">Press any key</p>
+</section>
+
 <!-- Act I: the statues. Scrolling this (invisible) track drives the camera; each line belongs to one statue and one beat.
      The copy is placeholder until Suryansh sends his: replace the text, keep the data-statue / data-beat tags. -->
 <!-- the path-traced settled frames of Act I (two layers for crossfading) -->
@@ -62,7 +68,7 @@
       <li><kbd>Shift</kbd> run</li>
       <li><b>Mouse</b> look</li>
       <li><kbd>E</kbd> open</li>
-      <li><kbd>M</kbd> sound</li>
+      <li><kbd>M</kbd> map</li>
       <li><kbd>Esc</kbd> pause</li>
     </ul>
     <a class="skip" href="/archive/index.html">Skip the walk</a>
@@ -78,17 +84,34 @@
 <section id="pause" class="screen" hidden>
   <h2>Paused</h2>
   <button id="resume">Back into the forest</button>
-  <button id="sound" class="ghost" aria-pressed="false">Sound off</button>
-  <p class="hint"><kbd>M</kbd> turns the sound on or off while you walk.</p>
+  <button id="openmap" class="ghost">Map</button>
+  <p class="hint"><kbd>M</kbd> opens the map. Travel from it to any part of the forest, and from there walk anywhere.</p>
   <p class="hint"><a href="/archive/index.html">The archive</a> · <a href="/archive/credits.html">Credits</a></p>
 </section>
 
 <div id="hud" hidden>
   <div id="dot"></div>
   <div id="prompt" hidden><kbd>E</kbd> <span></span></div>
-  <div id="place"></div>
+  <div id="area" aria-live="polite"><p></p></div>
   <div id="fps" hidden></div>
 </div>
+
+<!-- M: the map. Places are added by map.ts -->
+<section id="map" hidden aria-label="Map of the forest">
+  <div class="sheet">
+    <img src="/assets/map/map.jpg" alt="" draggable="false">
+    <div class="me" title="You are here"></div>
+    <div class="pin" hidden></div>
+  </div>
+  <div class="bar">
+    <p class="hint">Choose a place, or any spot inside the forest's edge. <kbd>M</kbd> closes.</p>
+    <button class="go" hidden></button>
+    <button class="close ghost">Close</button>
+  </div>
+</section>
+
+<!-- fast travel: the screen between leaving and arriving -->
+<div id="travel" hidden><p></p></div>
 
 <section id="panel" hidden>
   <iframe id="page" title="Archive"></iframe>

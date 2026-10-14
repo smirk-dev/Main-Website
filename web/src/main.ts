@@ -5,11 +5,12 @@ import { Vegetation, RANGE } from "./vegetation";
 import { Terrain } from "./terrain";
 import { densify } from "./densify";
 import { Collision } from "./collide";
-import { Player } from "./player";
+import { Player, BOUNDS } from "./player";
 import { RailPlayer, RAIL } from "./rail";
 import { Door } from "./door";
 import { Statues, Plates } from "./statues";
-import { Ambience } from "./sound";
+import { Sound } from "./sound";
+import { ForestMap, type Travel } from "./map";
 import { PLACE_LIST, PAGES } from "./places";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -117,6 +118,9 @@ const bar = $("bar"), loadtxt = $("loadtxt"), enter = $("enter") as HTMLButtonEl
 let world: World;
 let veg: Vegetation;
 let player: Player | RailPlayer;
+// the free walk's pieces, built on the first fast travel (or at load with ?free): what can be bumped into, and the meshes it is made of
+let walls: Collision | undefined, ground: Ground, terrainRef: Terrain;
+const solidRoots: THREE.Object3D[] = [];
 let sun: THREE.DirectionalLight;
 /** obj: full detail (a statue's whole scan: within 12 m only); mid: a statue's 30k copy, 12-40 m; far: the reduced copy past
  *  40 m (half in the mist); shells: backing for the pinholed scans, only needed close */
@@ -174,7 +178,8 @@ async function boot() {
   const terrain = new Terrain(w);
   scene.add(terrain.mesh());
   await calm();
-  const walls = free ? new Collision(terrain) : undefined;   // on the trail nothing can be bumped into
+  walls = free ? new Collision(terrain) : undefined;   // on the trail nothing can be bumped into
+  ground = new Ground(w, terrain); terrainRef = terrain;
   const added = densify(w, terrain, PLACES.map((p) => ({ x: p.x, z: -p.y, r: p.r })), d.spawn);
   if (params.has("debug")) console.log("densify: +" + added + " instances");
   sunDir.fromArray(d.sun.dir).normalize();
@@ -211,11 +216,12 @@ async function boot() {
     };
     const obj = make(s.file);
     if (!obj) continue;
-    if (s.name === "ruins_posts") { walls?.addObject(obj); continue; }   // the chapel ruins: always drawn
+    if (s.name === "ruins_posts") { solidRoots.push(obj); walls?.addObject(obj); continue; }   // the chapel ruins: always drawn
     const far = make(lod1(s.file));
     // you stop at the stone itself; a statue's 6k far copy is as good as its whole scan at the 10 cm collision grid and
     // keeps the load from walking 120-480k triangles per statue
-    walls?.addObject(s.name.startsWith("ST_") && far ? far : obj);
+    solidRoots.push(s.name.startsWith("ST_") && far ? far : obj);
+    walls?.addObject(solidRoots[solidRoots.length - 1]);
     const shells = HOLED.has(s.name) ? backScan(obj) : [];
     const c = new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3());
     const md = s.name.startsWith("ST_") ? make(mid(s.file)) : undefined;
@@ -233,13 +239,13 @@ async function boot() {
   if (walls) {
     veg.solids(walls);
     if (params.has("debug")) console.log("collision: " + walls.tris + " triangles");
-    const p = new Player(camera, new Ground(w, terrain), walls, d.spawn, canvas);
+    const p = new Player(camera, ground, walls, d.spawn, canvas);
     p.slideOn = params.get("slide") !== "0";
     player = p;
   } else {
     const kept = veg.along(RAIL.filter((_, i) => i % 4 === 0), 2);   // a point every 2 m is close enough at 2 m of slack
     if (params.has("debug")) console.log(`trail: ${kept.after} of ${kept.before} instances can ever be drawn`);
-    player = new RailPlayer(camera, new Ground(w, terrain), canvas);
+    player = new RailPlayer(camera, ground, canvas);
   }
   if (reduced) player.bobScale = 0;
   player.settle();
@@ -281,7 +287,7 @@ async function boot() {
   for (const x of all) x.visible = true;   // the loop sets the real visibility on its first frame
   veg.group.visible = true;
   }
-  if (params.has("debug")) Object.assign(window, { game: { player, camera, renderer, veg, scene, statics, world: w, R: RANGE, sun, film } });   // test hook: teleport and look
+  if (params.has("debug")) Object.assign(window, { game: { player, camera, renderer, veg, scene, statics, world: w, R: RANGE, sun, sunDir, film, THREE, sound } });   // test hook: teleport and look
   bar.style.width = "100%"; loadtxt.textContent = "The forest is ready.";
   if (mode === "forest") { enter.disabled = false; enter.focus(); }
   if (waiting) arrive();
@@ -289,7 +295,7 @@ async function boot() {
 
 // ---------- states: start → walking ⇄ paused / reading a page ----------
 const start = $("start"), pause = $("pause"), hud = $("hud"), panel = $("panel"), page = $("page") as HTMLIFrameElement;
-const prompt = $("prompt"), place = $("place");
+const prompt = $("prompt");
 let reading = false;
 const lock = () => canvas.requestPointerLock();
 const fade = $("fade"), fadetxt = $("fadetxt");
@@ -298,7 +304,8 @@ let waiting = false;
 function arrive() {
   if (!world) { waiting = true; fadetxt.textContent = "The forest is still loading…"; return; }
   waiting = false; fadetxt.textContent = "";
-  mode = "forest"; start.hidden = true; hud.hidden = false; lock();
+  mode = "forest"; start.hidden = true; hud.hidden = false; lock(); sound.play("forest");
+  setTimeout(() => showArea("The Forest"), 1200);
   fade.style.transition = "opacity 1.4s ease-out"; fade.style.opacity = "0";
 }
 // no auto-focus: focus eases the door ajar
@@ -306,7 +313,7 @@ act1.then(() => door.load()).then(() => { if (mode !== "forest") enter.disabled 
 enter.onmouseenter = enter.onfocus = () => door.ajar(true);
 enter.onmouseleave = enter.onblur = () => door.ajar(false);
 enter.onclick = () => {
-  if (mode === "forest") { start.hidden = true; hud.hidden = false; lock(); return; }
+  if (mode === "forest") { start.hidden = true; hud.hidden = false; lock(); sound.play("forest"); setTimeout(() => showArea("The Forest"), 600); return; }
   enter.disabled = true; $("leave").setAttribute("disabled", "");
   mode = "door"; door.reveal = 1; story.hidden = true; lines.hidden = true; plates.show(-1, 0);
   (start.querySelector(".door-top") as HTMLElement).style.opacity = "0";
@@ -318,15 +325,24 @@ enter.onclick = () => {
 // D3: browsers only let a script close a tab it opened; if the tab is still here, say so
 $("leave").onclick = () => { window.close(); setTimeout(() => { $("gone").hidden = false; }, 300); };
 $("resume").onclick = lock;
-const sound = new Ambience(), soundBtn = $("sound");
-sound.onchange = (on, err) => {
-  soundBtn.textContent = err ? "Sound unavailable" : on ? "Sound on" : "Sound off"; soundBtn.setAttribute("aria-pressed", String(on));
-};
-soundBtn.onclick = () => sound.toggle();
+// always on: the first key or click (the title, or the forest's Enter) starts it; the statues and the door have the dark piece
+const sound = new Sound();
+const title = $("title");
+if (mode === "statues") {
+  title.hidden = false;
+  const begin = (e: Event) => {
+    if (sound.started) return;
+    e.preventDefault(); sound.start(); title.classList.add("gone"); story.focus({ preventScroll: true });
+    setTimeout(() => { title.hidden = true; }, 1700);
+  };
+  title.addEventListener("pointerdown", begin);
+  addEventListener("keydown", (e) => { if (!title.hidden && !title.classList.contains("gone")) begin(e); });
+}
+enter.addEventListener("click", () => sound.start());   // ?door / ?forest: the Enter click is the first gesture
 canvas.onclick = () => { if (!reading && start.hidden) lock(); };
 document.addEventListener("pointerlockchange", () => {
   const on = document.pointerLockElement === canvas;
-  pause.hidden = on || reading || !start.hidden;
+  pause.hidden = on || reading || map.open || travelling || !start.hidden;
 });
 
 let focus: (typeof PLACES)[number] | null = null;
@@ -344,10 +360,66 @@ function closePage() {
 addEventListener("keydown", (e) => {
   if (e.code === "KeyE" && focus && !reading && player?.locked) openPage(focus);
   if (e.code === "Escape" && reading) closePage();
-  if (e.code === "KeyM" && mode === "forest" && !e.repeat) sound.toggle();
+  if (e.code === "KeyM" && mode === "forest" && !e.repeat && !reading && !map.open && !travelling && start.hidden && world) { e.preventDefault(); openMap(); }   // preventDefault: the map's own M-to-close skips this press
 });
 // the archive page's "Back to the forest" posts this
 addEventListener("message", (e) => { if (e.data === "back-to-forest") closePage(); });
+
+// ---------- area titles, the map, fast travel ----------
+const areaEl = $("area").querySelector("p")!;
+function showArea(name: string) {
+  areaEl.textContent = name;
+  areaEl.classList.remove("show"); void areaEl.offsetWidth; areaEl.classList.add("show");   // restart the drift
+}
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const map = new ForestMap();
+let travelling = false;
+const travelEl = $("travel");
+function openMap() {
+  document.exitPointerLock(); hud.hidden = true; sound.duck(true);
+  map.show(player.pos.x, player.pos.z, player.euler.y);
+}
+map.onClose = () => { hud.hidden = false; sound.duck(false); canvas.focus({ preventScroll: true }); lock(); };
+map.onTravel = (t) => { travel(t).catch((e) => { console.error(e); travelling = false; travelEl.hidden = true; }); };
+$("openmap").onclick = () => { pause.hidden = true; openMap(); };
+const nameAt = (x: number, z: number) => PLACES.find((p) => Math.hypot(p.pos.x - x, p.pos.z - z) < p.r + 4)?.where ?? "The Forest";
+
+/** The first fast travel lets you off the trail: the collision is built (under the travel screen, a few seconds) and
+ *  the whole forest is drawn again, not just what the trail can see. */
+function goFree() {
+  const c = new Collision(terrainRef);
+  for (const o of solidRoots) { const v = o.visible; o.visible = true; c.addObject(o); o.visible = v; }
+  veg.solids(c); veg.free();
+  walls = c;
+  const p = new Player(camera, ground, c, [player.pos.x, 0, player.pos.z], canvas);
+  p.slideOn = params.get("slide") !== "0"; if (reduced) p.bobScale = 0;
+  player = p;
+  if (params.has("debug")) Object.assign((window as unknown as { game: object }).game, { player });
+}
+
+async function travel(t: Travel) {
+  travelling = true; hud.hidden = true; prompt.hidden = true;
+  const name = t.name || nameAt(t.x, t.z);
+  travelEl.querySelector("p")!.textContent = name;
+  travelEl.hidden = false; await nextFrame(); travelEl.classList.add("on");
+  await wait(800);
+  await nextFrame();
+  if (!(player instanceof Player)) goFree();
+  const p = player as Player;
+  p.pos.set(THREE.MathUtils.clamp(t.x, BOUNDS.x0 + 1, BOUNDS.x1 - 1), 0, THREE.MathUtils.clamp(t.z, BOUNDS.z0 + 1, BOUNDS.z1 - 1));
+  p.vel.set(0, 0, 0); p.settle(); p.update(0);
+  if (t.look) p.lookAt(t.look[0], p.pos.y + 1.2, t.look[1]); else p.euler.set(0, p.euler.y, 0);
+  p.update(0);
+  lastPlace = nameAt(p.pos.x, p.pos.z) === "The Forest" ? "" : nameAt(p.pos.x, p.pos.z);   // the arrival title below is the one shown
+  await wait(1000);   // drawn under the black meanwhile: the new view's trees chosen and uploaded
+  travelEl.classList.remove("on"); sound.duck(false);
+  await wait(700);
+  travelEl.hidden = true; travelling = false; hud.hidden = false;
+  showArea(name);
+  canvas.focus({ preventScroll: true }); lock();
+  // the click that chose the place may be too long ago for the browser to grant the pointer again: then the pause screen asks
+  setTimeout(() => { if (document.pointerLockElement !== canvas && !map.open && !reading) pause.hidden = false; }, 400);
+}
 
 // ---------- loop ----------
 const clock = new THREE.Timer();
@@ -436,7 +508,8 @@ function frame() {
     const say = best ? `Open ${best.label}` : "", span = prompt.querySelector("span")!;
     if (say && span.textContent !== say) span.textContent = say;   // not every frame: the prompt sits on a backdrop blur
     const nm = near ? near.where : "";
-    if (nm !== lastPlace) { place.style.opacity = nm ? "1" : "0"; if (nm) place.textContent = nm; lastPlace = nm; }
+    if (nm && nm !== lastPlace) showArea(nm);   // a new place: its name crosses the screen (once, until you reach another)
+    if (nm) lastPlace = nm;
 
     if (!renderer.shadowMap.autoUpdate && ++tick % shadowEvery === 0) renderer.shadowMap.needsUpdate = true;
     renderer.render(scene, camera);

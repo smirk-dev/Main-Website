@@ -153,6 +153,9 @@ export class Vegetation {
     return { before, after };
   }
 
+  /** Off the trail (the first fast travel): every instance can be drawn again. */
+  free() { for (const s of this.sets) s.keep = undefined; this.last.set(1e9, 0, 0); }
+
   /** Everything here a walker should bump into, at its real shape: trunks (the bark, not the needles), rocks, stumps, logs. */
   solids(c: Collision) {
     for (const s of this.sets) {
