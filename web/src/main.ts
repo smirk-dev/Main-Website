@@ -434,7 +434,7 @@ function frame() {
     frames++; acc += dt;
     if (acc > 2) {
       const fps = frames / acc; fpsEl.textContent = `${fps.toFixed(0)} fps · ${renderer.info.render.calls} calls · ${(renderer.info.render.triangles / 1e6).toFixed(2)}M tris`;
-      if (fps < 40 && start.hidden && player.locked) {
+      if (fps < 40 && start.hidden && player.locked && !film.hold) {   // offline rendering keeps its quality
         slow++;
         if (slow === 1 && tier.pixel > 1) { tier.pixel = 1; renderer.setPixelRatio(1); }
         else if (slow === 2) veg.scale = 0.8;
