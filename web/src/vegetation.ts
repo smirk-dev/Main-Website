@@ -33,7 +33,7 @@ interface Part { mesh: THREE.InstancedMesh; mats: Float32Array; fade?: THREE.Ins
  *  ~120 ms on every update (Iris Xe), i.e. a hitch every half metre of walking. With three, the one written is idle. */
 interface Ring { k: number; m: THREE.InstancedBufferAttribute[]; f: THREE.InstancedBufferAttribute[]; n: number; nf: number }
 const RING = 3;
-interface Set { def: InstanceSet; pos: Float32Array; lods: Part[][]; radius: number; lift: number }
+interface Set { def: InstanceSet; pos: Float32Array; lods: Part[][]; radius: number; lift: number; keep?: Uint32Array }
 
 // screen-space noise for the dissolve: the near tree keeps the pixels below its weight, the impostor the rest
 const IGN = "float ign(vec2 p) { return fract(52.9829189 * fract(dot(p, vec2(0.06711056, 0.00583715)))); }\n";
@@ -133,6 +133,24 @@ export class Vegetation {
       if (imp) lods.push([imp]);
       this.sets.push({ def, pos, lods, radius, lift });
     }
+  }
+
+  /** The walk keeps to a trail (rail.ts): an instance further from every point of it than its own draw range can never
+   *  be drawn, so the per-update loop drops it for good. pts: x, z along the trail, at most `gap` m apart. */
+  along(pts: [number, number][], gap: number) {
+    let before = 0, after = 0;
+    for (const s of this.sets) {
+      const k = s.def.kind;
+      const far = (k === "tree" ? RANGE.tree : k === "sapling" ? RANGE.sapling : k === "plant" ? RANGE.plant : RANGE.prop) + s.radius + gap;
+      const f2 = far * far, keep: number[] = [];
+      for (let i = 0; i < s.def.count; i++) {
+        const x = s.pos[i * 3], z = s.pos[i * 3 + 2];
+        for (const p of pts) if ((p[0] - x) ** 2 + (p[1] - z) ** 2 < f2) { keep.push(i); break; }
+      }
+      before += s.def.count; after += keep.length;
+      s.keep = Uint32Array.from(keep);
+    }
+    return { before, after };
   }
 
   /** Everything here a walker should bump into, at its real shape: trunks (the bark, not the needles), rocks, stumps, logs. */
@@ -310,8 +328,9 @@ export class Vegetation {
       const k = s.def.kind, tree = k === "tree";
       const far = tree ? RANGE.tree : (k === "sapling" ? RANGE.sapling : k === "plant" ? RANGE.plant : RANGE.prop) * this.scale;
       const r0 = RANGE.tree0 * this.scale, fade = far * 0.75;
-      const counts = s.lods.map(() => 0);
-      for (let i = 0; i < s.def.count; i++) {
+      const counts = s.lods.map(() => 0), keep = s.keep, n = keep ? keep.length : s.def.count;
+      for (let j = 0; j < n; j++) {
+        const i = keep ? keep[j] : j;
         const x = s.pos[i * 3], y = s.pos[i * 3 + 1], z = s.pos[i * 3 + 2];
         const d = Math.hypot(x - cp.x, z - cp.z);
         if (d > far) continue;

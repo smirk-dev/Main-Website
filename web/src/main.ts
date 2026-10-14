@@ -6,6 +6,7 @@ import { Terrain } from "./terrain";
 import { densify } from "./densify";
 import { Collision } from "./collide";
 import { Player } from "./player";
+import { RailPlayer, RAIL } from "./rail";
 import { Door } from "./door";
 import { Statues, Plates } from "./statues";
 import { Ambience } from "./sound";
@@ -48,6 +49,8 @@ door.resize(innerWidth / innerHeight);
 const statues = new Statues();
 const plates = new Plates($("plates"));
 const usePlates = params.get("plates") !== "0";   // test switch: raster only
+// the walk keeps to the trail (rail.ts) and the mouse looks anywhere; ?free is the old free walk (the tour's film renderer needs it)
+const free = params.has("free");
 if (params.has("debug")) Object.assign(window, { act1: { statues, plates, door } });
 statues.resize(innerWidth / innerHeight);
 // Act I → II → III. ?door starts at the door, ?forest skips both (tests)
@@ -113,7 +116,7 @@ const act1 = mode === "statues"
 const bar = $("bar"), loadtxt = $("loadtxt"), enter = $("enter") as HTMLButtonElement;
 let world: World;
 let veg: Vegetation;
-let player: Player;
+let player: Player | RailPlayer;
 let sun: THREE.DirectionalLight;
 /** obj: full detail (a statue's whole scan: within 12 m only); mid: a statue's 30k copy, 12-40 m; far: the reduced copy past
  *  40 m (half in the mist); shells: backing for the pinholed scans, only needed close */
@@ -171,7 +174,7 @@ async function boot() {
   const terrain = new Terrain(w);
   scene.add(terrain.mesh());
   await calm();
-  const walls = new Collision(terrain);
+  const walls = free ? new Collision(terrain) : undefined;   // on the trail nothing can be bumped into
   const added = densify(w, terrain, PLACES.map((p) => ({ x: p.x, z: -p.y, r: p.r })), d.spawn);
   if (params.has("debug")) console.log("densify: +" + added + " instances");
   sunDir.fromArray(d.sun.dir).normalize();
@@ -208,11 +211,11 @@ async function boot() {
     };
     const obj = make(s.file);
     if (!obj) continue;
-    if (s.name === "ruins_posts") { walls.addObject(obj); continue; }   // the chapel ruins: always drawn
+    if (s.name === "ruins_posts") { walls?.addObject(obj); continue; }   // the chapel ruins: always drawn
     const far = make(lod1(s.file));
     // you stop at the stone itself; a statue's 6k far copy is as good as its whole scan at the 10 cm collision grid and
     // keeps the load from walking 120-480k triangles per statue
-    walls.addObject(s.name.startsWith("ST_") && far ? far : obj);
+    walls?.addObject(s.name.startsWith("ST_") && far ? far : obj);
     const shells = HOLED.has(s.name) ? backScan(obj) : [];
     const c = new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3());
     const md = s.name.startsWith("ST_") ? make(mid(s.file)) : undefined;
@@ -227,11 +230,18 @@ async function boot() {
   await calm();
   veg = new Vegetation(w, tier.shadows, renderer, sunDir, { sun, hemi, env: sky, envI: scene.environmentIntensity });
   scene.add(veg.group);
-  veg.solids(walls);
-  if (params.has("debug")) console.log("collision: " + walls.tris + " triangles");
-  player = new Player(camera, new Ground(w, terrain), walls, d.spawn, canvas);
+  if (walls) {
+    veg.solids(walls);
+    if (params.has("debug")) console.log("collision: " + walls.tris + " triangles");
+    const p = new Player(camera, new Ground(w, terrain), walls, d.spawn, canvas);
+    p.slideOn = params.get("slide") !== "0";
+    player = p;
+  } else {
+    const kept = veg.along(RAIL.filter((_, i) => i % 4 === 0), 2);   // a point every 2 m is close enough at 2 m of slack
+    if (params.has("debug")) console.log(`trail: ${kept.after} of ${kept.before} instances can ever be drawn`);
+    player = new RailPlayer(camera, new Ground(w, terrain), canvas);
+  }
   if (reduced) player.bobScale = 0;
-  player.slideOn = params.get("slide") !== "0";
   player.settle();
   const fc = d.cameras["FCAM_B"];
   player.update(0);
@@ -414,9 +424,10 @@ function frame() {
     // what is the walker near, and facing?
     camera.getWorldDirection(look);
     let best: (typeof PLACES)[number] | null = null, bestD = 1e9, near: (typeof PLACES)[number] | null = null, nearD = 1e9;
+    const stop = player instanceof RailPlayer ? player.stopKey() : null;
     for (const p of PLACES) {
       to.set(p.pos.x - player.pos.x, 0, p.pos.z - player.pos.z);
-      const d = to.length();
+      const d = stop === p.key ? 0.5 : to.length();   // at a place's stop on the trail: as good as standing in it
       if (d < p.r + 4 && d < nearD) { near = p; nearD = d; }
       if (d < p.r && PAGES[p.key] && (d < 3 || to.normalize().dot(look.setY(0).normalize()) > 0.45) && d < bestD) { best = p; bestD = d; }
     }

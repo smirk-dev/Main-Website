@@ -7,7 +7,7 @@ Run from a scratch work directory (outputs land there), with the dev server on :
 
 1. `python -I path.py` — A* over the game's own collision (1.25 m clearance, trail cheaper) from the spawn through every place →
    `tour_route.json`, plot `g5/tour_route.png`. Needs `?debug` (`window.game`).
-2. `python -I cam.py` — one pose per frame at 24 fps: smoothed path, 3 m/s, easing into each stop, a 3 s dwell facing the place → `tour_cam.json`.
+2. `python -I cam.py` — one pose per frame at 24 fps: smoothed path, 3 m/s, easing into each stop, a 3 s dwell facing the place → `tour_cam.json`, and the same smoothed path as `rail.json` (copy it to `src/`: the desktop walk keeps to it).
 3. `PY=python ./all.sh` — renders `g5/tour_frames/f00000.jpg…` (1920×1080, drawn at 2× and box-filtered down, full trees to 60 m; ~0.7 s a frame on Iris Xe; a lost context, a dropped pixel ratio or a black frame exits 3 and all.sh retries). It sets `game.film.hold`, so the
    loop draws once per pose; a free-running loop in headless Chrome queued seconds of draws ahead of every screenshot (5 s a frame).
    Don't edit anything `main.ts` imports while it runs: Vite hot-reloads the page and the run dies.

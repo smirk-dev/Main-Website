@@ -79,4 +79,8 @@ while si < len(stop_s) or d < end - 0.05:
         stops_out.append({"key": look[si]["key"], "f0": f0, "f1": len(frames) - 1}); si += 1
     d += speed(d) / FPS
 json.dump({"fps": FPS, "frames": frames, "stops": stops_out, "looks": {x["key"]: x["look"] for x in look}}, open("tour_cam.json", "w"))
+# the same smoothed path for the desktop walk's rail (src/rail.json): a point every 0.5 m, each stop's arc length and what it faces
+json.dump({"step": 0.5, "pts": [[round(x, 2), round(z, 2)] for x, z in S[::2]],
+           "stops": [{"key": x["key"], "s": round(stop_s[k], 2), "look": x["look"]} for k, x in enumerate(look)]},
+          open("rail.json", "w"), separators=(",", ":"))
 print(len(frames), "frames,", round(len(frames) / FPS, 1), "s; stops", [(x["key"], round(x["f0"] / FPS, 1)) for x in stops_out])

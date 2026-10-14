@@ -26,7 +26,7 @@ SHOT = """([x, z, yaw, pitch]) => new Promise(res => { const P = game.player; P.
 with sync_playwright() as p:
     b = p.chromium.launch(args=["--use-angle=d3d11"])
     pg = b.new_page(viewport={"width": 1920, "height": 1080}, device_scale_factor=1)
-    pg.goto(f"http://localhost:5181/?forest&debug&aa={aa}&pr=2&abias={abias}", wait_until="networkidle")
+    pg.goto(f"http://localhost:5181/?forest&free&debug&aa={aa}&pr=2&abias={abias}", wait_until="networkidle")
     pg.wait_for_function("() => window.game && document.getElementById('loadtxt').textContent.includes('ready')", timeout=300000)
     pg.click("#enter"); pg.wait_for_timeout(1500)
     pg.evaluate("() => document.exitPointerLock()")   # unlocked: the frame-time fallback never fires
