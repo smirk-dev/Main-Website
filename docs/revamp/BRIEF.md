@@ -173,7 +173,7 @@ archive page and "Back to the forest" returns to the same spot. Built in `web/`;
 - **Load stalls removed:** every texture and every statue/structure mesh is uploaded during Act I (they used to stall the
   first sight of a clearing 1–3 s), and the vegetation's instance buffers rotate through three, so an update never writes a
   buffer the GPU is still drawing from.
-- Story lines are still Lorem Ipsum, tagged by statue and beat, waiting for Suryansh's copy.
+- Story lines: written 2026-10-14 (Claude drafted from the Brain, Suryansh said "implement it"): Angel = what I reached for, mourning figure = what ended, Mother = what held. In `web/index.html` `#lines`, still tagged by statue and beat.
 
 ## 3. Realism and rendering: how "hyper-realistic + ray tracing" is achieved in a browser
 
