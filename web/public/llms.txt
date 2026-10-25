@@ -1,0 +1,21 @@
+# Suryansh Mishra
+
+> Suryansh Mishra is an AI engineer from Noida, India. He is the co-founder and CTO of Alethman, where he built the engine that follows how news stories form and spread, and a forward deployed engineer at InboxKit. He studies computer science at UPES with a minor in AI from IIT Ropar, contributes to Rocket.Chat, and has won three national hackathons. He also paints and writes poetry.
+
+suryanshmishra.com is a 3D forest you walk through in the browser; each structure in it leads to one of his sites. The plain-text facts are on the about page.
+
+## About
+- [About Suryansh Mishra](https://suryanshmishra.com/about/): who he is, work history, education, FAQ
+- [Résumé (PDF)](https://suryanshmishra.com/resume.pdf)
+
+## His sites
+- [Code portfolio](https://code.suryanshmishra.com/): AI, machine learning and full-stack projects
+- [Art portfolio](https://art.suryanshmishra.com/): ballpoint portraits, paintings and illustration
+- [Bonfire](https://bonfire.suryanshmishra.com/): his poems and thoughts
+
+## Profiles
+- [GitHub](https://github.com/smirk-dev)
+- [LinkedIn](https://www.linkedin.com/in/connectwithsuryanshmishra/)
+- [X](https://x.com/smirkisanalias)
+- [Kaggle](https://www.kaggle.com/smirkxd)
+- [Alethman team page](https://alethman.com/team/suryansh-mishra/)

@@ -11,7 +11,7 @@ import { Door } from "./door";
 import { Statues, Plates } from "./statues";
 import { Sound } from "./sound";
 import { ForestMap, type Travel } from "./map";
-import { PLACE_LIST, PAGES } from "./places";
+import { PLACE_LIST, PAGES, SITE_NAMES, visit } from "./places";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const canvas = $("c") as HTMLCanvasElement;
@@ -25,7 +25,7 @@ if (matchMedia("(pointer: coarse)").matches || innerWidth < 900) {
   throw new Error("desktop only");
 }
 
-/** The seven places in the forest. Blender XY centres; each opens its archive page. A category without a page has no prompt. */
+/** The seven places in the forest. Blender XY centres; each leads to one of his sites (places.ts). */
 const PLACES = PLACE_LIST.map((p) => ({ ...p, pos: new THREE.Vector3(p.x, 0, -p.y) }));
 
 // ---------- renderer ----------
@@ -346,9 +346,10 @@ document.addEventListener("pointerlockchange", () => {
 });
 
 let focus: (typeof PLACES)[number] | null = null;
+// a place now leads to one of his sites, opened in a new tab; the in-page panel stays for anything that posts back
 function openPage(p: (typeof PLACES)[number]) {
-  reading = true; page.src = PAGES[p.key]; panel.hidden = false; hud.hidden = true; sound.duck(true);
   document.exitPointerLock();
+  visit(p.key);
 }
 function closePage() {
   reading = false; panel.hidden = true; hud.hidden = false; page.src = "about:blank"; sound.duck(false);
@@ -505,7 +506,7 @@ function frame() {
     }
     focus = best;
     prompt.hidden = !best;
-    const say = best ? `Open ${best.label}` : "", span = prompt.querySelector("span")!;
+    const say = best ? `Visit ${SITE_NAMES[best.key]}` : "", span = prompt.querySelector("span")!;
     if (say && span.textContent !== say) span.textContent = say;   // not every frame: the prompt sits on a backdrop blur
     const nm = near ? near.where : "";
     if (nm && nm !== lastPlace) showArea(nm);   // a new place: its name crosses the screen (once, until you reach another)

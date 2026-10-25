@@ -1,4 +1,4 @@
-import { PLACE_LIST, PAGES } from "./places";
+import { PLACE_LIST, PAGES, visit } from "./places";
 
 // The scroll tour: the same forest, pre-rendered offline in the game's engine at full quality (tools/tour/), as a film the
 // scroll position scrubs. Smooth on any machine, no WebGL; the price is a fixed path. Each place gets a stop with its page.
@@ -91,7 +91,7 @@ function tick() {
 
 function openPage() {
   if (!at || !PAGES[at.key] || reading) return;
-  reading = true; page.src = PAGES[at.key]; panel.hidden = false; document.documentElement.style.overflow = "hidden";
+  visit(at.key);
 }
 function closePage() {
   if (!reading) return;
