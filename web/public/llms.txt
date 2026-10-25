@@ -6,7 +6,7 @@ suryanshmishra.com is a 3D forest you walk through in the browser; each structur
 
 ## About
 - [About Suryansh Mishra](https://suryanshmishra.com/about/): who he is, work history, education, FAQ
-- [Résumé (PDF)](https://suryanshmishra.com/resume.pdf)
+- [Linktree](https://linktr.ee/mishrasuryansh): all his links
 
 ## His sites
 - [Code portfolio](https://code.suryanshmishra.com/): AI, machine learning and full-stack projects

@@ -10,7 +10,7 @@ npm run build
 S=$(mktemp -d)
 cp -r dist/. "$S/"
 rm -f "$S/assets/tour/tour.mp4" "$S/assets/tour/tour_av1.mp4"
-cp ../resume.pdf "$S/"   # the old site linked /resume.pdf; the link keeps working
+# no resume.pdf: it carries his address and phone number, so the site links his Linktree instead (2026-10-25)
 mkdir -p "$S/.vercel"
 echo '{"projectId":"prj_resCZlByDbg3eod9X1KZFFJmzbqm","orgId":"team_juHWX2jQoSjOygkgwSNXir9r","projectName":"suryanshmishra"}' > "$S/.vercel/project.json"
 big=$(find "$S" -type f -size +99M)
